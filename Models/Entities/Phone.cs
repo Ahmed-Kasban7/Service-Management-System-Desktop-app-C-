@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace Domain.Entities;
+
+public class Phone
+{
+    public string PhoneNumber { get; set; } = string.Empty;
+}
+

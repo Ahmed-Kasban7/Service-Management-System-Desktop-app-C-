@@ -1,0 +1,549 @@
+﻿<Window x:Class="Presentation.View.Customer_View.CustomerListView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="لوحة التحكم - Admin Console"
+        Height="800"
+        Width="1400"
+        WindowStartupLocation="CenterScreen"
+        Background="#EEF2F7"
+        FlowDirection="RightToLeft">
+
+    <Window.Resources>
+
+        <SolidColorBrush x:Key="PrimaryBlue" Color="#4169E1"/>
+        <SolidColorBrush x:Key="LightBlue" Color="#E8F0FE"/>
+        <SolidColorBrush x:Key="DarkText" Color="#1A1A1A"/>
+        <SolidColorBrush x:Key="GrayText" Color="#6B7280"/>
+        <SolidColorBrush x:Key="LightGray" Color="#E5E7EB"/>
+        <SolidColorBrush x:Key="BorderGray" Color="#D1D5DB"/>
+        <SolidColorBrush x:Key="RedButton" Color="#EF4444"/>
+
+        <Style TargetType="Control">
+            <Setter Property="FontFamily" Value="Cairo, Segoe UI, Tahoma"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderGray}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkText}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="{StaticResource PrimaryBlue}"/>
+                                <Setter Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModernComboBox" TargetType="ComboBox">
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderGray}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkText}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <Grid>
+                                <ToggleButton Name="ToggleButton"
+                                              Background="Transparent"
+                                              BorderThickness="0"
+                                              Focusable="False"
+                                              IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                              ClickMode="Press"/>
+                                <ContentPresenter Name="ContentSite"
+                                                  IsHitTestVisible="False"
+                                                  Content="{TemplateBinding SelectionBoxItem}"
+                                                  Margin="12,10"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Right"/>
+                                <Popup Name="Popup"
+                                       Placement="Bottom"
+                                       IsOpen="{TemplateBinding IsDropDownOpen}"
+                                       AllowsTransparency="True"
+                                       Focusable="False"
+                                       PopupAnimation="Slide">
+                                    <Border Background="White"
+                                            BorderBrush="{StaticResource BorderGray}"
+                                            BorderThickness="1"
+                                            CornerRadius="8"
+                                            Margin="0,5,0,0">
+                                        <ScrollViewer>
+                                            <ItemsPresenter/>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Popup>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryBlue}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="25,12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource GrayText}"/>
+            <Setter Property="Padding" Value="20,15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource LightGray}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Right"/>
+        </Style>
+
+        <Style TargetType="DataGridRow">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource LightGray}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F9FAFB"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightBlue}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="DataGridCell">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkText}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Background="White" Padding="30,20" 
+                    BorderThickness="0,0,0,1" BorderBrush="{StaticResource LightGray}">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="+ إنشاء طلب"
+                                Style="{StaticResource PrimaryButton}"
+                                Margin="0,0,15,0"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" FlowDirection="LeftToRight">
+                        <Border Background="White"
+                                BorderBrush="{StaticResource BorderGray}"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="12,8"
+                                Margin="0,0,10,0">
+                            <TextBlock Text="📅 29 يناير 2026" Foreground="{StaticResource GrayText}"/>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="1" Margin="30,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="400"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0"
+        Background="White"
+        CornerRadius="12"
+        Padding="25"
+        Margin="0,0,20,0">
+
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+
+                        <StackPanel>
+
+                            <!-- ================= Header ================= -->
+                            <Grid Margin="0,0,0,20">
+                                <TextBlock Text="إدارة العملاء"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource DarkText}"
+                           HorizontalAlignment="Right"/>
+
+                                <Button Content="+ إضافة عميل"
+                        Style="{StaticResource PrimaryButton}"
+                        HorizontalAlignment="Left"
+                        Padding="20,8" Click="Button_Click"/>
+                            </Grid>
+
+                            <!-- ================= بيانات العميل ================= -->
+
+                            <TextBlock Text="الاسم" FontWeight="SemiBold"/>
+                            <TextBox Style="{StaticResource ModernTextBox}"
+                     Text="{Binding Customer.Name, UpdateSourceTrigger=PropertyChanged}"
+                     Margin="0,0,0,10"/>
+
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="12"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="ID" FontWeight="SemiBold"/>
+                                    <TextBox Style="{StaticResource ModernTextBox}"
+                             Text="{Binding Customer.ID}"
+                             IsReadOnly="True"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="العمر" FontWeight="SemiBold"/>
+                                    <TextBox Style="{StaticResource ModernTextBox}"
+                             Text="{Binding Customer.Age}"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <TextBlock Text="الجنس" FontWeight="SemiBold"/>
+                            <ComboBox Style="{StaticResource ModernComboBox}"
+                      SelectedItem="{Binding Customer.Gender}"
+                      Margin="0,0,0,10">
+                                <ComboBoxItem Content="Male"/>
+                                <ComboBoxItem Content="Female"/>
+                            </ComboBox>
+
+                            <TextBlock Text="العنوان" FontWeight="SemiBold"/>
+                            <TextBox Style="{StaticResource ModernTextBox}"
+                     Text="{Binding Customer.Address}"
+                     Margin="0,0,0,15"/>
+
+                            <Separator/>
+
+                            <!-- ================= الهواتف ================= -->
+
+                            <TextBlock Text="📞 أرقام الهواتف"
+                       FontSize="16"
+                       FontWeight="Bold"
+                       Margin="0,15,0,10"/>
+
+                            <ItemsControl ItemsSource="{Binding Phones}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="10"
+                                Margin="0,0,0,8"
+                                BorderBrush="{StaticResource BorderGray}"
+                                BorderThickness="1"
+                                CornerRadius="8">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <TextBox Style="{StaticResource ModernTextBox}"
+                                         Text="{Binding Number, UpdateSourceTrigger=PropertyChanged}"
+                                         Margin="0,0,10,0"/>
+
+                                                <Button Grid.Column="1"
+                                        Content="💾"
+                                        Command="{Binding DataContext.SavePhoneCommand,
+                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding}"/>
+
+                                                <Button Grid.Column="2"
+                                        Content="🗑"
+                                        Foreground="Red"
+                                        Command="{Binding DataContext.DeletePhoneCommand,
+                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding}"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <Separator Margin="0,15"/>
+
+                            <!-- ================= الأجهزة ================= -->
+
+                            <TextBlock Text="💻 الأجهزة"
+                       FontSize="16"
+                       FontWeight="Bold"
+                       Margin="0,0,0,10"/>
+
+                            <ItemsControl ItemsSource="{Binding Devices}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="12"
+                                Margin="0,0,0,10"
+                                BorderBrush="{StaticResource BorderGray}"
+                                BorderThickness="1"
+                                CornerRadius="8">
+
+                                            <StackPanel>
+
+                                                <TextBox Style="{StaticResource ModernTextBox}"
+                                         Text="{Binding Name}"/>
+
+                                                <TextBox Style="{StaticResource ModernTextBox}"
+                                         Text="{Binding SerialNumber}"
+                                         Margin="0,5,0,10"/>
+
+                                                <StackPanel Orientation="Horizontal">
+
+                                                    <Button Content="History"
+                                            Margin="0,0,8,0"
+                                            Command="{Binding DataContext.DeviceHistoryCommand,
+                                                      RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                            CommandParameter="{Binding}"/>
+
+                                                    <Button Content="💾"
+                                            Margin="0,0,8,0"
+                                            Command="{Binding DataContext.SaveDeviceCommand,
+                                                      RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                            CommandParameter="{Binding}"/>
+
+                                                    <Button Content="🗑"
+                                            Foreground="Red"
+                                            Command="{Binding DataContext.DeleteDeviceCommand,
+                                                      RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                            CommandParameter="{Binding}"/>
+
+                                                </StackPanel>
+
+                                            </StackPanel>
+
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                          <!-- ===== Save / Delete Buttons ===== -->
+<Separator Margin="0,20"/>
+
+<Grid>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition/>
+        <ColumnDefinition Width="10"/>
+        <ColumnDefinition/>
+    </Grid.ColumnDefinitions>
+
+    <!-- Delete -->
+    <Button Grid.Column="0"
+            Content="🗑 حذف العميل"
+            Foreground="Red"
+            Padding="20,8"
+            Command="{Binding DeleteCustomerCommand}"/>
+
+    <!-- Save -->
+    <Button Grid.Column="2"
+            Content="💾 حفظ التعديلات"
+            Style="{StaticResource PrimaryButton}"
+            Padding="20,8"
+            Command="{Binding SaveCustomerCommand}"/>
+</Grid>
+
+
+                        </StackPanel>
+
+                    </ScrollViewer>
+                </Border>
+
+
+
+                <Border Grid.Column="1" Background="White" CornerRadius="12">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Row="0" Padding="25,15" 
+                                BorderThickness="0,0,0,1" BorderBrush="{StaticResource LightGray}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="194*"/>
+                                    <ColumnDefinition Width="251*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Column="1" Margin="92,0,0,0">
+                                    <Button Content="📦 Orders" 
+                                            Padding="15,10" Background="Transparent"
+                                            BorderThickness="0" Foreground="{StaticResource GrayText}"/>
+                                    <Button Content="🔧 Technicians" 
+                                            Padding="15,10" Background="Transparent"
+                                            BorderThickness="0" Foreground="{StaticResource GrayText}"/>
+                                    <Button Content="👥 Customers" 
+                                            Padding="15,10" Background="Transparent"
+                                            BorderThickness="0,0,0,3" BorderBrush="{StaticResource PrimaryBlue}"
+                                            Foreground="{StaticResource PrimaryBlue}" FontWeight="SemiBold"/>
+                                    <Button Content="📊 Dashboard" 
+                                            Padding="15,10" Background="Transparent"
+                                            BorderThickness="0" Foreground="{StaticResource GrayText}"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left"/>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="1" Padding="25,15">
+                            <Grid>
+                                <TextBlock Text="قائمة العملاء: عميل 3"
+                                           FontSize="16" FontWeight="SemiBold"
+                                           Foreground="{StaticResource DarkText}"
+                                           HorizontalAlignment="Right"
+                                           VerticalAlignment="Center"/>
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                    <Border Background="White"
+                                            BorderBrush="{StaticResource BorderGray}"
+                                            BorderThickness="1" CornerRadius="8"
+                                            Padding="12,8" Width="250" Margin="0,0,10,0">
+                                        <TextBlock 
+                                                   Foreground="{StaticResource GrayText}"><Run FlowDirection="RightToLeft" Text="بحث بالاسم او بالهاتف او بكود العميل"/><Run FlowDirection="RightToLeft" Language="ar-eg" Text=" "/></TextBlock>
+                                    </Border>
+
+                                    <Button Content="🎚" Width="40" Height="40"
+                                            Background="White" BorderBrush="{StaticResource BorderGray}"
+                                            BorderThickness="1" FontSize="18">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                                        CornerRadius="8">
+                                                    <ContentPresenter HorizontalAlignment="Center" 
+                                                                      VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <DataGrid Grid.Row="2" x:Name="DgCustomers"
+                                  AutoGenerateColumns="False"
+                                  GridLinesVisibility="None"
+                                  Background="Transparent"
+                                  BorderThickness="0"
+                                  SelectionMode="Single"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False"
+                                  CanUserResizeRows="False"
+                                  CanUserReorderColumns="False"
+                                  IsReadOnly="True"
+                                  HeadersVisibility="Column"
+                                  SelectionChanged="DgCustomers_SelectionChanged">
+
+                            <DataGrid.Columns>
+
+                                <DataGridTextColumn Header="العنوان" Binding="{Binding Address}" Width="*">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="TextAlignment" Value="Left"/>
+                                            <Setter Property="FlowDirection" Value="LeftToRight"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+
+                                <DataGridTextColumn Header="الهاتف" Binding="{Binding Phone}" Width="170">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="TextAlignment" Value="Left"/>
+                                            <Setter Property="FlowDirection" Value="LeftToRight"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+
+                                <DataGridTextColumn Header="الاسم" Binding="{Binding Name}" Width="*">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="TextAlignment" Value="Left"/>
+                                            <Setter Property="FlowDirection" Value="LeftToRight"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+
+                                <DataGridTextColumn Header="كود العميل" Binding="{Binding ID}" Width="150">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="TextAlignment" Value="Left"/>
+                                            <Setter Property="FlowDirection" Value="LeftToRight"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+
+                            </DataGrid.Columns>
+
+
+
+                        </DataGrid>
+                    </Grid>
+                </Border>
+
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
