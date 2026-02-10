@@ -12,7 +12,7 @@ public interface ICustomerRepository
 {
     //bool CreateCustomer(Customer customer);
     List<CustomerSummaryDTO> GetAllCustomers();
-    CustomerProfileDTO GetCustomerByID(int id );
+    CustomerProfileDTO GetCustomerFullProfile(int id );
     //List<Customer> SearchCustomrByName(string name);
 
     //bool DeleteCustomer(int id);

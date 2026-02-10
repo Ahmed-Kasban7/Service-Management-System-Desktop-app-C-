@@ -10,7 +10,11 @@
 
     <Window.Resources>
 
+        <!-- الألوان -->
         <SolidColorBrush x:Key="PrimaryBlue" Color="#4169E1"/>
+        <SolidColorBrush x:Key="SuccessGreen" Color="#10B981"/>
+        <SolidColorBrush x:Key="DangerRed" Color="#EF4444"/>
+        <SolidColorBrush x:Key="WarningOrange" Color="#F59E0B"/>
         <SolidColorBrush x:Key="LightBlue" Color="#E8F0FE"/>
         <SolidColorBrush x:Key="DarkText" Color="#1A1A1A"/>
         <SolidColorBrush x:Key="GrayText" Color="#6B7280"/>
@@ -18,11 +22,13 @@
         <SolidColorBrush x:Key="BorderGray" Color="#D1D5DB"/>
         <SolidColorBrush x:Key="RedButton" Color="#EF4444"/>
 
+        <!-- الخطوط -->
         <Style TargetType="Control">
             <Setter Property="FontFamily" Value="Cairo, Segoe UI, Tahoma"/>
             <Setter Property="FontSize" Value="14"/>
         </Style>
 
+        <!-- TextBox Style -->
         <Style x:Key="ModernTextBox" TargetType="TextBox">
             <Setter Property="Padding" Value="12,10"/>
             <Setter Property="BorderBrush" Value="{StaticResource BorderGray}"/>
@@ -52,6 +58,7 @@
             </Setter>
         </Style>
 
+        <!-- ComboBox Style -->
         <Style x:Key="ModernComboBox" TargetType="ComboBox">
             <Setter Property="Padding" Value="12,10"/>
             <Setter Property="BorderBrush" Value="{StaticResource BorderGray}"/>
@@ -102,6 +109,7 @@
             </Setter>
         </Style>
 
+        <!-- Primary Button Style -->
         <Style x:Key="PrimaryButton" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource PrimaryBlue}"/>
             <Setter Property="Foreground" Value="White"/>
@@ -128,6 +136,30 @@
             </Setter>
         </Style>
 
+        <!-- Icon Button Style -->
+        <Style x:Key="IconButton" TargetType="Button">
+            <Setter Property="Width" Value="32"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- DataGrid Column Header Style -->
         <Style TargetType="DataGridColumnHeader">
             <Setter Property="Background" Value="White"/>
             <Setter Property="Foreground" Value="{StaticResource GrayText}"/>
@@ -139,6 +171,7 @@
             <Setter Property="HorizontalContentAlignment" Value="Right"/>
         </Style>
 
+        <!-- DataGrid Row Style -->
         <Style TargetType="DataGridRow">
             <Setter Property="Background" Value="White"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
@@ -153,6 +186,7 @@
             </Style.Triggers>
         </Style>
 
+        <!-- DataGrid Cell Style -->
         <Style TargetType="DataGridCell">
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding" Value="20,12"/>
@@ -177,7 +211,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-
+        <!-- الشريط العلوي -->
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -206,212 +240,354 @@
                 </Grid>
             </Border>
 
+            <!-- المحتوى الرئيسي -->
             <Grid Grid.Row="1" Margin="30,20">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="400"/>
+                    <ColumnDefinition Width="450"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-
-                <Border Grid.Column="0"
-        Background="White"
-        CornerRadius="12"
-        Padding="25"
-        Margin="0,0,20,0">
-
+               
+                <!-- ========== البروفايل الكامل (يسار) ========== -->
+                <Border Grid.Column="0" Background="White" CornerRadius="12" Padding="0" Margin="0,0,20,0"
+        x:Name="ProfileSection" Opacity="0.3">
+                    <!-- ضع Opacity منخفضة في البداية -->
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-
                         <StackPanel>
 
-                            <!-- ================= Header ================= -->
-                            <Grid Margin="0,0,0,20">
-                                <TextBlock Text="إدارة العملاء"
+
+                            <!-- SECTION 1: البيانات الأساسية -->
+                            <Border Background="#4169E1" CornerRadius="12,12,0,0" Padding="25,20">
+                                <TextBlock Text="📋 البيانات الأساسية"
                            FontSize="18"
                            FontWeight="Bold"
-                           Foreground="{StaticResource DarkText}"
-                           HorizontalAlignment="Right"/>
+                           Foreground="White"/>
+                            </Border>
 
-                                <Button Content="+ إضافة عميل"
-                        Style="{StaticResource PrimaryButton}"
-                        HorizontalAlignment="Left"
-                        Padding="20,8" Click="Button_Click"/>
-                            </Grid>
+                            <Border Padding="25" Background="White">
+                                <StackPanel>
 
-                            <!-- ================= بيانات العميل ================= -->
+                                    <!-- الصف الأول: الرقم والاسم -->
+                                    <Grid Margin="0,0,0,15">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="15"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
 
-                            <TextBlock Text="الاسم" FontWeight="SemiBold"/>
-                            <TextBox Style="{StaticResource ModernTextBox}"
-                     Text="{Binding Customer.Name, UpdateSourceTrigger=PropertyChanged}"
-                     Margin="0,0,0,10"/>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="الاسم الكامل"
+                                       Foreground="{StaticResource GrayText}"
+                                       FontSize="12" Margin="0,0,0,5"/>
+                                            <TextBlock x:Name="TxtProfileName"
+                                       Text="---"
+                                       FontWeight="Bold"
+                                       FontSize="16"
+                                       Foreground="{StaticResource DarkText}"/>
+                                        </StackPanel>
 
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition Width="12"/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="رقم العميل (ID)"
+                                       Foreground="{StaticResource GrayText}"
+                                       FontSize="12" Margin="0,0,0,5"/>
+                                            <TextBlock x:Name="TxtProfileID"
+                                       Text="---"
+                                       FontWeight="Bold"
+                                       FontSize="16"
+                                       Foreground="{StaticResource DarkText}"/>
+                                        </StackPanel>
+                                    </Grid>
 
-                                <StackPanel Grid.Column="2">
-                                    <TextBlock Text="ID" FontWeight="SemiBold"/>
-                                    <TextBox Style="{StaticResource ModernTextBox}"
-                             Text="{Binding Customer.ID}"
-                             IsReadOnly="True"/>
+                                    <!-- الصف الثاني: العمر والجنس -->
+                                    <Grid Margin="0,0,0,15">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="15"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="الجنس"
+                                       Foreground="{StaticResource GrayText}"
+                                       FontSize="12" Margin="0,0,0,5"/>
+                                            <TextBlock x:Name="TxtProfileSex"
+                                       Text="---"
+                                       FontWeight="Bold"
+                                       FontSize="16"
+                                       Foreground="{StaticResource DarkText}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="العمر"
+                                       Foreground="{StaticResource GrayText}"
+                                       FontSize="12" Margin="0,0,0,5"/>
+                                            <TextBlock x:Name="TxtProfileAge"
+                                       Text="---"
+                                       FontWeight="Bold"
+                                       FontSize="16"
+                                       Foreground="{StaticResource DarkText}"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- العنوان -->
+                                    <StackPanel Margin="0,0,0,15">
+                                        <TextBlock Text="العنوان"
+                                   Foreground="{StaticResource GrayText}"
+                                   FontSize="12" Margin="0,0,0,5"/>
+                                        <TextBlock x:Name="TxtProfileAddress"
+                                   Text="---"
+                                   FontWeight="SemiBold"
+                                   FontSize="14"
+                                   TextWrapping="Wrap"
+                                   Foreground="{StaticResource DarkText}"/>
+                                    </StackPanel>
+
+                                    <!-- الخصم -->
+                                    <StackPanel>
+                                        <TextBlock Text="نسبة الخصم (%)"
+                                   Foreground="{StaticResource GrayText}"
+                                   FontSize="12" Margin="0,0,0,5"/>
+                                        <TextBlock x:Name="TxtProfileDiscount"
+                                   Text="---"
+                                   FontWeight="Bold"
+                                   FontSize="16"
+                                   Foreground="{StaticResource SuccessGreen}"/>
+                                    </StackPanel>
+
                                 </StackPanel>
+                            </Border>
 
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="العمر" FontWeight="SemiBold"/>
-                                    <TextBox Style="{StaticResource ModernTextBox}"
-                             Text="{Binding Customer.Age}"/>
+                            <!-- خط فاصل -->
+                            <Border Height="8" Background="#F3F4F6"/>
+
+                            <!-- SECTION 2: أرقام الهواتف -->
+                            <Border x:Name="PhonesSection" Padding="25,15" Background="White">
+                                <StackPanel>
+
+                                    <!-- Header الهواتف -->
+                                    <Grid Margin="0,0,0,15">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Text="📱 الهواتف المسجلة"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center"
+                                   Foreground="{StaticResource DarkText}"/>
+
+                                        <Button x:Name="btnAddNum" Grid.Column="1"
+                                Content="➕ إضافة رقم"
+                                Background="{StaticResource PrimaryBlue}"
+                                Foreground="White"
+                                Padding="12,6"
+                                FontSize="13"
+                                FontWeight="SemiBold"
+                                BorderThickness="0"
+                                Cursor="Hand"
+                                Click="BtnAddPhone_Click"
+                                                IsEnabled="False">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                    </Grid>
+
+                                    <ItemsControl x:Name="PhonesList">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="#F9FAFB" BorderBrush="{StaticResource BorderGray}" BorderThickness="1" CornerRadius="12" Padding="18" Margin="0,0,0,12">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <Border Width="45" Height="45" Background ="{StaticResource SuccessGreen}" CornerRadius="22.5" Margin="0,0,15,0">
+                                                            <TextBlock Text="📱" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        </Border>
+
+                                                        <TextBlock Grid.Column="1" Text="{Binding}" FontWeight="Bold" FontSize="17" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0" Foreground="{StaticResource DarkText}"/>
+
+                                                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                                            <Button Content="✏️" Width="38" Height="38" Background="{StaticResource PrimaryBlue}" Foreground="White" Tag="{Binding}" Click="BtnEditPhone_Click" Margin="0,0,8,0">
+                                                                <Button.Template>
+                                                                    <ControlTemplate TargetType="Button">
+                                                                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                        </Border>
+                                                                    </ControlTemplate>
+                                                                </Button.Template>
+                                                            </Button>
+                                                            <Button Content="🗑️" Width="38" Height="38" Background="{StaticResource DangerRed}" Foreground="White" Tag="{Binding}" Click="BtnDeletePhone_Click">
+                                                                <Button.Template>
+                                                                    <ControlTemplate TargetType="Button">
+                                                                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                        </Border>
+                                                                    </ControlTemplate>
+                                                                </Button.Template>
+                                                            </Button>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <TextBlock x:Name="TxtNoPhonesMessage" Text="❌ لا توجد أرقام هواتف مسجلة" Foreground="{StaticResource GrayText}" FontSize="13" HorizontalAlignment="Center" Margin="0,20,0,0" Visibility="Collapsed"/>
                                 </StackPanel>
-                            </Grid>
+                            </Border>
 
-                            <TextBlock Text="الجنس" FontWeight="SemiBold"/>
-                            <ComboBox Style="{StaticResource ModernComboBox}"
-                      SelectedItem="{Binding Customer.Gender}"
-                      Margin="0,0,0,10">
-                                <ComboBoxItem Content="Male"/>
-                                <ComboBoxItem Content="Female"/>
-                            </ComboBox>
+                            <!-- خط فاصل -->
+                            <Border Height="8" Background="#F3F4F6"/>
 
-                            <TextBlock Text="العنوان" FontWeight="SemiBold"/>
-                            <TextBox Style="{StaticResource ModernTextBox}"
-                     Text="{Binding Customer.Address}"
-                     Margin="0,0,0,15"/>
+                            <!-- SECTION 3: الأجهزة -->
+                            <Border Background="White" Padding="20,14">
+                                <Grid Margin="0,0,0,15">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
 
-                            <Separator/>
+                                    <TextBlock Text="🧺 الأجهزة المسجلة" FontSize="16" FontWeight="Bold" Foreground="#1F2937" VerticalAlignment="Center"/>
 
-                            <!-- ================= الهواتف ================= -->
+                                    <Button x:Name="btnAddDevice" 
+    Content="➕ إضافة جهاز"
+    Background="{StaticResource PrimaryBlue}"
+    Foreground="White"
+    Padding="12,6"
+    FontSize="13"
+    FontWeight="SemiBold"
+    BorderThickness="0"
+    Cursor="Hand"
+    Click="BtnAddPhone_Click"
+    Grid.Column="1"
+                                        IsEnabled="False">
+                                        <!-- العمود الثاني فقط -->
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
 
-                            <TextBlock Text="📞 أرقام الهواتف"
-                       FontSize="16"
-                       FontWeight="Bold"
-                       Margin="0,15,0,10"/>
+                                </Grid>
+                            </Border>
 
-                            <ItemsControl ItemsSource="{Binding Phones}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Padding="10"
-                                Margin="0,0,0,8"
-                                BorderBrush="{StaticResource BorderGray}"
-                                BorderThickness="1"
-                                CornerRadius="8">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
+                            <Border x:Name="DevicesSection" Padding="20" Background="White">
+                                <StackPanel>
+                                    <ItemsControl x:Name="DevicesList">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="White" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="16" Padding="18" Margin="0,0,0,16">
+                                                    <StackPanel>
+                                                        <Grid Margin="0,0,0,14">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
 
-                                                <TextBox Style="{StaticResource ModernTextBox}"
-                                         Text="{Binding Number, UpdateSourceTrigger=PropertyChanged}"
-                                         Margin="0,0,10,0"/>
+                                                            <Border Width="44" Height="44" Background="#EEF2FF" CornerRadius="12" Margin="0,0,12,0">
+                                                                <TextBlock Text="🧺" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
 
-                                                <Button Grid.Column="1"
-                                        Content="💾"
-                                        Command="{Binding DataContext.SavePhoneCommand,
-                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                        CommandParameter="{Binding}"/>
 
-                                                <Button Grid.Column="2"
-                                        Content="🗑"
-                                        Foreground="Red"
-                                        Command="{Binding DataContext.DeletePhoneCommand,
-                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                        CommandParameter="{Binding}"/>
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                                                            <!-- Device Info -->
+                                                            <StackPanel Grid.Column="1">
+                                                                <TextBlock Text="{Binding Model}" FontSize="15" FontWeight="Bold" Foreground="#111827"/>
+                                                                <TextBlock FontSize="12" Foreground="#6B7280">
+                                        <Run Text="{Binding Brand}"/>
+                                        <Run Text=" • "/>
+                                        <Run Text="{Binding Type}"/>
+                                                                </TextBlock>
+                                                            </StackPanel>
 
-                            <Separator Margin="0,15"/>
+                                                            <!-- Device Actions -->
+                                                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top">
+                                                                <Button Content="✏️"
+                                            Width="34"
+                                            Height="34"
+                                            Background="#2563EB"
+                                            Foreground="White"
+                                            Margin="0,0,6,0"
+                                            BorderThickness="0"
+                                            Tag="{Binding}"
+                                            Click="BtnEditDevice_Click">
+                                                                    <Button.Template>
+                                                                        <ControlTemplate TargetType="Button">
+                                                                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                            </Border>
+                                                                        </ControlTemplate>
+                                                                    </Button.Template>
+                                                                </Button>
 
-                            <!-- ================= الأجهزة ================= -->
+                                                                <Button Content="📜"
+                                            Width="34"
+                                            Height="34"
+                                            Background="#2563EB"
+                                            Foreground="White"
+                                            Margin="0,0,6,0"
+                                            BorderThickness="0"
+                                            Tag="{Binding}"
+                                            Click="BtnDeviceHistory_Click"/>
 
-                            <TextBlock Text="💻 الأجهزة"
-                       FontSize="16"
-                       FontWeight="Bold"
-                       Margin="0,0,0,10"/>
+                                                                <Button Content="🗑️"
+                                            Width="34"
+                                            Height="34"
+                                            Background="#EF4444"
+                                            Foreground="White"
+                                            BorderThickness="0"
+                                            Tag="{Binding}"
+                                            Click="BtnDeleteDevice_Click"/>
+                                                            </StackPanel>
+                                                        </Grid>
 
-                            <ItemsControl ItemsSource="{Binding Devices}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Padding="12"
-                                Margin="0,0,0,10"
-                                BorderBrush="{StaticResource BorderGray}"
-                                BorderThickness="1"
-                                CornerRadius="8">
+                                                        <!-- Divider -->
+                                                        <Border Height="1" Background="#E5E7EB" Margin="0,0,0,12"/>
 
-                                            <StackPanel>
+                                                        <!-- Device Details -->
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition/>
+                                                                <ColumnDefinition/>
+                                                            </Grid.ColumnDefinitions>
 
-                                                <TextBox Style="{StaticResource ModernTextBox}"
-                                         Text="{Binding Name}"/>
+                                                            <StackPanel>
+                                                                <TextBlock Text="الرقم التسلسلي" FontSize="10" Foreground="#9CA3AF"/>
+                                                                <TextBlock Text="{Binding SerialNumber}" FontSize="13" FontWeight="SemiBold" Foreground="#111827"/>
+                                                            </StackPanel>
 
-                                                <TextBox Style="{StaticResource ModernTextBox}"
-                                         Text="{Binding SerialNumber}"
-                                         Margin="0,5,0,10"/>
+                                                            <StackPanel Grid.Column="1">
+                                                                <TextBlock Text="المواصفات" FontSize="10" Foreground="#9CA3AF"/>
+                                                                <TextBlock Text="{Binding Spec}" FontSize="13" FontWeight="SemiBold" Foreground="#111827"/>
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
 
-                                                <StackPanel Orientation="Horizontal">
-
-                                                    <Button Content="History"
-                                            Margin="0,0,8,0"
-                                            Command="{Binding DataContext.DeviceHistoryCommand,
-                                                      RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                            CommandParameter="{Binding}"/>
-
-                                                    <Button Content="💾"
-                                            Margin="0,0,8,0"
-                                            Command="{Binding DataContext.SaveDeviceCommand,
-                                                      RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                            CommandParameter="{Binding}"/>
-
-                                                    <Button Content="🗑"
-                                            Foreground="Red"
-                                            Command="{Binding DataContext.DeleteDeviceCommand,
-                                                      RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                            CommandParameter="{Binding}"/>
-
-                                                </StackPanel>
-
-                                            </StackPanel>
-
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-
-                          <!-- ===== Save / Delete Buttons ===== -->
-<Separator Margin="0,20"/>
-
-<Grid>
-    <Grid.ColumnDefinitions>
-        <ColumnDefinition/>
-        <ColumnDefinition Width="10"/>
-        <ColumnDefinition/>
-    </Grid.ColumnDefinitions>
-
-    <!-- Delete -->
-    <Button Grid.Column="0"
-            Content="🗑 حذف العميل"
-            Foreground="Red"
-            Padding="20,8"
-            Command="{Binding DeleteCustomerCommand}"/>
-
-    <!-- Save -->
-    <Button Grid.Column="2"
-            Content="💾 حفظ التعديلات"
-            Style="{StaticResource PrimaryButton}"
-            Padding="20,8"
-            Command="{Binding SaveCustomerCommand}"/>
-</Grid>
+                                    <TextBlock x:Name="TxtNoDevicesMessage" Text="❌ لا توجد أجهزة مسجلة" Foreground="#6B7280" FontSize="13" HorizontalAlignment="Center" Margin="0,20,0,0" Visibility="Collapsed"/>
+                                </StackPanel>
+                            </Border>
 
 
                         </StackPanel>
-
                     </ScrollViewer>
                 </Border>
 
-
-
+                <!-- ========== قائمة العملاء (يمين) ========== -->
                 <Border Grid.Column="1" Background="White" CornerRadius="12">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -420,18 +596,15 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
+                        <!-- التبويبات -->
                         <Border Grid.Row="0" Padding="25,15" 
                                 BorderThickness="0,0,0,1" BorderBrush="{StaticResource LightGray}">
                             <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="194*"/>
-                                    <ColumnDefinition Width="251*"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Column="1" Margin="92,0,0,0">
-                                    <Button Content="📦 Orders" 
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <Button Content="🔧 Technicians" 
                                             Padding="15,10" Background="Transparent"
                                             BorderThickness="0" Foreground="{StaticResource GrayText}"/>
-                                    <Button Content="🔧 Technicians" 
+                                    <Button Content="📦 Orders" 
                                             Padding="15,10" Background="Transparent"
                                             BorderThickness="0" Foreground="{StaticResource GrayText}"/>
                                     <Button Content="👥 Customers" 
@@ -442,14 +615,13 @@
                                             Padding="15,10" Background="Transparent"
                                             BorderThickness="0" Foreground="{StaticResource GrayText}"/>
                                 </StackPanel>
-
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left"/>
                             </Grid>
                         </Border>
 
+                        <!-- شريط البحث -->
                         <Border Grid.Row="1" Padding="25,15">
                             <Grid>
-                                <TextBlock Text="قائمة العملاء: عميل 3"
+                                <TextBlock Text="قائمة العملاء"
                                            FontSize="16" FontWeight="SemiBold"
                                            Foreground="{StaticResource DarkText}"
                                            HorizontalAlignment="Right"
@@ -459,9 +631,9 @@
                                     <Border Background="White"
                                             BorderBrush="{StaticResource BorderGray}"
                                             BorderThickness="1" CornerRadius="8"
-                                            Padding="12,8" Width="250" Margin="0,0,10,0">
-                                        <TextBlock 
-                                                   Foreground="{StaticResource GrayText}"><Run FlowDirection="RightToLeft" Text="بحث بالاسم او بالهاتف او بكود العميل"/><Run FlowDirection="RightToLeft" Language="ar-eg" Text=" "/></TextBlock>
+                                            Padding="12,8" Width="300" Margin="0,0,10,0">
+                                        <TextBlock Text="🔍 بحث بالاسم او بالهاتف او بكود العميل"
+                                                   Foreground="{StaticResource GrayText}"/>
                                     </Border>
 
                                     <Button Content="🎚" Width="40" Height="40"
@@ -483,6 +655,7 @@
                             </Grid>
                         </Border>
 
+                        <!-- الجدول -->
                         <DataGrid Grid.Row="2" x:Name="DgCustomers"
                                   AutoGenerateColumns="False"
                                   GridLinesVisibility="None"
@@ -498,7 +671,6 @@
                                   SelectionChanged="DgCustomers_SelectionChanged">
 
                             <DataGrid.Columns>
-
                                 <DataGridTextColumn Header="العنوان" Binding="{Binding Address}" Width="*">
                                     <DataGridTextColumn.ElementStyle>
                                         <Style TargetType="TextBlock">
@@ -526,7 +698,7 @@
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
 
-                                <DataGridTextColumn Header="كود العميل" Binding="{Binding ID}" Width="150">
+                                <DataGridTextColumn Header="كود العميل" Binding="{Binding ID}" Width="170">
                                     <DataGridTextColumn.ElementStyle>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="TextAlignment" Value="Left"/>
@@ -534,10 +706,7 @@
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
-
                             </DataGrid.Columns>
-
-
 
                         </DataGrid>
                     </Grid>

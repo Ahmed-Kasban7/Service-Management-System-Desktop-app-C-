@@ -27,4 +27,8 @@ public class CustomerService
         // after validation call infrastructure to create customer
         return _customerRepository.GetAllCustomers();
     }
+    public CustomerProfileDTO GetCustomerFullProfile(int id)
+    {
+        return _customerRepository.GetCustomerFullProfile(id);
+    }
 }
