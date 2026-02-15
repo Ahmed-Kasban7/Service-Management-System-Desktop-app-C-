@@ -1,6 +1,7 @@
 ﻿using Application.Common.Interfaces;
 using Application.DTOs;
 using Domain.Entities;
+using Domain.Enums;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -21,10 +22,50 @@ public class CustomerRepository : ICustomerRepository
         _deviceRepository = new DeviceRepository();
         _phoneRepository = new PhoneRepository();
     }
-    public  List<CustomerSummaryDTO> GetAllCustomers()
+    public List<CustomerSummaryDTO> SearchCustomerBy(string s)
     {
         List<CustomerSummaryDTO> customers = new List<CustomerSummaryDTO>();
         var conn = DatabaseInitializer.GetConnection();
+
+        string script = @"
+    SELECT DISTINCT 
+        p.PersonID,
+        p.Name,
+        (SELECT TOP 1 PhoneNumber 
+         FROM Phones 
+         WHERE Phones.PersonID = p.PersonID) AS PhoneNumber,
+        c.Address
+    FROM Persons p
+    JOIN Customers c ON p.PersonID = c.PersonID
+    LEFT JOIN Phones ph ON p.PersonID = ph.PersonID
+    WHERE p.Name LIKE @search 
+       OR ph.PhoneNumber LIKE @search";
+
+        conn.Open();
+        using SqlCommand command = new SqlCommand(script, conn);
+
+        command.Parameters.AddWithValue("@search", "%" +s + "%");
+
+        using var reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            customers.Add(new CustomerSummaryDTO
+            {
+                ID = "C-" + reader["PersonID"].ToString(),
+                Name = reader["Name"].ToString(),
+                Address = reader["Address"].ToString(),
+                Phone = reader["PhoneNumber"]?.ToString()
+            });
+        }
+
+        return customers;
+    }
+
+    public List<CustomerSummaryDTO> GetAllCustomers()
+    {
+        List<CustomerSummaryDTO> customers = new List<CustomerSummaryDTO>();
+        using var conn = DatabaseInitializer.GetConnection();
 
         string script = @"
         SELECT 
@@ -49,7 +90,7 @@ public class CustomerRepository : ICustomerRepository
                 Address = reader["Address"].ToString(),
                 Phone = reader["PhoneNumber"].ToString()
 
-            };
+            }; // complexity ->  O(n) , Space -> O(n)
 
             customers.Add(customer);
 
@@ -61,10 +102,21 @@ public class CustomerRepository : ICustomerRepository
     {
         CustomerProfileDTO customerProfileDTO = new CustomerProfileDTO();
 
-        var script = @"select p.PersonID , p.Name , p.Sex , p.Age , c.Address ,
-                       c.Discount from  Persons p  join Customers c on p.PersonID = c.PersonID  where p.PersonID = @id";
+        var script = @"select p.PersonID, 
+                      p.Name, 
+                      Sex = case
+                                when p.Sex = 1 then 'ذكر'
+                                when p.Sex = 2 then 'انثى'
+                                else 'غير معروف'
+                            end,
+                      p.Age, 
+                      c.Address,
+                      c.Discount
+               from Persons p
+               join Customers c on p.PersonID = c.PersonID
+               where p.PersonID = @id";
 
-       using var conn = DatabaseInitializer.GetConnection();
+        using var conn = DatabaseInitializer.GetConnection();
        using var command = new SqlCommand(script, conn);
        command.Parameters.AddWithValue("id", id);
         conn.Open();
@@ -75,13 +127,30 @@ public class CustomerRepository : ICustomerRepository
             customerProfileDTO.Name = reader["Name"].ToString();
             customerProfileDTO.Address = reader["Address"].ToString();
             customerProfileDTO.Discount = reader["Discount"] != DBNull.Value ? Convert.ToInt32(reader["Discount"]) : 0;
-            customerProfileDTO.Age = reader["Age"] != DBNull.Value ? Convert.ToInt32(reader["Age"]) : 0;
-            customerProfileDTO.Sex = Convert.ToInt32(reader["Sex"]) == 1 ? "ذكر" : "أنثى";
+            customerProfileDTO.Age = reader["Age"] != DBNull.Value ? Convert.ToInt32(reader["Age"]) : null;
+            customerProfileDTO.Sex = reader["Sex"].ToString();
         }
        customerProfileDTO.Devices=  _deviceRepository.GetCustomerDevicesBy(id);
        customerProfileDTO.Phones= _phoneRepository.GetCustomerPhonesBy(id);
 
         return customerProfileDTO;
+    }
+
+
+    public bool DeleteCustomer(int id)
+    {
+        var script = @"Update Persons set IsDeleted = 1 where PersonID = @id";
+
+        using var conn = DatabaseInitializer.GetConnection();
+        conn.Open();
+        using var command = new SqlCommand(script, conn);
+        command.Parameters.AddWithValue("id", id);
+        int row = command.ExecuteNonQuery();
+
+        if (row > 0) 
+            return true;
+        
+        return false;
     }
 
 

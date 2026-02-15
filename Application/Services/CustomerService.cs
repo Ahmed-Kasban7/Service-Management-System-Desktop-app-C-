@@ -21,6 +21,10 @@ public class CustomerService
     {
         return _customerRepository.GetAllCustomers();
     }
+    public List<CustomerSummaryDTO> SearchCustomerBy(string s)
+    {
+        return _customerRepository.SearchCustomerBy(s);
+    }
     public List<CustomerSummaryDTO> CreateCustomer(Customer customer)
     {
         // validation 
@@ -30,5 +34,10 @@ public class CustomerService
     public CustomerProfileDTO GetCustomerFullProfile(int id)
     {
         return _customerRepository.GetCustomerFullProfile(id);
+    }
+
+    public bool DeleteCustomer(int id)
+    {
+        return _customerRepository.DeleteCustomer(id);
     }
 }

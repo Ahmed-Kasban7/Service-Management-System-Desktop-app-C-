@@ -1,8 +1,10 @@
-﻿using Infrastructure.Data;
+﻿using Application.Common.Interfaces;
+using Application.DTOs;
 using Infrastructure;
+using Infrastructure.Data;
 using Presentation.View.Customer_View;
 using System.Windows;
-using Application.DTOs;
+using Application.Services;
 
 namespace Presentation;
 
@@ -15,11 +17,12 @@ public partial class App : System.Windows.Application
         try
         {
             DatabaseInitializer.InitializeDatabase();
-
             var customerRepo = new CustomerRepository();
 
+            var customerService = new CustomerService(customerRepo);
+
         
-            var customerWindow = new CustomerListView(customerRepo);
+            var customerWindow = new CustomerListView(customerService);
 
             customerWindow.Show();
         }
