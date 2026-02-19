@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs;
 
-public class CustomerSummaryDTO
+public record  CustomerSummaryDTO
 {
     public string ID { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;

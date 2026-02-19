@@ -18,11 +18,13 @@ public partial class App : System.Windows.Application
         {
             DatabaseInitializer.InitializeDatabase();
             var customerRepo = new CustomerRepository();
+            var phoneRepo = new PhoneRepository();
 
             var customerService = new CustomerService(customerRepo);
+            var phoneService = new PhoneService(phoneRepo);
 
         
-            var customerWindow = new CustomerListView(customerService);
+            var customerWindow = new CustomerListView(customerService , phoneService);
 
             customerWindow.Show();
         }

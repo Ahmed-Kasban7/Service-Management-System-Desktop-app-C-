@@ -121,6 +121,7 @@ public class CustomerRepository : ICustomerRepository
        command.Parameters.AddWithValue("id", id);
         conn.Open();
         using var reader = command.ExecuteReader();
+
         if (reader.Read())
         {
             customerProfileDTO.ID = "C-" + reader["PersonID"].ToString();
@@ -130,6 +131,7 @@ public class CustomerRepository : ICustomerRepository
             customerProfileDTO.Age = reader["Age"] != DBNull.Value ? Convert.ToInt32(reader["Age"]) : null;
             customerProfileDTO.Sex = reader["Sex"].ToString();
         }
+
        customerProfileDTO.Devices=  _deviceRepository.GetCustomerDevicesBy(id);
        customerProfileDTO.Phones= _phoneRepository.GetCustomerPhonesBy(id);
 

@@ -87,6 +87,22 @@ public static class DatabaseInitializer
             )
         END");
 
+    private static void CreatePhoneNumberIndex()
+    {
+        ExecuteScript(@"
+    IF NOT EXISTS (
+        SELECT * 
+        FROM sys.indexes 
+        WHERE name = 'PhoneNumber_index' 
+          AND object_id = OBJECT_ID('Phones')
+    )
+    BEGIN
+        CREATE NONCLUSTERED INDEX PhoneNumber_index 
+        ON Phones(PhoneNumber);
+    END
+    ");
+    }
+
     private static void CreatePhonesTable() =>
         ExecuteScript(@"
         IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Phones')
@@ -160,6 +176,7 @@ public static class DatabaseInitializer
         CreatePersonsTable();
         CreateCustomersTable();
         CreatePhonesTable();
+        CreatePhoneNumberIndex();
 
         CreateBrandsTable();
         CreateTypesTable();

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs;
 
-public class DeviceDTO
+public record DeviceDTO
 {
     public string Brand { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty;
