@@ -731,6 +731,7 @@
 
                         </StackPanel>
                     </ScrollViewer>
+
                 </Border>
 
                 <!-- ========== قائمة العملاء (يمين) ========== -->
@@ -792,7 +793,7 @@
          KeyDown="SearchBox_KeyDown"/>
 
 
-                                        <TextBlock Text="🔍 بحث بالاسم أو الهاتف أو كود العميل"
+                                        <TextBlock Text="🔍 بحث بالاسم أو كود العميل"
                            Foreground="{StaticResource GrayText}"
                            IsHitTestVisible="False"
                            VerticalAlignment="Center">

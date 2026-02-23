@@ -4,23 +4,24 @@
 
     <Application.Resources>
 
-
-
+        <!-- الألوان الأساسية -->
         <SolidColorBrush x:Key="PrimaryColor" Color="#6366F1"/>
         <SolidColorBrush x:Key="PrimarySoft" Color="#EEF2FF"/>
-
+        <SolidColorBrush x:Key="PrimaryBlue" Color="#4169E1"/>
+        <SolidColorBrush x:Key="DangerRed" Color="#EF4444"/>
+        <SolidColorBrush x:Key="GrayText" Color="#6B7280"/>
         <SolidColorBrush x:Key="TextMain" Color="#1E293B"/>
         <SolidColorBrush x:Key="TextMuted" Color="#94A3B8"/>
-
         <SolidColorBrush x:Key="BorderColor" Color="#E2E8F0"/>
         <SolidColorBrush x:Key="WindowBackground" Color="#F8FAFC"/>
 
-
+        <!-- الخط الافتراضي لكل Control -->
         <Style TargetType="Control">
             <Setter Property="FontFamily" Value="Segoe UI Semibold, Cairo"/>
             <Setter Property="SnapsToDevicePixels" Value="True"/>
         </Style>
 
+        <!-- Modern Search TextBox -->
         <Style x:Key="ModernSearch" TargetType="TextBox">
             <Setter Property="Height" Value="48"/>
             <Setter Property="Background" Value="White"/>
@@ -60,7 +61,85 @@
             </Setter>
         </Style>
 
- 
+        <!-- Modern TextBox عام -->
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="BorderBrush" Value="{StaticResource GrayText}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource GrayText}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="{StaticResource PrimaryBlue}"/>
+                                <Setter Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Primary Button -->
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryBlue}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Danger Button -->
+        <Style x:Key="DangerButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource DangerRed}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- DataGrid Row Style -->
         <Style x:Key="CustomerCardRow" TargetType="DataGridRow">
             <Setter Property="Background" Value="White"/>
             <Setter Property="Margin" Value="0,10,0,0"/>
@@ -84,7 +163,6 @@
                         </Border>
 
                         <ControlTemplate.Triggers>
-
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="RowBorder"
                                         Property="Background"
@@ -106,12 +184,56 @@
                                         Property="BorderThickness"
                                         Value="2"/>
                             </Trigger>
-
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Modern ComboBox -->
+        <Style x:Key="ModernComboBox" TargetType="ComboBox">
+            <Setter Property="Height" Value="48"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource GrayText}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Border x:Name="Border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="8">
+                            <Grid>
+                                <ContentPresenter x:Name="ContentSite"
+                                          Margin="10,0"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Left"
+                                          Content="{TemplateBinding SelectionBoxItem}"/>
+                                <ToggleButton Grid.Column="1"
+                                      IsChecked="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                      Background="Transparent"
+                                      BorderThickness="0"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      Width="30" Height="30">
+                                    <TextBlock Text="▼" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </ToggleButton>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryBlue}"/>
+                                <Setter TargetName="Border" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
 
     </Application.Resources>
 </Application>

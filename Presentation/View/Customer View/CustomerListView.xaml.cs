@@ -33,7 +33,7 @@ namespace Presentation.View.Customer_View
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"خطأ في تحميل العملاء: {ex.Message}");
+             System.Windows.MessageBox.Show($"خطأ في تحميل العملاء: {ex.Message}");
             }
         }
 
@@ -102,8 +102,14 @@ namespace Presentation.View.Customer_View
                 try
                 {
                     ClearProfile();
+                    var search = SearchBox.Text;
 
-                    var results = _customerService.SearchCustomerBy(SearchBox.Text);
+                    if (SearchBox.Text.StartsWith("C-"))
+                    {
+                        search = SearchBox.Text.Replace("C-", "");
+                    }
+
+                    var results = _customerService.SearchCustomerBy(search);
                     DgCustomers.ItemsSource = results;
 
                     DgCustomers.SelectedItem = null;
@@ -120,10 +126,6 @@ namespace Presentation.View.Customer_View
         }
 
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
         private void BtnAddPhone_Click(object sender, RoutedEventArgs e)
         {
             if (_currentCustomer == null)
@@ -202,21 +204,6 @@ namespace Presentation.View.Customer_View
                 }
             }
         }
-
-        private void BtnAddDevice_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void BtnDeleteDevice_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void BtnDeviceHistory_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void BtnDeletePhone_Click(object sender, RoutedEventArgs e)
         {
             if (sender is System.Windows.Controls.Button btn && btn.Tag is string phoneNumber)
@@ -260,7 +247,49 @@ namespace Presentation.View.Customer_View
             }
         }
 
-        private void BtnEditCustomer_Click(object sender, RoutedEventArgs e) { }
+
+        private void BtnEditCustomer_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentCustomer == null)
+            {
+                System.Windows.MessageBox.Show("الرجاء اختيار عميل قبل التعديل.", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (!int.TryParse(_currentCustomer.ID.Replace("C-", ""), out int customerId))
+            {
+                System.Windows.MessageBox.Show("رقم العميل غير صالح.", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            var customerUpdateDTO = new CustomerUpdateDTO
+            {
+                Name = _currentCustomer.Name,
+                Age = _currentCustomer.Age,
+                Sex = _currentCustomer.Sex,
+                Address = _currentCustomer.Address,
+                Discount = _currentCustomer.Discount
+            };
+
+            try
+            {
+                var editWindow = new EditCustomerView(_customerService, customerUpdateDTO, customerId)
+                {
+                    Owner = this
+                };
+
+                bool? dialogResult = editWindow.ShowDialog();
+
+                if (dialogResult == true)
+                {
+                    RefreshCustomerProfile(customerId);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message ,"خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
         private void BtnDeleteCustomer_Click(object sender, RoutedEventArgs e)
         {
             if (DgCustomers.SelectedItem is CustomerSummaryDTO selectedSummary)
@@ -323,13 +352,24 @@ namespace Presentation.View.Customer_View
                 System.Windows.MessageBox.Show("الرجاء اختيار عميل للحذف", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
-
-        private void BtnNewCustomer_Click(object sender, RoutedEventArgs e) { }
-        private void BtnEditDevice_Click(object sender, RoutedEventArgs e) { }
-
         private void BtnCreateCustomer_Click(object sender, RoutedEventArgs e)
         { }
 
+        private void BtnEditDevice_Click(object sender, RoutedEventArgs e) { }
+
+        private void BtnAddDevice_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnDeleteDevice_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void BtnDeviceHistory_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
         private void ClearProfile()
         {
             _currentCustomer = null;

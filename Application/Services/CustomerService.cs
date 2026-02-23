@@ -40,4 +40,35 @@ public class CustomerService
     {
         return _customerRepository.DeleteCustomer(id);
     }
+
+    public bool UpdateCustomerInfo(int personId,CustomerUpdateDTO customerInfo)
+    {
+        if (string.IsNullOrEmpty(customerInfo.Name))
+            throw new ArgumentNullException("الرجاء إدخال الاسم");
+
+        if (customerInfo.Name.Length > 200)
+            throw new ArgumentException("الاسم لا يمكن أن يزيد عن 200 حرف");
+
+        if (!System.Text.RegularExpressions.Regex.IsMatch(customerInfo.Name, @"^[\p{L} ]+$"))
+            throw new ArgumentException("الاسم يجب أن يحتوي على حروف فقط");
+
+        if (customerInfo.Age <= 0)
+            throw new ArgumentException("الرجاء إدخال عمر صالح أكبر من صفر");
+
+
+        if (string.IsNullOrEmpty(customerInfo.Address))
+            throw new ArgumentException("الرجاء إدخال العنوان");
+
+        if (customerInfo.Address.Length > 500)
+            throw new ArgumentException("العنوان لا يمكن أن يزيد عن 500 حرف");
+
+        if (customerInfo.Discount < 0)
+            throw new ArgumentException("الخصم لا يمكن أن يكون بالسالب");
+
+        if (customerInfo.Discount > 100)
+            throw new ArgumentException("الخصم لا يمكن أن يكون أكبر من 100%");
+
+        return _customerRepository.UpdateCustomerInfo(personId, customerInfo);
+    }
+
 }

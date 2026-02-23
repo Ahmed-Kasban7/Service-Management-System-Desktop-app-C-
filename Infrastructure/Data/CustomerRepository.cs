@@ -27,24 +27,25 @@ public class CustomerRepository : ICustomerRepository
         List<CustomerSummaryDTO> customers = new List<CustomerSummaryDTO>();
         var conn = DatabaseInitializer.GetConnection();
 
-        string script = @"
-    SELECT DISTINCT 
-        p.PersonID,
-        p.Name,
-        (SELECT TOP 1 PhoneNumber 
-         FROM Phones 
-         WHERE Phones.PersonID = p.PersonID) AS PhoneNumber,
-        c.Address
-    FROM Persons p
-    JOIN Customers c ON p.PersonID = c.PersonID
-    LEFT JOIN Phones ph ON p.PersonID = ph.PersonID
-    WHERE p.Name LIKE @search 
-       OR ph.PhoneNumber LIKE @search";
+        string script = @"select p.PersonID ,name ,c.Address , 
+                        (select top 1 PhoneNumber from Phones where PersonID = p.PersonID) as PhoneNumber 
+                        from  Persons p  join Customers c on p.PersonID = c.PersonID 
+                        where p.Name like @searchName or (@searchId IS NOT NULL AND p.PersonID = @searchId)  ";
 
         conn.Open();
+
         using SqlCommand command = new SqlCommand(script, conn);
 
-        command.Parameters.AddWithValue("@search", "%" +s + "%");
+        command.Parameters.Add("@searchName", SqlDbType.NVarChar).Value = "%" + s + "%";
+
+        if (int.TryParse(s, out int id))
+        {
+            command.Parameters.Add("@searchId", SqlDbType.Int).Value = id;
+        }
+        else
+        {
+            command.Parameters.Add("@searchId", SqlDbType.Int).Value = DBNull.Value;
+        }
 
         using var reader = command.ExecuteReader();
 
@@ -138,7 +139,6 @@ public class CustomerRepository : ICustomerRepository
         return customerProfileDTO;
     }
 
-
     public bool DeleteCustomer(int id)
     {
         var script = @"Update Persons set IsDeleted = 1 where PersonID = @id";
@@ -155,5 +155,47 @@ public class CustomerRepository : ICustomerRepository
         return false;
     }
 
+    public bool UpdateCustomerInfo(int personId,CustomerUpdateDTO customerInfo)
+    {
+        var script = @"
+        BEGIN TRANSACTION;
+        BEGIN TRY
+            UPDATE Persons
+            SET Name = @Name, Age = @Age, Sex = @Sex
+            WHERE PersonID = @PersonId;
+
+            UPDATE Customers
+            SET Address = @Address, Discount = @Discount
+            WHERE PersonID = @PersonId;
+
+            COMMIT;
+        END TRY
+        BEGIN CATCH
+            ROLLBACK;
+            THROW; 
+        END CATCH;
+    ";
+
+        try
+        {
+            using var conn = DatabaseInitializer.GetConnection();
+            conn.Open();
+            using var command = new SqlCommand(script, conn);
+            command.Parameters.AddWithValue("Name", customerInfo.Name);
+            command.Parameters.AddWithValue("Sex", customerInfo.Sex =="انثى" ? 2 : 1);
+            command.Parameters.AddWithValue("Age", customerInfo.Age);
+            command.Parameters.AddWithValue("PersonId", personId);
+            command.Parameters.AddWithValue("Address", customerInfo.Address);
+            command.Parameters.AddWithValue("Discount", customerInfo.Discount);
+
+            command.ExecuteNonQuery(); 
+            return true; 
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error updating customer info: " + ex.Message);
+            return false; 
+        }
+    }
 
 }

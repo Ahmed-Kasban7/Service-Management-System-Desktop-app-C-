@@ -18,7 +18,7 @@ public interface ICustomerRepository
 
     bool DeleteCustomer(int id);
 
-    //bool UpdateCustomer(Customer customer);
+    public bool UpdateCustomerInfo(int personId,CustomerUpdateDTO customerInfo);
 
 
 }
