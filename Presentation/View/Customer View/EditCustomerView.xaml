@@ -1,179 +1,133 @@
 ﻿<Window x:Class="Presentation.View.Customer_View.EditCustomerView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="تعديل بيانات العميل"
-        Height="450"
-        Width="420"
-        WindowStartupLocation="CenterOwner"
-        Background="#F5F7FA">
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" 
+        Title="تعديل بيانات العميل" 
+        Height="550" Width="450"
+        WindowStartupLocation="CenterOwner" 
+        Background="#EEF2F7"
+        FlowDirection="RightToLeft">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <Window.Resources>
+        <SolidColorBrush x:Key="PrimaryBlue" Color="#4169E1"/>
+        <SolidColorBrush x:Key="SuccessGreen" Color="#27AE60"/>
+        <SolidColorBrush x:Key="DangerRed" Color="#E53935"/>
+        <SolidColorBrush x:Key="DangerRedDark" Color="#B71C1C"/>
 
-        <Border Margin="20"
-                Background="White"
-                CornerRadius="10"
-                Padding="20">
+        <Style x:Key="FieldHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+    </Window.Resources>
 
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="15"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Margin="0,0,0,15">
+            <TextBlock Text="✏️ تعديل البيانات الاساسية لعميل" FontSize="20" FontWeight="Bold" 
+                       Foreground="{StaticResource PrimaryBlue}" HorizontalAlignment="Center"/>
+        </StackPanel>
 
-                <!-- Title -->
-                <TextBlock Text="تعديل بيانات العميل"
-                       FontSize="20"
-                       FontWeight="Bold"
-                       HorizontalAlignment="Center"/>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="0,0,5,0">
+            <Border Background="White" CornerRadius="12" Padding="20" BorderBrush="#E2E8F0" BorderThickness="1">
+                <StackPanel>
 
-                <!-- Name -->
-                <StackPanel Grid.Row="2">
-                    <TextBlock Text="الاسم"
-                           FontWeight="SemiBold"/>
-                    <TextBox x:Name="TxtName"
-                         Height="35"
-                         Margin="0,5,0,0"
-                         Padding="5"/>
+                    <TextBlock Style="{StaticResource FieldHeader}">
+                        <Run Text="الاسم الكامل"/>
+                        <Run Text="*" Foreground="{StaticResource DangerRed}"/>
+                    </TextBlock>
+                    <TextBox x:Name="TxtName" Style="{StaticResource ModernTextBox}" Margin="0,0,0,15"/>
+
+                    <Grid Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                            <TextBlock Text="العمر" Style="{StaticResource FieldHeader}"/>
+                            <TextBox x:Name="TxtAge" Style="{StaticResource ModernTextBox}" TextChanged="TxtAge_TextChanged"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Style="{StaticResource FieldHeader}">
+                                <Run Text="الجنس"/>
+                                <Run Text="*" Foreground="{StaticResource DangerRed}"/>
+                            </TextBlock>
+                            <ComboBox x:Name="TxtSex" Style="{StaticResource ModernComboBox}">
+                                <ComboBoxItem Content="ذكر" IsSelected="True"/>
+                                <ComboBoxItem Content="أنثى"/>
+                            </ComboBox>
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Style="{StaticResource FieldHeader}">
+                        <Run Text="العنوان"/>
+                        <Run Text="*" Foreground="{StaticResource DangerRed}"/>
+                    </TextBlock>
+                    <TextBox x:Name="TxtAddress" Style="{StaticResource ModernTextBox}" Margin="0,0,0,15"/>
+
+                    <TextBlock Text="نسبة الخصم (%)" Style="{StaticResource FieldHeader}"/>
+                    <TextBox x:Name="TxtDiscount" Style="{StaticResource ModernTextBox}" Margin="0,0,0,15"/>
+
                 </StackPanel>
+            </Border>
+        </ScrollViewer>
 
-                <!-- Age -->
-                <StackPanel Grid.Row="3" Margin="0,10,0,0">
-                    <TextBlock Text="العمر"
-                           FontWeight="SemiBold"/>
-                    <TextBox x:Name="TxtAge"
-                         Height="35"
-                         Margin="0,5,0,0"
-                         Padding="5"/>
-                </StackPanel>
+        <Border Grid.Row="2" Padding="0,15,0,0" BorderThickness="0,1,0,0" BorderBrush="#CBD5E1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 
-                <!-- Gender -->
-                <StackPanel Grid.Row="4" Margin="0,10,0,0">
-                    <TextBlock Text="الجنس"
-                           FontWeight="SemiBold"/>
-                    <ComboBox x:Name="TxtSex"
-                          Height="35"
-                          Margin="0,5,0,0">
-                        <ComboBoxItem Content="ذكر"/>
-                        <ComboBoxItem Content="أنثى"/>
-                    </ComboBox>
-                </StackPanel>
+                <Button x:Name="BtnSave" 
+                        Content="💾 حفظ التغييرات" 
+                        Width="160" Height="42" 
+                        Background="{StaticResource SuccessGreen}"
+                        Foreground="White" FontWeight="Bold" Cursor="Hand"
+                        Click="BtnSave_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="8">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Opacity" Value="0.9"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
 
-                <!-- Address -->
-                <StackPanel Grid.Row="5" Margin="0,10,0,0">
-                    <TextBlock Text="العنوان"
-                           FontWeight="SemiBold"/>
-                    <TextBox x:Name="TxtAddress"
-                         Height="35"
-                         Margin="0,5,0,0"
-                         Padding="5"/>
-                </StackPanel>
-
-                <!-- Discount -->
-                <StackPanel Grid.Row="6" Margin="0,10,0,0">
-                    <TextBlock Text="نسبة الخصم (%)"
-                           FontWeight="SemiBold"/>
-                    <TextBox x:Name="TxtDiscount"
-                         Height="35"
-                         Margin="0,5,0,0"
-                         Padding="5"/>
-                </StackPanel>
-
-                <StackPanel Grid.Row="8"
-            Orientation="Horizontal"
-            HorizontalAlignment="Center"
-            Margin="0,10,0,0">
-
-                    <!-- Save Button -->
-                    <Button Content="حفظ"
-            Width="110"
-            Height="40"
-            Margin="8"
-            FontWeight="SemiBold"
-            Foreground="White"
-            Cursor="Hand"
-            Click="BtnSave_Click">
-
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border x:Name="border"
-                        Background="#27AE60"
-                        CornerRadius="8"
-                        Padding="5">
-                                    <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"/>
-                                </Border>
-
-                                <ControlTemplate.Triggers>
-                                    <!-- Hover -->
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="border"
-                                Property="Background"
-                                Value="#2ECC71"/>
-                                    </Trigger>
-
-                                    <!-- Pressed -->
-                                    <Trigger Property="IsPressed" Value="True">
-                                        <Setter TargetName="border"
-                                Property="Background"
-                                Value="#1E8449"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
-
-                    <!-- Cancel Button -->
-                    <Button Content="إلغاء"
-            Width="110"
-            Height="40"
-            Margin="8"
-            FontWeight="SemiBold"
-            Foreground="White"
-            Cursor="Hand"
-            Click="BtnCancel_Click">
-
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border x:Name="border"
+                <Button x:Name="BtnCancel"
+                        Content="❌ إلغاء"
+                        Margin="15,0,0,0"
+                        Width="100" Height="42"
                         Background="{StaticResource DangerRed}"
-                        CornerRadius="8"
-                        Padding="5">
-                                    <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"/>
-                                </Border>
-
-                                <ControlTemplate.Triggers>
-                                    <!-- Hover -->
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="border"
-                                Property="Background"
-                                Value="#E74C3C"/>
-                                    </Trigger>
-
-                                    <!-- Pressed -->
-                                    <Trigger Property="IsPressed" Value="True">
-                                        <Setter TargetName="border"
-                                Property="Background"
-                                Value="#922B21"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
-
-                </StackPanel>
-            </Grid>
-
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Cursor="Hand"
+                        Click="BtnCancel_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="8">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="{StaticResource DangerRedDark}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </StackPanel>
         </Border>
-
-    </ScrollViewer>
-
+    </Grid>
 </Window>

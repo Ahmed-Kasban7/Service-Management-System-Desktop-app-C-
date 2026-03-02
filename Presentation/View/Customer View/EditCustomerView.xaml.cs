@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.Services;
+using Domain.Enums;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,7 +29,7 @@ namespace Presentation.View.Customer_View
         {
             TxtName.Text = _customer.Name;
             TxtAge.Text = _customer.Age.ToString();
-            TxtSex.SelectedIndex = (_customer.Sex?.ToLower() == "أنثى") ? 1 : 0;
+            TxtSex.SelectedIndex = (_customer.Sex == ESex.MALE) ? 0 : 1;
             TxtAddress.Text = _customer.Address;
             TxtDiscount.Text = _customer.Discount.ToString();
         }
@@ -42,10 +43,18 @@ namespace Presentation.View.Customer_View
                 return;
             }
 
-            if (!int.TryParse(TxtAge.Text, out int age) || age <= 0)
+            int? age = null;
+
+            if (!string.IsNullOrWhiteSpace(TxtAge.Text))
             {
-                System.Windows.MessageBox.Show("الرجاء إدخال عمر صالح أكبر من صفر", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
+                if (!int.TryParse(TxtAge.Text, out int parsedAge) || parsedAge <= 0)
+                {
+                    System.Windows.MessageBox.Show("الرجاء إدخال عمر صالح أكبر من صفر", "خطأ",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                age = parsedAge;
             }
 
             if (TxtSex.SelectedItem == null)
@@ -53,7 +62,7 @@ namespace Presentation.View.Customer_View
                 System.Windows.MessageBox.Show("الرجاء اختيار الجنس", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            string sex = ((ComboBoxItem)TxtSex.SelectedItem).Content.ToString();
+            ESex sex = TxtSex.SelectedIndex ==0 ?ESex.MALE : ESex.FEMALE;
 
             string address = TxtAddress.Text.Trim();
 
@@ -81,6 +90,7 @@ namespace Presentation.View.Customer_View
             }
             var updatedCustomer = new CustomerUpdateDTO
             {
+                Id = _customerId,
                 Name = name,
                 Age = age,
                 Sex = sex,
@@ -90,7 +100,7 @@ namespace Presentation.View.Customer_View
 
             try
             {
-                bool updated = _customerService.UpdateCustomerInfo(_customerId, updatedCustomer);
+                bool updated = _customerService.UpdateCustomerInfo(updatedCustomer);
                 if (updated)
                 {
                     System.Windows.MessageBox.Show("تم تعديل بيانات العميل بنجاح", "نجاح", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -110,6 +120,11 @@ namespace Presentation.View.Customer_View
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
+        }
+
+        private void TxtAge_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }
