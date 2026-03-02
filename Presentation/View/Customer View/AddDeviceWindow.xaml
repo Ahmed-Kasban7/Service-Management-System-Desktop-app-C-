@@ -1,0 +1,173 @@
+﻿<Window x:Class="Presentation.View.Customer_View.AddDeviceWindow" 
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        Title="إضافة أجهزة للعميل" 
+        Height="Auto" 
+        Width="480" 
+        SizeToContent="Height" 
+        WindowStartupLocation="CenterOwner" 
+        Background="#F8FAFC" 
+        FlowDirection="RightToLeft">
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- عنوان النافذة -->
+        <TextBlock Grid.Row="0" 
+                   Text="🧺 إضافة أجهزة جديدة" 
+                   FontSize="18" 
+                   FontWeight="Bold" 
+                   Foreground="{StaticResource PrimaryBlue}" 
+                   HorizontalAlignment="Center" 
+                   Margin="0,0,0,15"/>
+
+        <!-- محتوى الأجهزة مع Scroll -->
+        <ScrollViewer Grid.Row="1" 
+                      VerticalScrollBarVisibility="Auto" 
+                      MaxHeight="500">
+            <StackPanel x:Name="DevicesContainer">
+
+                <!-- بطاقة جهاز واحد -->
+                <Border Background="White" 
+                        CornerRadius="12" 
+                        Padding="15" 
+                        BorderBrush="#E2E8F0" 
+                        BorderThickness="1" 
+                        Margin="0,0,0,5">
+                    <StackPanel>
+                        <TextBlock Text="📝 بيانات الجهاز" 
+                                   FontWeight="Bold" 
+                                   FontSize="14" 
+                                   Foreground="{StaticResource PrimaryBlue}" 
+                                   Margin="0,0,0,12"/>
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="15"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- نوع الجهاز -->
+                            <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,10">
+                                <TextBlock Margin="0,0,0,5" 
+                                           FontSize="11" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="#475569"> 
+                                    <Run Text="نوع الجهاز"/> 
+                                    <Run Text="*" Foreground="Red"/>
+                                </TextBlock>
+                                <ComboBox x:Name="CbType" 
+                                          Style="{StaticResource ModernComboBox}" 
+                                          Height="32" 
+                                          DisplayMemberPath="TypeName" 
+                                          SelectedValuePath="TypeID" 
+                                          SelectionChanged="CbType_SelectionChanged"/>
+                            </StackPanel>
+
+                            <!-- الماركة -->
+                            <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,10">
+                                <TextBlock Margin="0,0,0,5" 
+                                           FontSize="11" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="#475569"> 
+                                    <Run Text="الماركة"/> 
+                                    <Run Text="*" Foreground="Red"/>
+                                </TextBlock>
+                                <ComboBox x:Name="CbBrand" 
+                                          Style="{StaticResource ModernComboBox}" 
+                                          Height="32" 
+                                          DisplayMemberPath="BrandName" 
+                                          SelectedValuePath="BrandID"/>
+                            </StackPanel>
+
+                            <!-- المواصفات -->
+                            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,10">
+                                <TextBlock Margin="0,0,0,5" 
+                                           FontSize="11" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="#475569"> 
+                                    <Run Text="المواصفات"/> 
+                                    <Run Text="*" Foreground="Red"/>
+                                </TextBlock>
+                                <ComboBox x:Name="CbSpec" 
+                                          Style="{StaticResource ModernComboBox}" 
+                                          Height="32" 
+                                          DisplayMemberPath="SpecName" 
+                                          SelectedValuePath="SpecID"/>
+                            </StackPanel>
+
+                            <!-- الموديل -->
+                            <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,10">
+                                <TextBlock Text="الموديل" 
+                                           Margin="0,0,0,5" 
+                                           FontSize="11" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="#475569"/>
+                                <TextBox x:Name="TxtDeviceModel" 
+                                         Style="{StaticResource ModernTextBox}" 
+                                         Height="32"/>
+                            </StackPanel>
+
+                            <!-- الرقم التسلسلي -->
+                            <StackPanel Grid.Row="2" Grid.ColumnSpan="3">
+                                <TextBlock Text="الرقم التسلسلي" 
+                                           Margin="0,0,0,5" 
+                                           FontSize="11" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="#475569"/>
+                                <TextBox x:Name="TxtSerial" 
+                                         Style="{StaticResource ModernTextBox}" 
+                                         Height="32"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- أزرار الحفظ والإلغاء -->
+        <Border Grid.Row="2" 
+        Padding="0,15,0,0" 
+        BorderThickness="0,1,0,0" 
+        BorderBrush="#E2E8F0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- زر الحفظ -->
+                <Button x:Name="BtnSaveAll" 
+                Content="💾 حفظ" 
+                Style="{StaticResource SuccessButton}" 
+                Height="38" 
+                Width="120" 
+                HorizontalAlignment="Right" 
+                Margin="0,0,10,0" 
+                Click="BtnSaveAll_Click"/>
+
+                <!-- زر الإلغاء -->
+                <Button x:Name="BtnCancel" 
+                Content="إلغاء" 
+                Style="{StaticResource CancelButton}" 
+                Height="38" 
+                Width="120" 
+                HorizontalAlignment="Left" 
+                Margin="10,0,0,0" 
+                Grid.Column="1" 
+                Click="BtnCancel_Click"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
