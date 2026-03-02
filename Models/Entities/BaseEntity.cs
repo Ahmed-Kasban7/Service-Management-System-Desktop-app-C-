@@ -8,7 +8,10 @@ namespace Domain.Entities;
 
 public abstract class BaseEntity
 {
-    public int Id { get; set ; }
-    public bool IsDeleted { get;  set; } = false;
+    public int Id { get; init; }
+    //public bool IsDeleted { get;  private set; } = false;
+
+    //public void MarkAsDeleted()=> IsDeleted = true;
+
 
 }

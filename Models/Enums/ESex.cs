@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Enums;
 
-public enum ESex:byte
+public enum ESex
 {
-    FEMALE = 0,
-    MALE =1
+    MALE =0,
+    FEMALE = 1
 }

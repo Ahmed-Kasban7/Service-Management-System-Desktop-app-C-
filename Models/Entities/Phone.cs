@@ -7,8 +7,33 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Domain.Entities;
 
-public class Phone
+public record Phone
 {
-    public string PhoneNumber { get; set; } = string.Empty;
+    public string PhoneNumber { get; private set; }
+    public Phone(string phoneNumber)
+    {
+        UpdatePhone(phoneNumber);
+    }
+
+    public void UpdatePhone(string newPhone)
+    {
+        if (string.IsNullOrWhiteSpace(newPhone))
+            throw new ArgumentException("رقم الهاتف مطلوب.");
+
+        if (!newPhone.All(char.IsDigit))
+            throw new ArgumentException("رقم الهاتف يجب أن يحتوي على أرقام فقط.");
+
+        if (newPhone.Length != 11)
+            throw new ArgumentException("رقم الهاتف يجب أن يكون مكونًا من 11 رقمًا.");
+
+        if (!(newPhone.StartsWith("010") ||
+              newPhone.StartsWith("011") ||
+              newPhone.StartsWith("012") ||
+              newPhone.StartsWith("015")))
+            throw new ArgumentException("رقم الهاتف يجب أن يبدأ بـ 010 أو 011 أو 012 أو 015.");
+
+        this.PhoneNumber = newPhone;
+    }
+
 }
 
