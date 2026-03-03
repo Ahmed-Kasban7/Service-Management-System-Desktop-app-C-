@@ -1,0 +1,25 @@
+﻿using Application.Common.Interfaces;
+using Application.DTOs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Application.Services;
+
+public class DeviceTypeService
+{
+    private readonly IDeviceTypeRepository _typeRepository;
+
+    public DeviceTypeService(IDeviceTypeRepository typeRepository)
+    {
+        _typeRepository = typeRepository;
+    }
+
+    public List<TypeDTO> GetAllTypes()
+    {
+        return _typeRepository.GetAllTypes();
+    }
+
+}

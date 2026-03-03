@@ -10,15 +10,15 @@ namespace Application.Common.Interfaces;
 
 public interface ICustomerRepository
 {
-    //bool CreateCustomer(Customer customer);
+    int CreateCustomer(Customer customer);
     List<CustomerSummaryDTO> GetAllCustomers();
     CustomerProfileDTO GetCustomerFullProfile(int id );
     List<CustomerSummaryDTO> SearchCustomerBy(string s);
-    //List<Customer> SearchCustomrByName(string name);
 
     bool DeleteCustomer(int id);
+     Customer GetCustomerById(int id);
 
-    public bool UpdateCustomerInfo(int personId,CustomerUpdateDTO customerInfo);
+    public bool UpdateCustomerInfo(CustomerUpdateDTO customerInfo);
 
 
 }

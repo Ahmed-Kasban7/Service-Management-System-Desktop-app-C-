@@ -40,15 +40,15 @@ public class PhoneRepository :IPhoneRepository
         var result = command.ExecuteNonQuery();
         return result > 0;
     }
-    public bool UpdatePhone(string phoneNumber , int personId)
+    public bool UpdatePhone(string newPhone , string oldPhone)
     {
         var script = @"update Phones
-                        set PhoneNumber = @phoneNumber
-                        where PersonID=@personId ";
+                        set PhoneNumber = @newPhone
+                        where PhoneNumber=@oldPhone ";
         using var conn = DatabaseInitializer.GetConnection();
         using var command = new SqlCommand(script, conn);
-        command.Parameters.AddWithValue("phoneNumber", phoneNumber);
-        command.Parameters.AddWithValue("personId", personId);
+        command.Parameters.AddWithValue("newPhone", newPhone);
+        command.Parameters.AddWithValue("oldPhone", oldPhone);
 
         conn.Open();
         var result = command.ExecuteNonQuery();

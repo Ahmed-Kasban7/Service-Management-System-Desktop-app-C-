@@ -21,15 +21,35 @@ public class CustomerService
     {
         return _customerRepository.GetAllCustomers();
     }
-    public List<CustomerSummaryDTO> SearchCustomerBy(string s)
+    public List<CustomerSummaryDTO> SearchCustomerBy(string searchWord)
     {
-        return _customerRepository.SearchCustomerBy(s);
+        return _customerRepository.SearchCustomerBy(searchWord);
     }
-    public List<CustomerSummaryDTO> CreateCustomer(Customer customer)
+    public int CreateCustomer(CustomerCreateDTO customerDto)
     {
-        // validation 
-        // after validation call infrastructure to create customer
-        return _customerRepository.GetAllCustomers();
+        if (customerDto == null)
+            throw new ArgumentNullException(nameof(customerDto), "بيانات العميل غير موجودة.");
+
+        if (customerDto.Phones == null || customerDto.Phones.Count ==0)
+            throw new ArgumentException("يجب إدخال رقم هاتف واحد على الأقل للعميل.");
+
+        if (customerDto.Devices == null || customerDto.Devices.Count ==0)
+            throw new ArgumentException("يجب إضافة جهاز واحد على الأقل للعميل.");
+
+        Customer newCustomer = new Customer(customerDto.Name, customerDto.Age,customerDto.Sex, customerDto.Address, customerDto.Discount);
+    
+        foreach (var phone in customerDto.Phones)
+        {
+            newCustomer.AddPhone(phone);
+        }
+
+        foreach (var device in customerDto.Devices)
+        {
+
+            newCustomer.AddDevice(new Device(device.SerialNumber, device.Model , device.BrandID , device.TypeID , device.SpecID));
+        }
+
+        return _customerRepository.CreateCustomer(newCustomer);
     }
     public CustomerProfileDTO GetCustomerFullProfile(int id)
     {
@@ -41,34 +61,17 @@ public class CustomerService
         return _customerRepository.DeleteCustomer(id);
     }
 
-    public bool UpdateCustomerInfo(int personId,CustomerUpdateDTO customerInfo)
+    public bool UpdateCustomerInfo(CustomerUpdateDTO customerInfo)
     {
-        if (string.IsNullOrEmpty(customerInfo.Name))
-            throw new ArgumentNullException("الرجاء إدخال الاسم");
+        
+        Customer ? customer = _customerRepository.GetCustomerById(customerInfo.Id);
+        if (customer == null)
+        {
+            throw new ArgumentException($"العميل رقم {customerInfo.Id} غير موجود.");
+        }
+        customer.UpdateDetails(customerInfo.Name , customerInfo.Age , customerInfo.Sex , customerInfo.Address , customerInfo.Discount);
 
-        if (customerInfo.Name.Length > 200)
-            throw new ArgumentException("الاسم لا يمكن أن يزيد عن 200 حرف");
-
-        if (!System.Text.RegularExpressions.Regex.IsMatch(customerInfo.Name, @"^[\p{L} ]+$"))
-            throw new ArgumentException("الاسم يجب أن يحتوي على حروف فقط");
-
-        if (customerInfo.Age <= 0)
-            throw new ArgumentException("الرجاء إدخال عمر صالح أكبر من صفر");
-
-
-        if (string.IsNullOrEmpty(customerInfo.Address))
-            throw new ArgumentException("الرجاء إدخال العنوان");
-
-        if (customerInfo.Address.Length > 500)
-            throw new ArgumentException("العنوان لا يمكن أن يزيد عن 500 حرف");
-
-        if (customerInfo.Discount < 0)
-            throw new ArgumentException("الخصم لا يمكن أن يكون بالسالب");
-
-        if (customerInfo.Discount > 100)
-            throw new ArgumentException("الخصم لا يمكن أن يكون أكبر من 100%");
-
-        return _customerRepository.UpdateCustomerInfo(personId, customerInfo);
+        return _customerRepository.UpdateCustomerInfo(customerInfo);
     }
 
 }

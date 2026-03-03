@@ -10,7 +10,8 @@ public interface  IPhoneRepository
 {
     bool DeletePhone(string phoneNumber);
     bool PhoneExists(string phoneNumber);
-    bool UpdatePhone(string phoneNumber , int customerId);
+    bool UpdatePhone(string newPhone, string oldPhone);
+
     bool AddPhone(string phoneNumber , int customerId);
     public int GetPersonPhoneCount(int personId);
 

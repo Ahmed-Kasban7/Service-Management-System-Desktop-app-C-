@@ -6,7 +6,7 @@ public static class DatabaseInitializer
 {
     private static readonly string _baseConnectionString;
     private static readonly string _databaseName;
-    static DatabaseInitializer() // the first thing will do to get connection string 
+    static DatabaseInitializer() 
     {
             var configuration = new ConfigurationBuilder()
                         .SetBasePath(AppContext.BaseDirectory) 
@@ -34,12 +34,14 @@ public static class DatabaseInitializer
     {
         return CreateConnection(_databaseName);
     }
-    private static void ExecuteScript(string script)
+    private static void ExecuteScript(string scriptPath)
     {
         using var connection = CreateConnection(_databaseName);
         connection.Open();
 
-        using var command = new SqlCommand(script, connection);
+        string sqlScript = File.ReadAllText(scriptPath);
+
+        using var command = new SqlCommand(sqlScript, connection);
         command.ExecuteNonQuery();
     }
 
@@ -68,10 +70,10 @@ public static class DatabaseInitializer
             CREATE TABLE Persons(
                 PersonID INT IDENTITY(1,1) PRIMARY KEY,
                 Name NVARCHAR(200) NOT NULL,
-                Age INT NULL,
-                Sex TINYINT NOT NULL,
-                DateCreated DATETIME DEFAULT GETDATE(),
-                IsDeleted BIT DEFAULT 0
+                Age INT NULL CHECK (Age IS NULL OR Age > 0),
+                Sex TINYINT NOT NULL check (Sex = 0 or Sex = 1),
+                DateCreated DATETIME  Not Null DEFAULT GETDATE(),
+                IsDeleted BIT not null DEFAULT 0
             )
         END");
 
@@ -138,7 +140,7 @@ public static class DatabaseInitializer
         BEGIN
             CREATE TABLE Specs(
                 SpecID INT IDENTITY(1,1) PRIMARY KEY,
-                SpecsName VARCHAR(100) NOT NULL UNIQUE,
+                SpecName VARCHAR(100) NOT NULL UNIQUE,
                 TypeID INT Not null
                     FOREIGN KEY REFERENCES Types(TypeID)  ON DELETE CASCADE
             )
@@ -173,14 +175,17 @@ public static class DatabaseInitializer
     {
         CreateDatabaseIfNotExist();
 
-        CreatePersonsTable();
-        CreateCustomersTable();
-        CreatePhonesTable();
-        CreatePhoneNumberIndex();
 
-        CreateBrandsTable();
-        CreateTypesTable();
-        CreateSpecsTable();
-        CreateDevicesTable();
+        //CreatePersonsTable();
+        //CreateCustomersTable();
+        //CreatePhonesTable();
+        //CreatePhoneNumberIndex();
+
+        //CreateBrandsTable();
+        //CreateTypesTable();
+        //CreateSpecsTable();
+        //CreateDevicesTable();
+       ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetAllCustomer.sql");
+       ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_UpdateCustomerInfo.sql");
     }
 }

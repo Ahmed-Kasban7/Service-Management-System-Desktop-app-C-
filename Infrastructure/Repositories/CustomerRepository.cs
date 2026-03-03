@@ -75,8 +75,7 @@ public class CustomerRepository : ICustomerRepository
             c.Address, 
             (SELECT TOP 1 PhoneNumber FROM Phones WHERE PersonID = p.PersonID) AS PhoneNumber 
         FROM Customers AS c  
-        JOIN Persons AS p ON c.PersonID = p.PersonID  
-        WHERE p.IsDeleted = 0";
+        JOIN Persons AS p ON c.PersonID = p.PersonID ";
 
         conn.Open();
         using SqlCommand command = new SqlCommand(script, conn);
@@ -105,11 +104,7 @@ public class CustomerRepository : ICustomerRepository
 
         var script = @"select p.PersonID, 
                       p.Name, 
-                      Sex = case
-                                when p.Sex = 1 then 'ذكر'
-                                when p.Sex = 2 then 'انثى'
-                                else 'غير معروف'
-                            end,
+                      p.Sex ,
                       p.Age, 
                       c.Address,
                       c.Discount
@@ -130,7 +125,7 @@ public class CustomerRepository : ICustomerRepository
             customerProfileDTO.Address = reader["Address"].ToString();
             customerProfileDTO.Discount = reader["Discount"] != DBNull.Value ? Convert.ToInt32(reader["Discount"]) : 0;
             customerProfileDTO.Age = reader["Age"] != DBNull.Value ? Convert.ToInt32(reader["Age"]) : null;
-            customerProfileDTO.Sex = reader["Sex"].ToString();
+            customerProfileDTO.Sex = (ESex)Convert.ToInt32(reader["Sex"]);
         }
 
        customerProfileDTO.Devices=  _deviceRepository.GetCustomerDevicesBy(id);
@@ -138,10 +133,41 @@ public class CustomerRepository : ICustomerRepository
 
         return customerProfileDTO;
     }
+    public Customer GetCustomerById(int id)
+    {
+
+        var script = @"select 
+                      p.Name, 
+                      p.Sex ,
+                      p.Age, 
+                      c.Address,
+                      c.Discount
+               from Persons p
+               join Customers c on p.PersonID = c.PersonID
+               where p.PersonID = @id";
+
+        using var conn = DatabaseInitializer.GetConnection();
+       using var command = new SqlCommand(script, conn);
+       command.Parameters.AddWithValue("id", id);
+        conn.Open();
+        using var reader = command.ExecuteReader();
+
+        Customer customer = null;
+        if (reader.Read())
+        {
+             customer = new Customer(reader["Name"].ToString(),
+                reader["Age"] != DBNull.Value ? Convert.ToInt32(reader["Age"]) : null,
+                (ESex)Convert.ToInt32(reader["Sex"])
+                , reader["Address"].ToString(), reader["Discount"] != DBNull.Value ? Convert.ToInt32(reader["Discount"]) : 0);
+          
+        }
+
+        return customer;
+    }
 
     public bool DeleteCustomer(int id)
     {
-        var script = @"Update Persons set IsDeleted = 1 where PersonID = @id";
+        var script = @"delete from Persons where PersonID = @id";
 
         using var conn = DatabaseInitializer.GetConnection();
         conn.Open();
@@ -155,7 +181,7 @@ public class CustomerRepository : ICustomerRepository
         return false;
     }
 
-    public bool UpdateCustomerInfo(int personId,CustomerUpdateDTO customerInfo)
+    public bool UpdateCustomerInfo(CustomerUpdateDTO customerInfo)
     {
         var script = @"
         BEGIN TRANSACTION;
@@ -179,15 +205,14 @@ public class CustomerRepository : ICustomerRepository
         try
         {
             using var conn = DatabaseInitializer.GetConnection();
-            conn.Open();
             using var command = new SqlCommand(script, conn);
             command.Parameters.AddWithValue("Name", customerInfo.Name);
-            command.Parameters.AddWithValue("Sex", customerInfo.Sex =="انثى" ? 2 : 1);
-            command.Parameters.AddWithValue("Age", customerInfo.Age);
-            command.Parameters.AddWithValue("PersonId", personId);
+            command.Parameters.AddWithValue("Sex", (int)customerInfo.Sex );
+            command.Parameters.AddWithValue("Age", customerInfo.Age is null ? DBNull.Value : customerInfo.Age);
+            command.Parameters.AddWithValue("PersonId", customerInfo.Id);
             command.Parameters.AddWithValue("Address", customerInfo.Address);
             command.Parameters.AddWithValue("Discount", customerInfo.Discount);
-
+            conn.Open();
             command.ExecuteNonQuery(); 
             return true; 
         }
@@ -196,6 +221,67 @@ public class CustomerRepository : ICustomerRepository
             Console.WriteLine("Error updating customer info: " + ex.Message);
             return false; 
         }
+    }
+
+    public int CreateCustomer(Customer customer)
+    {
+        using var conn = DatabaseInitializer.GetConnection();
+        conn.Open();
+
+       using  SqlTransaction transaction = conn.BeginTransaction();
+        try
+        {
+            var scriptperson = "insert into Persons(Name , Age , Sex)  values(@Name , @Age , @Sex)  SELECT SCOPE_IDENTITY();";
+            using var cmdPerson = new SqlCommand(scriptperson, conn, transaction);
+            cmdPerson.Parameters.AddWithValue("Name", customer.Name);
+            cmdPerson.Parameters.AddWithValue("Age", (object)customer.Age ?? DBNull.Value);
+            cmdPerson.Parameters.AddWithValue("Sex", (int)customer.Sex);
+
+            int personId=  Convert.ToInt32(cmdPerson.ExecuteScalar());
+
+            var scriptCustomer = "insert into Customers(PersonID,Address , Discount) values (@PersonId, @Address , @Discount)";
+            using  var cmdCustomer = new SqlCommand(scriptCustomer, conn, transaction);
+            cmdCustomer.Parameters.AddWithValue("PersonId", personId);
+            cmdCustomer.Parameters.AddWithValue("Address", customer.Address);
+            cmdCustomer.Parameters.AddWithValue("Discount", customer.Discount);
+            cmdCustomer.ExecuteNonQuery();
+
+            var scriptphone = "insert into phones(personid , phonenumber) values (@personid , @phone)";
+            using var cmdphone = new SqlCommand(scriptphone, conn, transaction);
+            foreach (var phone in customer.Phones)
+            {
+                cmdphone.Parameters.Clear();
+
+                cmdphone.Parameters.AddWithValue("personid", personId);
+                cmdphone.Parameters.AddWithValue("phone", phone.PhoneNumber);
+                cmdphone.ExecuteNonQuery();
+            }
+
+            var scriptdevice = "insert into devices (customerid ,brandid , typeid , specid ,serialnumber , modelname) values (@customerid , @brandid , @typeid , @specid , @serialnumber , @modelname)";
+            using var cmddevice = new SqlCommand(scriptdevice, conn, transaction);
+            foreach (var device in customer.Devices)
+            {
+                cmddevice.Parameters.Clear();
+
+                cmddevice.Parameters.AddWithValue("customerid", personId);
+                cmddevice.Parameters.AddWithValue("brandid", device.BrandID);
+                cmddevice.Parameters.AddWithValue("typeid", device.TypeID);
+                cmddevice.Parameters.AddWithValue("specid", device.SpecID);
+                cmddevice.Parameters.AddWithValue("serialnumber", device.SerialNumber ?? (object)DBNull.Value);
+                cmddevice.Parameters.AddWithValue("modelname", device.SerialNumber ?? (object)DBNull.Value);
+                cmddevice.ExecuteNonQuery();
+            }
+
+            transaction.Commit();
+
+            return personId;
+        }
+        catch
+        {
+            transaction.Rollback();
+            throw;
+        }
+
     }
 
 }

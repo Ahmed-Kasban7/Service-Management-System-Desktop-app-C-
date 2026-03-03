@@ -46,28 +46,28 @@ public class PhoneService
 
         return _phoneRepository.AddPhone(phoneNumber, personId);
     }
-    public bool UpdatePhone(string phoneNumber, int personId)
+    public bool UpdatePhone(string newPhone, string oldPhone)
     {
-        if (string.IsNullOrWhiteSpace(phoneNumber))
+        if (string.IsNullOrWhiteSpace(newPhone))
             throw new ArgumentException("رقم الهاتف مطلوب.");
 
-        if (!phoneNumber.All(char.IsDigit))
+        if (!newPhone.All(char.IsDigit))
             throw new ArgumentException("رقم الهاتف يجب أن يحتوي على أرقام فقط.");
 
-        if (phoneNumber.Length != 11)
+        if (newPhone.Length != 11)
             throw new ArgumentException("رقم الهاتف يجب أن يكون مكونًا من 11 رقمًا.");
 
-        if (!(phoneNumber.StartsWith("010") ||
-              phoneNumber.StartsWith("011") ||
-              phoneNumber.StartsWith("012") ||
-              phoneNumber.StartsWith("015")))
+        if (!(newPhone.StartsWith("010") ||
+              newPhone.StartsWith("011") ||
+              newPhone.StartsWith("012") ||
+              newPhone.StartsWith("015")))
             throw new ArgumentException("رقم الهاتف يجب أن يبدأ بـ 010 أو 011 أو 012 أو 015.");
 
-        if(_phoneRepository.PhoneExists(phoneNumber))
+        if(_phoneRepository.PhoneExists(newPhone))
             throw new ArgumentException("رقم الهاتف مسجل بالفعل.");
 
 
-        return _phoneRepository.UpdatePhone(phoneNumber, personId);
+        return _phoneRepository.UpdatePhone(newPhone, oldPhone);
     }
 
 
