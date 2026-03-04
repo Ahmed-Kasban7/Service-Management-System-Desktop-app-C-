@@ -586,10 +586,16 @@ Background="#2563EB" Style="{StaticResource IconButtonStyle}"
 
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
+                                    <!-- customerheader -->
                                     <RowDefinition Height="Auto"/>
+                                    <!-- عنوان + عدد العملاء -->
+                                    <RowDefinition Height="*"/>
+                                    <!-- DataGrid -->
+                                    <RowDefinition Height="Auto"/>
+                                    <!-- Pagination -->
                                 </Grid.RowDefinitions>
 
+                                <!-- Header: زر الإضافة + البحث -->
                                 <Border x:Name="customerheader" Grid.Row="0" Padding="25,15">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -598,9 +604,24 @@ Background="#2563EB" Style="{StaticResource IconButtonStyle}"
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <Border Grid.Column="0" Background="White" BorderBrush="{StaticResource BorderGray}" BorderThickness="1" CornerRadius="8" Padding="12,8" MaxWidth="450" HorizontalAlignment="Left" Width="303">
-                                            <Grid Width="420">
-                                                <TextBox x:Name="SearchBox" Background="Transparent" BorderThickness="0" FontSize="14" Foreground="Black" VerticalContentAlignment="Center" KeyDown="SearchBox_KeyDown"/>
+                                        <Button x:Name="BtnAddCustomer" Content="➕ إنشاء عميل" Height="38"
+                    Padding="18,8" Background="{StaticResource PrimaryBlue}" Foreground="White"
+                    BorderThickness="0" Cursor="Hand" FontWeight="SemiBold" FontSize="13"
+                    Click="BtnCreateCustomer_Click" Grid.Column="2" HorizontalAlignment="Left">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+
+                                        <Border Grid.Column="0" Grid.ColumnSpan="3" Background="White" BorderBrush="{StaticResource BorderGray}"
+        BorderThickness="1" CornerRadius="8" Padding="12,8" MaxWidth="450" HorizontalAlignment="Center" Width="303">
+                                            <Grid>
+                                                <TextBox x:Name="SearchBox" Background="Transparent" BorderThickness="0" FontSize="14"
+                 Foreground="Black" VerticalContentAlignment="Center" KeyDown="SearchBox_KeyDown"/>
                                                 <TextBlock Text="🔍 بحث بالاسم أو كود العميل" Foreground="{StaticResource GrayText}" IsHitTestVisible="False" VerticalAlignment="Center">
                                                     <TextBlock.Style>
                                                         <Style TargetType="{x:Type TextBlock}">
@@ -615,16 +636,6 @@ Background="#2563EB" Style="{StaticResource IconButtonStyle}"
                                                 </TextBlock>
                                             </Grid>
                                         </Border>
-
-                                        <Button x:Name="BtnAddCustomer" Content="➕ إنشاء عميل" Height="38" Padding="18,8" Background="{StaticResource PrimaryBlue}" Foreground="White" BorderThickness="0" Cursor="Hand" FontWeight="SemiBold" FontSize="13" Click="BtnCreateCustomer_Click" Grid.Column="2" HorizontalAlignment="Left">
-                                            <Button.Template>
-                                                <ControlTemplate TargetType="{x:Type Button}">
-                                                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
-                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                    </Border>
-                                                </ControlTemplate>
-                                            </Button.Template>
-                                        </Button>
                                     </Grid>
                                 </Border>
 
@@ -656,7 +667,7 @@ Background="#2563EB" Style="{StaticResource IconButtonStyle}"
                                     </DataGrid.Columns>
                                 </DataGrid>
 
-                                <Border Grid.Row="2" Padding="15" Background="White" BorderBrush="#F1F5F9" BorderThickness="0">
+                                <Border Grid.Row="3" Padding="15" Background="White" BorderBrush="#F1F5F9" BorderThickness="0">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 
                                         <Button x:Name="BtnNextPage" Click="BtnNextPage_Click" Width="42" Height="42" Cursor="Hand">
@@ -724,6 +735,16 @@ Background="#2563EB" Style="{StaticResource IconButtonStyle}"
 
                                     </StackPanel>
                                 </Border>
+                                <StackPanel Grid.Row="0" Orientation="Vertical" Margin="25,10,0,10">
+                                    <TextBlock Text="قائمة العملاء"
+                   FontSize="16"
+                   FontWeight="Bold"
+                   Foreground="#1E293B"/>
+                                    <TextBlock FontSize="12" Foreground="#64748B" Margin="0,4,0,0">
+    <Run Text="عدد العملاء: "/>
+    <Run x:Name="TxtCustomerCountNumber" Text="0" FontWeight="Bold"/>
+                                    </TextBlock>
+                                </StackPanel >
                             </Grid>
 
 

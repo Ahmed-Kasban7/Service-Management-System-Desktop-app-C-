@@ -51,7 +51,7 @@ namespace Presentation.View.Customer_View
             _deviceTypeService = deviceTypeService;
 
             int totalCustomers = _customerService.GetCustomerCount();
-
+            TxtCustomerCountNumber.Text = totalCustomers.ToString();
             TotalPages = (int)Math.Ceiling((double)totalCustomers / ROWPERPAGE);
             LoadPagedCustomers(CurrentPage, ROWPERPAGE);
             UpdatePageInfo();
@@ -583,7 +583,12 @@ namespace Presentation.View.Customer_View
             BtnNextPage.IsEnabled = (CurrentPage < TotalPages);
         }
 
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
 
+        }
+
+        
     }
 
 }
