@@ -1,5 +1,6 @@
 ﻿using Application.Common.Interfaces;
 using Application.DTOs;
+using Application.DTOs.CustomerDTOs;
 using Application.Services;
 using Domain.Enums;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +21,13 @@ namespace Presentation.View.Customer_View
 {
     public partial class CustomerListView : Window
     {
+        private int CurrentPage = 1;
+        private const int ROWPERPAGE = 8;
+        private int TotalPages;
+
+      
+        
+
         private readonly CustomerService _customerService;
         private readonly DeviceBrandService _deviceBrandService;
         private readonly DeviceTypeService _deviceTypeService;
@@ -32,34 +40,40 @@ namespace Presentation.View.Customer_View
             , DeviceBrandService deviceBrandService, DeviceTypeService deviceTypeService, DeviceSpecService specService, DeviceService deviceService)
         {
             InitializeComponent();
+            LoadSavedLogo();
+            TxtTodayDate.Text = DateTime.Now.ToString("dddd، dd MMMM yyyy", new CultureInfo("ar-EG"));
 
             _customerService = customerService;
             _phoneService = phoneService;
             _deviceBrandService = deviceBrandService;
             _deviceSpecService = specService;
             _deviceService = deviceService;
-            TxtTodayDate.Text = DateTime.Now.ToString("dddd، dd MMMM yyyy", new CultureInfo("ar-EG"));
-            LoadAllCustomers();
             _deviceTypeService = deviceTypeService;
-            LoadSavedLogo();
+
+            int totalCustomers = _customerService.GetCustomerCount();
+
+            TotalPages = (int)Math.Ceiling((double)totalCustomers / ROWPERPAGE);
+            LoadPagedCustomers(CurrentPage, ROWPERPAGE);
+            UpdatePageInfo();
+
         }
 
 
-        private void LoadAllCustomers()
+        private void LoadPagedCustomers(int pageNumber , int rowPerPage)
         {
             try
             {
-                DgCustomers.ItemsSource = _customerService.GetAllCustomers();
+                DgCustomers.ItemsSource = _customerService.GetPagedCustomerSummaries(pageNumber , rowPerPage);
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"خطأ في تحميل العملاء: {ex.Message}");
+                System.Windows.MessageBox.Show($"خطأ في تحميل  قائمه العملاء: {ex.Message}");
             }
         }
 
         private void DgCustomers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (DgCustomers.SelectedItem is CustomerSummaryDTO selectedSummary)
+            if (DgCustomers.SelectedItem is CustomerSummary selectedSummary)
             {
                 ProfileSection.Visibility = Visibility.Visible;
                 ProfileColumn.Width = new GridLength(450);
@@ -164,87 +178,87 @@ namespace Presentation.View.Customer_View
 
         private void BtnAddPhone_Click(object sender, RoutedEventArgs e)
         {
-            if (_currentCustomer == null)
-                return;
+            //if (_currentCustomer == null)
+            //    return;
 
-            var input = Microsoft.VisualBasic.Interaction.InputBox(
-                "أدخل رقم الهاتف الجديد:",
-                "إضافة رقم هاتف",
-                "");
+            //var input = Microsoft.VisualBasic.Interaction.InputBox(
+            //    "أدخل رقم الهاتف الجديد:",
+            //    "إضافة رقم هاتف",
+            //    "");
 
-            if (string.IsNullOrWhiteSpace(input))
-                return;
+            //if (string.IsNullOrWhiteSpace(input))
+            //    return;
 
-            try
-            {
-                int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
+            //try
+            //{
+            //    int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
 
-                bool added = _phoneService.AddPhone(input, customerId);
+            //    bool added = _phoneService.AddPhone(input, customerId);
 
-                if (added)
-                {
-                    System.Windows.MessageBox.Show("تمت إضافة الرقم بنجاح", "نجاح",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
+            //    if (added)
+            //    {
+            //        System.Windows.MessageBox.Show("تمت إضافة الرقم بنجاح", "نجاح",
+            //            MessageBoxButton.OK, MessageBoxImage.Information);
 
-                    RefreshCustomerProfile(customerId);
-                }
-                else
-                {
-                    System.Windows.MessageBox.Show("فشل في إضافة الرقم", "خطأ",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show($"حدث خطأ: {ex.Message}");
-            }
+            //        RefreshCustomerProfile(customerId);
+            //    }
+            //    else
+            //    {
+            //        System.Windows.MessageBox.Show("فشل في إضافة الرقم", "خطأ",
+            //            MessageBoxButton.OK, MessageBoxImage.Error);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    System.Windows.MessageBox.Show($"حدث خطأ: {ex.Message}");
+            //}
         }
 
         private void BtnEditPhone_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is System.Windows.Controls.Button btn && btn.Tag is string oldPhone)
-            {
-                var newPhone = Microsoft.VisualBasic.Interaction.InputBox(
-                    "عدل رقم الهاتف:",
-                    "تعديل رقم",
-                    oldPhone);
+        //    if (sender is System.Windows.Controls.Button btn && btn.Tag is string oldPhone)
+        //    {
+        //        var newPhone = Microsoft.VisualBasic.Interaction.InputBox(
+        //            "عدل رقم الهاتف:",
+        //            "تعديل رقم",
+        //            oldPhone);
 
-                if (string.IsNullOrWhiteSpace(newPhone) || newPhone == oldPhone)
-                    return;
+        //        if (string.IsNullOrWhiteSpace(newPhone) || newPhone == oldPhone)
+        //            return;
 
-                try
-                {
-                    int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
+        //        try
+        //        {
+        //            int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
 
-                    bool updated = _phoneService.UpdatePhone(newPhone, oldPhone);
+        //            bool updated = _phoneService.UpdatePhone(newPhone, oldPhone);
 
-                    if (updated)
-                    {
-                        System.Windows.MessageBox.Show("تم تعديل الرقم بنجاح", "نجاح",
-                            MessageBoxButton.OK, MessageBoxImage.Information);
+        //            if (updated)
+        //            {
+        //                System.Windows.MessageBox.Show("تم تعديل الرقم بنجاح", "نجاح",
+        //                    MessageBoxButton.OK, MessageBoxImage.Information);
 
-                        RefreshCustomerProfile(customerId);
+        //                RefreshCustomerProfile(customerId);
 
-                        if (DgCustomers.SelectedItem is CustomerSummaryDTO selected)
-                        {
+        //                if (DgCustomers.SelectedItem is CustomerSummary selected)
+        //                {
 
-                            selected.Phone = newPhone;
+        //                    selected.Phone = newPhone;
 
-                            DgCustomers.Items.Refresh();
-                        }
+        //                    DgCustomers.Items.Refresh();
+        //                }
 
-                    }
-                    else
-                    {
-                        System.Windows.MessageBox.Show("فشل في تعديل الرقم", "خطأ",
-                            MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    System.Windows.MessageBox.Show($"حدث خطأ: {ex.Message}");
-                }
-            }
+        //            }
+        //            else
+        //            {
+        //                System.Windows.MessageBox.Show("فشل في تعديل الرقم", "خطأ",
+        //                    MessageBoxButton.OK, MessageBoxImage.Error);
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            System.Windows.MessageBox.Show($"حدث خطأ: {ex.Message}");
+        //        }
+        //    }
         }
         private void BtnDeletePhone_Click(object sender, RoutedEventArgs e)
         {
@@ -292,202 +306,202 @@ namespace Presentation.View.Customer_View
 
         private void BtnEditCustomer_Click(object sender, RoutedEventArgs e)
         {
-            if (_currentCustomer == null)
-            {
-                System.Windows.MessageBox.Show("الرجاء اختيار عميل قبل التعديل.", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+            //if (_currentCustomer == null)
+            //{
+            //    System.Windows.MessageBox.Show("الرجاء اختيار عميل قبل التعديل.", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Warning);
+            //    return;
+            //}
 
-            if (!int.TryParse(_currentCustomer.ID.Replace("C-", ""), out int customerId))
-            {
-                System.Windows.MessageBox.Show("رقم العميل غير صالح.", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
+            //if (!int.TryParse(_currentCustomer.ID.Replace("C-", ""), out int customerId))
+            //{
+            //    System.Windows.MessageBox.Show("رقم العميل غير صالح.", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+            //    return;
+            //}
 
-            var customerUpdateDTO = new CustomerUpdateDTO
-            {
-                Name = _currentCustomer.Name,
-                Age = _currentCustomer.Age,
-                Sex = _currentCustomer.Sex,
-                Address = _currentCustomer.Address,
-                Discount = _currentCustomer.Discount
-            };
+            //var customerUpdateDTO = new CustomerUpdateDTO
+            //{
+            //    Name = _currentCustomer.Name,
+            //    Age = _currentCustomer.Age,
+            //    Sex = _currentCustomer.Sex,
+            //    Address = _currentCustomer.Address,
+            //    Discount = _currentCustomer.Discount
+            //};
 
-            try
-            {
-                var editWindow = new EditCustomerView(_customerService, customerUpdateDTO, customerId)
-                {
-                    Owner = this
-                };
+            //try
+            //{
+            //    var editWindow = new EditCustomerView(_customerService, customerUpdateDTO, customerId)
+            //    {
+            //        Owner = this
+            //    };
 
-                bool? dialogResult = editWindow.ShowDialog();
+            //    bool? dialogResult = editWindow.ShowDialog();
 
-                if (dialogResult == true)
-                {
-                    RefreshCustomerProfile(customerId);
+            //    if (dialogResult == true)
+            //    {
+            //        RefreshCustomerProfile(customerId);
 
-                    if (DgCustomers.SelectedItem is CustomerSummaryDTO selected)
-                    {
+            //        if (DgCustomers.SelectedItem is CustomerSummary selected)
+            //        {
 
-                        selected.Address = _currentCustomer.Address;
-                        selected.Name = _currentCustomer.Name;
+            //            selected.Address = _currentCustomer.Address;
+            //            selected.Name = _currentCustomer.Name;
 
-                        DgCustomers.Items.Refresh();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show(ex.Message, "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            //            DgCustomers.Items.Refresh();
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    System.Windows.MessageBox.Show(ex.Message, "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+            //}
         }
         private void BtnDeleteCustomer_Click(object sender, RoutedEventArgs e)
         {
-            var clickedButton = sender as Button;
-            var selectedSummary = clickedButton?.DataContext as CustomerSummaryDTO;
+            //var clickedButton = sender as Button;
+            //var selectedSummary = clickedButton?.DataContext as CustomerSummary;
 
-            if (selectedSummary == null) return;
+            //if (selectedSummary == null) return;
 
-            var result = System.Windows.MessageBox.Show(
-                $"هل أنت متأكد من حذف العميل {selectedSummary.Name}؟",
-                "تأكيد الحذف",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
+            //var result = System.Windows.MessageBox.Show(
+            //    $"هل أنت متأكد من حذف العميل {selectedSummary.Name}؟",
+            //    "تأكيد الحذف",
+            //    MessageBoxButton.YesNo,
+            //    MessageBoxImage.Warning);
 
-            if (result == MessageBoxResult.Yes)
-            {
-                try
-                {
-                    int customerId = int.Parse(selectedSummary.ID.Replace("C-", ""));
+            //if (result == MessageBoxResult.Yes)
+            //{
+            //    try
+            //    {
+            //        int customerId = int.Parse(selectedSummary.ID.Replace("C-", ""));
 
-                    bool deleted = _customerService.DeleteCustomer(customerId);
+            //        bool deleted = _customerService.DeleteCustomer(customerId);
 
-                    if (deleted)
-                    {
-                        System.Windows.MessageBox.Show("تم حذف العميل بنجاح", "نجاح");
+            //        if (deleted)
+            //        {
+            //            System.Windows.MessageBox.Show("تم حذف العميل بنجاح", "نجاح");
 
-                        LoadAllCustomers();
-                    }
-                    else
-                    {
-                        System.Windows.MessageBox.Show("فشل في حذف العميل");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    System.Windows.MessageBox.Show($"حدث خطأ: {ex.Message}");
-                }
-            }
+            //            LoadAllCustomers();
+            //        }
+            //        else
+            //        {
+            //            System.Windows.MessageBox.Show("فشل في حذف العميل");
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        System.Windows.MessageBox.Show($"حدث خطأ: {ex.Message}");
+            //    }
+            //}
         }
         private void BtnCreateCustomer_Click(object sender, RoutedEventArgs e)
         {
-            var createWin = new CreateCustomerWindow(_customerService, _deviceBrandService, _deviceTypeService, _deviceSpecService);
+            //var createWin = new CreateCustomerWindow(_customerService, _deviceBrandService, _deviceTypeService, _deviceSpecService);
 
-            createWin.Owner = Window.GetWindow(this);
+            //createWin.Owner = Window.GetWindow(this);
 
-            if (createWin.ShowDialog() == true)
-            {
+            //if (createWin.ShowDialog() == true)
+            //{
 
-                LoadAllCustomers();
-            }
+            //    LoadAllCustomers();
+            //}
         }
 
         private void BtnEditDevice_Click(object sender, RoutedEventArgs e)
         {
-            if (_currentCustomer == null)
-            {
-                System.Windows.MessageBox.Show("الرجاء اختيار عميل أولاً.", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+            //if (_currentCustomer == null)
+            //{
+            //    System.Windows.MessageBox.Show("الرجاء اختيار عميل أولاً.", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Warning);
+            //    return;
+            //}
 
-            if (sender is Button btn && btn.Tag is DeviceInfoDTO selectedDevice)
-            {
-                int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
+            //if (sender is Button btn && btn.Tag is DeviceInfoDTO selectedDevice)
+            //{
+            //    int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
 
-                var updateWindow = new UpdateDeviceWindow(
-                    selectedDevice,
-                    _deviceService,
-                    _deviceBrandService,
-                    _deviceTypeService,
-                    _deviceSpecService
-                )
-                {
-                    Owner = this
-                };
+            //    var updateWindow = new UpdateDeviceWindow(
+            //        selectedDevice,
+            //        _deviceService,
+            //        _deviceBrandService,
+            //        _deviceTypeService,
+            //        _deviceSpecService
+            //    )
+            //    {
+            //        Owner = this
+            //    };
 
-                bool? result = updateWindow.ShowDialog();
+            //    bool? result = updateWindow.ShowDialog();
 
-                if (result == true)
-                {
-                    RefreshCustomerProfile(customerId);
-                }
-            }
-            else
-            {
-                System.Windows.MessageBox.Show("برجاء اختيار الجهاز الذي تريد تعديله");
-            }
+            //    if (result == true)
+            //    {
+            //        RefreshCustomerProfile(customerId);
+            //    }
+            //}
+            //else
+            //{
+            //    System.Windows.MessageBox.Show("برجاء اختيار الجهاز الذي تريد تعديله");
+            //}
         }
 
         private void BtnAddDevice_Click(object sender, RoutedEventArgs e)
         {
-            int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
+            //int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
 
-            var AddWin = new AddDeviceWindow(customerId, _deviceService, _customerService, _deviceBrandService, _deviceTypeService, _deviceSpecService);
+            //var AddWin = new AddDeviceWindow(customerId, _deviceService, _customerService, _deviceBrandService, _deviceTypeService, _deviceSpecService);
 
-            AddWin.Owner = Window.GetWindow(this);
+            //AddWin.Owner = Window.GetWindow(this);
 
-            if (AddWin.ShowDialog() == true)
-            {
+            //if (AddWin.ShowDialog() == true)
+            //{
 
-                RefreshCustomerProfile(customerId);
-            }
+            //    RefreshCustomerProfile(customerId);
+            //}
         }
 
         private void BtnDeleteDevice_Click(object sender, RoutedEventArgs e)
         {
-            if (_currentCustomer == null)
-                return;
+            //if (_currentCustomer == null)
+            //    return;
 
-            if (sender is Button btn && btn.Tag is DeviceInfoDTO selectedDevice)
-            {
-                var result = System.Windows.MessageBox.Show(
-                    $"هل أنت متأكد من حذف الجهاز ؟",
-                    "تأكيد الحذف",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Warning);
+            //if (sender is Button btn && btn.Tag is DeviceInfoDTO selectedDevice)
+            //{
+            //    var result = System.Windows.MessageBox.Show(
+            //        $"هل أنت متأكد من حذف الجهاز ؟",
+            //        "تأكيد الحذف",
+            //        MessageBoxButton.YesNo,
+            //        MessageBoxImage.Warning);
 
-                if (result == MessageBoxResult.Yes)
-                {
-                    try
-                    {
-                        int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
-                        bool deleted = _deviceService.DeleteCustomerDevice(selectedDevice.DeviceId);
+            //    if (result == MessageBoxResult.Yes)
+            //    {
+            //        try
+            //        {
+            //            int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
+            //            bool deleted = _deviceService.DeleteCustomerDevice(selectedDevice.DeviceId);
 
-                        if (deleted)
-                        {
-                            System.Windows.MessageBox.Show("تم حذف الجهاز بنجاح", "نجاح",
-                                MessageBoxButton.OK, MessageBoxImage.Information);
+            //            if (deleted)
+            //            {
+            //                System.Windows.MessageBox.Show("تم حذف الجهاز بنجاح", "نجاح",
+            //                    MessageBoxButton.OK, MessageBoxImage.Information);
 
-                            RefreshCustomerProfile(customerId);
-                        }
-                        else
-                        {
-                            System.Windows.MessageBox.Show("فشل في حذف الجهاز", "خطأ",
-                                MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Windows.MessageBox.Show($"حدث خطأ أثناء الحذف: {ex.Message}", "خطأ",
-                            MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }
-            }
-            else
-            {
-                System.Windows.MessageBox.Show("الرجاء اختيار جهاز للحذف", "تنبيه",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
+            //                RefreshCustomerProfile(customerId);
+            //            }
+            //            else
+            //            {
+            //                System.Windows.MessageBox.Show("فشل في حذف الجهاز", "خطأ",
+            //                    MessageBoxButton.OK, MessageBoxImage.Error);
+            //            }
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            System.Windows.MessageBox.Show($"حدث خطأ أثناء الحذف: {ex.Message}", "خطأ",
+            //                MessageBoxButton.OK, MessageBoxImage.Error);
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    System.Windows.MessageBox.Show("الرجاء اختيار جهاز للحذف", "تنبيه",
+            //        MessageBoxButton.OK, MessageBoxImage.Warning);
+            //}
         }
         private void BtnDeviceHistory_Click(object sender, RoutedEventArgs e)
         {
@@ -527,34 +541,49 @@ namespace Presentation.View.Customer_View
             }
         }
 
-        private void RefreshCustomerProfile(int customerId)
-        {
-            DgCustomers.ItemsSource = null;
-            DgCustomers.ItemsSource = _customerService.GetAllCustomers();
+        //private void RefreshCustomerProfile(int customerId)
+        //{
+        //    DgCustomers.ItemsSource = null;
+        //    DgCustomers.ItemsSource = _customerService.GetPagedCustomerSummaries();
 
-            DgCustomers.SelectedItem = null;
+        //    DgCustomers.SelectedItem = null;
 
 
-            var customerInGrid = DgCustomers.Items.Cast<CustomerSummaryDTO>()
-                           .FirstOrDefault(c => c.ID == $"C-{customerId}");
-            if (customerInGrid != null)
-                DgCustomers.SelectedItem = customerInGrid;
-        }
+        //    var customerInGrid = DgCustomers.Items.Cast<CustomerSummary>()
+        //                   .FirstOrDefault(c => c.ID == $"C-{customerId}");
+        //    if (customerInGrid != null)
+        //        DgCustomers.SelectedItem = customerInGrid;
+        //}
 
         private void BtnPrevPage_Click(object sender, RoutedEventArgs e)
         {
-          
+            CurrentPage--;
+            ChangePage();
         }
 
         private void BtnNextPage_Click(object sender, RoutedEventArgs e)
         {
-            
+            CurrentPage++;
+            ChangePage();
         }
+
+        private void ChangePage()
+        {
+            LoadPagedCustomers(CurrentPage, ROWPERPAGE);
+            TxtPageInfo.Text = CurrentPage.ToString();
+            UpdatePageInfo();
+        }
+
 
         private void UpdatePageInfo()
         {
-           
+
+            BtnPrevPage.IsEnabled = CurrentPage > 1;
+
+            BtnNextPage.IsEnabled = (CurrentPage < TotalPages);
         }
+
+
     }
 
 }

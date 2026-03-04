@@ -41,7 +41,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Update="Scripts\StoredProcedures\Customers\SP_GetAllCustomer.sql">
+    <None Update="Scripts\StoredProcedures\Customers\SP_GetCustomerCount.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\StoredProcedures\Customers\SP_GetPagedCustomerSummaries.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\StoredProcedures\Customers\SP_UpdateCustomerInfo.sql">

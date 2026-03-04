@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.CustomerDTOs;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,11 @@ namespace Application.Common.Interfaces;
 public interface ICustomerRepository
 {
     int CreateCustomer(Customer customer);
-    List<CustomerSummaryDTO> GetAllCustomers();
+    List<CustomerSummary> GetPagedCustomerSummaries(int pageNumber , int rowPerPage);
+
+    int GetCustomerCount();
     CustomerProfileDTO GetCustomerFullProfile(int id );
-    List<CustomerSummaryDTO> SearchCustomerBy(string s);
+    List<CustomerSummary> SearchCustomerBy(string s);
 
     bool DeleteCustomer(int id);
      Customer GetCustomerById(int id);

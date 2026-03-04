@@ -656,7 +656,7 @@ Background="#2563EB" Style="{StaticResource IconButtonStyle}"
                                     </DataGrid.Columns>
                                 </DataGrid>
 
-                                <Border Grid.Row="2" Padding="15" Background="White" BorderBrush="#F1F5F9" BorderThickness="0,1,0,0">
+                                <Border Grid.Row="2" Padding="15" Background="White" BorderBrush="#F1F5F9" BorderThickness="0">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 
                                         <Button x:Name="BtnNextPage" Click="BtnNextPage_Click" Width="42" Height="42" Cursor="Hand">
@@ -689,7 +689,7 @@ Background="#2563EB" Style="{StaticResource IconButtonStyle}"
                                         </Button>
 
                                         <StackPanel VerticalAlignment="Center" Margin="20,0">
-                                            <TextBlock x:Name="TxtPageInfo" Text="1 / 10" Foreground="#1E293B" FontSize="15" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                            <TextBlock x:Name="TxtPageInfo" Text="1" Foreground="#1E293B" FontSize="15" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                             <TextBlock Text="الصفحة" Foreground="#94A3B8" FontSize="10" HorizontalAlignment="Center" Margin="0,-2,0,0"/>
                                         </StackPanel>
 

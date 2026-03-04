@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain;
+using Application.DTOs.CustomerDTOs;
 namespace Application.Services;
 
 public class CustomerService
@@ -17,11 +18,19 @@ public class CustomerService
         _customerRepository = customerRepository;
     }
 
-    public List<CustomerSummaryDTO> GetAllCustomers()
+    public List<CustomerSummary> GetPagedCustomerSummaries(int pageNumber , int rowPerPage)
     {
-        return _customerRepository.GetAllCustomers();
+        if (pageNumber <= 0) throw new ArgumentOutOfRangeException("Page number must be greater than 0.");
+        if (rowPerPage <= 0) throw new ArgumentOutOfRangeException("Rows per page must be greater than 0.");
+
+        return _customerRepository.GetPagedCustomerSummaries(pageNumber, rowPerPage);
     }
-    public List<CustomerSummaryDTO> SearchCustomerBy(string searchWord)
+
+    public int GetCustomerCount()
+    {
+        return _customerRepository.GetCustomerCount();
+    }
+    public List<CustomerSummary> SearchCustomerBy(string searchWord)
     {
         return _customerRepository.SearchCustomerBy(searchWord);
     }

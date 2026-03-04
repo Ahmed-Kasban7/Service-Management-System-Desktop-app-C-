@@ -1,5 +1,6 @@
 ﻿using Application.Common.Interfaces;
 using Application.DTOs;
+using Application.DTOs.CustomerDTOs;
 using Domain.Entities;
 using Domain.Enums;
 using Microsoft.Data.SqlClient;
@@ -17,14 +18,46 @@ public class CustomerRepository : ICustomerRepository
     private DeviceRepository _deviceRepository;
     private PhoneRepository _phoneRepository;
     
+    public List<CustomerSummary> GetPagedCustomerSummaries( int pageNumber , int rowsPerPage)
+    {
+        List<CustomerSummary> customers = new List<CustomerSummary>();
+        using var conn = DatabaseInitializer.GetConnection();
+
+        using SqlCommand command = new SqlCommand("SP_GetPagedCustomerSummaries", conn);
+
+        command.Parameters.AddWithValue("@PageNumber", pageNumber);
+        command.Parameters.AddWithValue("@RowsPerPage", rowsPerPage);
+
+        command.CommandType = CommandType.StoredProcedure;
+        conn.Open();
+        using var reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+
+            customers.Add(new CustomerSummary("C-" + reader["PersonID"].ToString()
+                , reader["Name"].ToString(), reader["Address"].ToString(), reader["PhoneNumber"].ToString()));
+        }
+        return customers;
+    }
+
+    public int GetCustomerCount()
+    {
+        using var conn = DatabaseInitializer.GetConnection();
+        using SqlCommand command = new SqlCommand("SP_GetCustomerCount", conn);
+        command.CommandType = CommandType.StoredProcedure;
+        conn.Open();
+        int custoemrCount = (int) command.ExecuteScalar();
+        return custoemrCount;
+    }
     public CustomerRepository()
     {
         _deviceRepository = new DeviceRepository();
         _phoneRepository = new PhoneRepository();
     }
-    public List<CustomerSummaryDTO> SearchCustomerBy(string s)
+    public List<CustomerSummary> SearchCustomerBy(string s)
     {
-        List<CustomerSummaryDTO> customers = new List<CustomerSummaryDTO>();
+        List<CustomerSummary> customers = new List<CustomerSummary>();
         var conn = DatabaseInitializer.GetConnection();
 
         string script = @"select p.PersonID ,name ,c.Address , 
@@ -51,52 +84,13 @@ public class CustomerRepository : ICustomerRepository
 
         while (reader.Read())
         {
-            customers.Add(new CustomerSummaryDTO
-            {
-                ID = "C-" + reader["PersonID"].ToString(),
-                Name = reader["Name"].ToString(),
-                Address = reader["Address"].ToString(),
-                Phone = reader["PhoneNumber"]?.ToString()
-            });
+            customers.Add(new CustomerSummary("C-" + reader["PersonID"].ToString()
+                , reader["Name"].ToString(), reader["Address"].ToString(), reader["PhoneNumber"].ToString()));
         }
 
         return customers;
     }
 
-    public List<CustomerSummaryDTO> GetAllCustomers()
-    {
-        List<CustomerSummaryDTO> customers = new List<CustomerSummaryDTO>();
-        using var conn = DatabaseInitializer.GetConnection();
-
-        string script = @"
-        SELECT 
-            p.PersonID, 
-            p.Name, 
-            c.Address, 
-            (SELECT TOP 1 PhoneNumber FROM Phones WHERE PersonID = p.PersonID) AS PhoneNumber 
-        FROM Customers AS c  
-        JOIN Persons AS p ON c.PersonID = p.PersonID ";
-
-        conn.Open();
-        using SqlCommand command = new SqlCommand(script, conn);
-        using var reader = command.ExecuteReader();
-
-        while (reader.Read())
-        {
-            CustomerSummaryDTO customer = new CustomerSummaryDTO
-            {
-                ID = "C-"+reader["PersonID"].ToString() ,
-                Name = reader["Name"].ToString(),
-                Address = reader["Address"].ToString(),
-                Phone = reader["PhoneNumber"].ToString()
-
-            }; // complexity ->  O(n) , Space -> O(n)
-
-            customers.Add(customer);
-
-        }
-        return customers;
-    }
 
     public CustomerProfileDTO GetCustomerFullProfile(int id)
     {

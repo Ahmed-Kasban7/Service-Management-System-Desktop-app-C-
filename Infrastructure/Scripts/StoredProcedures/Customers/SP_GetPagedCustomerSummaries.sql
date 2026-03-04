@@ -1,4 +1,4 @@
-﻿CREATE OR ALTER PROCEDURE SP_GetAllCustomers 
+﻿CREATE OR ALTER PROCEDURE SP_GetPagedCustomerSummaries 
 @PageNumber int ,
 @RowsPerPage int
 as
@@ -10,4 +10,5 @@ order by p.PersonID
 
 OFFSET (@PageNumber - 1) * @RowsPerPage ROWS
 FETCH NEXT @RowsPerPage ROWS ONLY;
+
 end
