@@ -1,6 +1,7 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common;
 using Application.DTOs;
 using Application.DTOs.CustomerDTOs;
+using Application.Repositories;
 using Domain.Entities;
 using Domain.Enums;
 using Microsoft.Data.SqlClient;
@@ -18,6 +19,11 @@ public class CustomerRepository : ICustomerRepository
     private DeviceRepository _deviceRepository;
     private PhoneRepository _phoneRepository;
     
+    public CustomerRepository()
+    {
+        _deviceRepository = new DeviceRepository();
+        _phoneRepository = new PhoneRepository();
+    }
     public List<CustomerSummary> GetPagedCustomerSummaries( int pageNumber , int rowsPerPage)
     {
         List<CustomerSummary> customers = new List<CustomerSummary>();
@@ -50,11 +56,20 @@ public class CustomerRepository : ICustomerRepository
         int custoemrCount = (int) command.ExecuteScalar();
         return custoemrCount;
     }
-    public CustomerRepository()
+    public bool Delete(int customerId)
     {
-        _deviceRepository = new DeviceRepository();
-        _phoneRepository = new PhoneRepository();
+        using var conn = DatabaseInitializer.GetConnection();
+
+        using var command = new SqlCommand("SP_DeletePerson", conn);
+        command.Parameters.AddWithValue("@personId", customerId);
+        command.CommandType = CommandType.StoredProcedure;
+        conn.Open();
+        int row = command.ExecuteNonQuery();
+
+        return row > 0;
     }
+
+
     public List<CustomerSummary> SearchCustomerBy(string s)
     {
         List<CustomerSummary> customers = new List<CustomerSummary>();
@@ -90,8 +105,6 @@ public class CustomerRepository : ICustomerRepository
 
         return customers;
     }
-
-
     public CustomerProfileDTO GetCustomerFullProfile(int id)
     {
         CustomerProfileDTO customerProfileDTO = new CustomerProfileDTO();
@@ -158,23 +171,6 @@ public class CustomerRepository : ICustomerRepository
 
         return customer;
     }
-
-    public bool DeleteCustomer(int id)
-    {
-        var script = @"delete from Persons where PersonID = @id";
-
-        using var conn = DatabaseInitializer.GetConnection();
-        conn.Open();
-        using var command = new SqlCommand(script, conn);
-        command.Parameters.AddWithValue("id", id);
-        int row = command.ExecuteNonQuery();
-
-        if (row > 0) 
-            return true;
-        
-        return false;
-    }
-
     public bool UpdateCustomerInfo(CustomerUpdateDTO customerInfo)
     {
         var script = @"

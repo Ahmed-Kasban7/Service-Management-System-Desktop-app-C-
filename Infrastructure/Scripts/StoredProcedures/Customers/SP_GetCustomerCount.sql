@@ -3,5 +3,5 @@ AS
 BEGIN 
 
     SELECT COUNT(*) AS CustomerCount 
-    FROM Customers;  
+    FROM Customers c join Persons p on c.personId = p.personId where p.IsDeleted = 0 ;  
 END

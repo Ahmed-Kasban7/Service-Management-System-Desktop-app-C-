@@ -1,5 +1,5 @@
-﻿using Application.Common.Interfaces;
-using Application.DTOs;
+﻿using Application.DTOs;
+using Application.Repositories;
 using Domain.Entities;
 using Microsoft.Data.SqlClient;
 using System;

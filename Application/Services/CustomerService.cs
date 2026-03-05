@@ -1,5 +1,4 @@
-﻿using Application.Common.Interfaces;
-using Application.DTOs;
+﻿using Application.DTOs;
 using System;
 using Domain.Entities;
 using System.Collections.Generic;
@@ -8,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Domain;
 using Application.DTOs.CustomerDTOs;
+using Application.Common;
+using Application.Repositories;
 namespace Application.Services;
 
 public class CustomerService
@@ -30,6 +31,16 @@ public class CustomerService
     {
         return _customerRepository.GetCustomerCount();
     }
+    public Result DeleteCustomer(int customerId)
+    {
+        if (customerId < 1)
+            return Result.Failure("كود العميل يجب ان يكون اكبر من 0");
+
+        var deleted = _customerRepository.Delete(customerId);
+
+        return deleted ? Result.Success() : Result.Failure("العميل غير موجود");
+    }
+
     public List<CustomerSummary> SearchCustomerBy(string searchWord)
     {
         return _customerRepository.SearchCustomerBy(searchWord);
@@ -60,15 +71,12 @@ public class CustomerService
 
         return _customerRepository.CreateCustomer(newCustomer);
     }
+
     public CustomerProfileDTO GetCustomerFullProfile(int id)
     {
         return _customerRepository.GetCustomerFullProfile(id);
     }
 
-    public bool DeleteCustomer(int id)
-    {
-        return _customerRepository.DeleteCustomer(id);
-    }
 
     public bool UpdateCustomerInfo(CustomerUpdateDTO customerInfo)
     {

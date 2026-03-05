@@ -6,8 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Application;
-using Application.Common.Interfaces;
 using Microsoft.Data.SqlClient.DataClassification;
+using Application.Repositories;
 
 namespace Infrastructure.Data;
 

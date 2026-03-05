@@ -1,4 +1,5 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common;
+using Application.Repositories;
 using Application.DTOs;
 using Application.DTOs.CustomerDTOs;
 using Application.Services;
@@ -15,6 +16,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Button = System.Windows.Controls.Button;
+using System.Net.NetworkInformation;
 
 
 namespace Presentation.View.Customer_View
@@ -24,6 +26,7 @@ namespace Presentation.View.Customer_View
         private int CurrentPage = 1;
         private const int ROWPERPAGE = 8;
         private int TotalPages;
+        private int TotalCustomers;
 
       
         
@@ -50,9 +53,7 @@ namespace Presentation.View.Customer_View
             _deviceService = deviceService;
             _deviceTypeService = deviceTypeService;
 
-            int totalCustomers = _customerService.GetCustomerCount();
-            TxtCustomerCountNumber.Text = totalCustomers.ToString();
-            TotalPages = (int)Math.Ceiling((double)totalCustomers / ROWPERPAGE);
+            UpdatePageInfo();
             LoadPagedCustomers(CurrentPage, ROWPERPAGE);
             UpdatePageInfo();
 
@@ -71,6 +72,92 @@ namespace Presentation.View.Customer_View
             }
         }
 
+        private void BtnPrevPage_Click(object sender, RoutedEventArgs e)
+        {
+            CurrentPage--;
+            ChangePage();
+        }
+
+        private void BtnNextPage_Click(object sender, RoutedEventArgs e)
+        {
+            CurrentPage++;
+            ChangePage();
+        }
+
+        private void ChangePage()
+        {
+            LoadPagedCustomers(CurrentPage, ROWPERPAGE);
+            TxtPageInfo.Text = CurrentPage.ToString();
+            UpdateButtonPage();
+        }
+
+
+        private void UpdateButtonPage()
+        {
+
+            BtnPrevPage.IsEnabled = CurrentPage > 1;
+
+            BtnNextPage.IsEnabled = (CurrentPage < TotalPages);
+        }
+
+        private void UpdatePageInfo()
+        {
+            TotalCustomers = _customerService.GetCustomerCount();
+            TxtCustomerCountNumber.Text = TotalCustomers.ToString();
+
+            TotalPages = (int)Math.Ceiling((double)TotalCustomers / ROWPERPAGE);
+
+            if (CurrentPage > TotalPages)
+                CurrentPage = TotalPages;
+
+            if (TotalPages == 0)
+                CurrentPage = 1;
+
+            UpdateButtonPage();
+        }
+
+        private void BtnDeleteCustomer_Click(object sender, RoutedEventArgs e)
+        {
+            var clickedButton = sender as Button;
+            var selectedSummary = clickedButton?.DataContext as CustomerSummary;
+
+            if (selectedSummary == null) return;
+
+            var result = System.Windows.MessageBox.Show(
+                $"هل أنت متأكد من حذف العميل {selectedSummary.Name}؟",
+                "تأكيد الحذف",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    int customerId = int.Parse(selectedSummary.ID.Replace("C-", ""));
+
+                    var deleted = _customerService.DeleteCustomer(customerId);
+
+                    if (deleted.IsSuccess)
+                    {
+                        System.Windows.MessageBox.Show("تم حذف العميل بنجاح", "نجاح");
+                        UpdatePageInfo();
+                       LoadPagedCustomers(CurrentPage , ROWPERPAGE);
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show($"فشل في حذف العميل: {deleted.Error}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show($"حدث خطأ: {ex.Message}");
+                }
+            }
+        }
+
+
+
+        //----------------------------------------------------------------------
         private void DgCustomers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (DgCustomers.SelectedItem is CustomerSummary selectedSummary)
@@ -355,44 +442,6 @@ namespace Presentation.View.Customer_View
             //    System.Windows.MessageBox.Show(ex.Message, "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
             //}
         }
-        private void BtnDeleteCustomer_Click(object sender, RoutedEventArgs e)
-        {
-            //var clickedButton = sender as Button;
-            //var selectedSummary = clickedButton?.DataContext as CustomerSummary;
-
-            //if (selectedSummary == null) return;
-
-            //var result = System.Windows.MessageBox.Show(
-            //    $"هل أنت متأكد من حذف العميل {selectedSummary.Name}؟",
-            //    "تأكيد الحذف",
-            //    MessageBoxButton.YesNo,
-            //    MessageBoxImage.Warning);
-
-            //if (result == MessageBoxResult.Yes)
-            //{
-            //    try
-            //    {
-            //        int customerId = int.Parse(selectedSummary.ID.Replace("C-", ""));
-
-            //        bool deleted = _customerService.DeleteCustomer(customerId);
-
-            //        if (deleted)
-            //        {
-            //            System.Windows.MessageBox.Show("تم حذف العميل بنجاح", "نجاح");
-
-            //            LoadAllCustomers();
-            //        }
-            //        else
-            //        {
-            //            System.Windows.MessageBox.Show("فشل في حذف العميل");
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        System.Windows.MessageBox.Show($"حدث خطأ: {ex.Message}");
-            //    }
-            //}
-        }
         private void BtnCreateCustomer_Click(object sender, RoutedEventArgs e)
         {
             //var createWin = new CreateCustomerWindow(_customerService, _deviceBrandService, _deviceTypeService, _deviceSpecService);
@@ -555,36 +604,6 @@ namespace Presentation.View.Customer_View
         //        DgCustomers.SelectedItem = customerInGrid;
         //}
 
-        private void BtnPrevPage_Click(object sender, RoutedEventArgs e)
-        {
-            CurrentPage--;
-            ChangePage();
-        }
-
-        private void BtnNextPage_Click(object sender, RoutedEventArgs e)
-        {
-            CurrentPage++;
-            ChangePage();
-        }
-
-        private void ChangePage()
-        {
-            LoadPagedCustomers(CurrentPage, ROWPERPAGE);
-            TxtPageInfo.Text = CurrentPage.ToString();
-            UpdatePageInfo();
-        }
-
-
-        private void UpdatePageInfo()
-        {
-
-            BtnPrevPage.IsEnabled = CurrentPage > 1;
-
-            BtnNextPage.IsEnabled = (CurrentPage < TotalPages);
-        }
-
-
-        
     }
 
 }

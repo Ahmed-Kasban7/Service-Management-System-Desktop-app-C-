@@ -70,7 +70,7 @@ public static class DatabaseInitializer
     public static void InitializeDatabase()
     {
         CreateDatabaseIfNotExist();
-
+       // Tables 
        ExecuteScript(@"Scripts\Tables\CreatePersonsTable.sql");
        ExecuteScript(@"Scripts\Tables\CreateCustomersTable.sql");
        ExecuteScript(@"Scripts\Tables\CreatePhonesTable.sql");
@@ -79,10 +79,19 @@ public static class DatabaseInitializer
        ExecuteScript(@"Scripts\Tables\CreateBrandsTable.sql");
        ExecuteScript(@"Scripts\Tables\CreateSpecsTable.sql");
        ExecuteScript(@"Scripts\Tables\CreateDevicesTable.sql");
+
+       // Stored Procedure 
        ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetPagedCustomerSummaries.sql");
        ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_UpdateCustomerInfo.sql");
        ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetCustomerCount.sql");
+       ExecuteScript(@"Scripts\StoredProcedures\Persons\SP_DeletePerson.sql");
+
+       // Functions 
        ExecuteScript(@"Scripts\Functions\GetFirstPersonPhoneNumber.sql");
 
+        // Triggers 
+       ExecuteScript(@"Scripts\Triggers\trg_InsteadOfDeletePerson.sql");
+
+        
     }
 }
