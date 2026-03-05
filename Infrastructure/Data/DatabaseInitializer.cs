@@ -63,128 +63,22 @@ public static class DatabaseInitializer
 
     }
 
-    private static void CreatePersonsTable() =>
-       ExecuteScript(@"
-        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Persons')
-        BEGIN
-            CREATE TABLE Persons(
-                PersonID INT IDENTITY(1,1) PRIMARY KEY,
-                Name NVARCHAR(200) NOT NULL,
-                Age INT NULL CHECK (Age IS NULL OR Age > 0),
-                Sex TINYINT NOT NULL check (Sex = 0 or Sex = 1),
-                DateCreated DATETIME  Not Null DEFAULT GETDATE(),
-                IsDeleted BIT not null DEFAULT 0
-            )
-        END");
 
-    private static void CreateCustomersTable() =>
-       ExecuteScript(@"
-        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Customers')
-        BEGIN
-            CREATE TABLE Customers(
-                PersonID INT PRIMARY KEY
-                    FOREIGN KEY REFERENCES Persons(PersonID) ON DELETE CASCADE,
-                Discount INT NULL,
-                Address NVARCHAR(500) NOT NULL
-            )
-        END");
 
-    private static void CreatePhoneNumberIndex()
-    {
-        ExecuteScript(@"
-    IF NOT EXISTS (
-        SELECT * 
-        FROM sys.indexes 
-        WHERE name = 'PhoneNumber_index' 
-          AND object_id = OBJECT_ID('Phones')
-    )
-    BEGIN
-        CREATE NONCLUSTERED INDEX PhoneNumber_index 
-        ON Phones(PhoneNumber);
-    END
-    ");
-    }
-
-    private static void CreatePhonesTable() =>
-        ExecuteScript(@"
-        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Phones')
-        BEGIN
-            CREATE TABLE Phones(
-                PhoneID INT IDENTITY(1,1) PRIMARY KEY,
-                PhoneNumber NVARCHAR(11) NOT NULL UNIQUE
-                    CHECK (
-                        LEN(PhoneNumber) = 11 AND
-                        (PhoneNumber LIKE '010%' OR
-                         PhoneNumber LIKE '011%' OR
-                         PhoneNumber LIKE '012%' OR
-                         PhoneNumber LIKE '015%')
-                    ),
-                PersonID INT
-                    FOREIGN KEY REFERENCES Persons(PersonID) ON DELETE CASCADE
-            )
-        END");
-
-    private static void CreateTypesTable() =>
-      ExecuteScript(@"
-        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Types')
-        BEGIN
-            CREATE TABLE Types(
-                TypeID INT IDENTITY(1,1) PRIMARY KEY,
-                TypeName VARCHAR(100) NOT NULL UNIQUE
-            )
-        END");
-
-    private static void CreateSpecsTable() =>
-     ExecuteScript(@"
-        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Specs')
-        BEGIN
-            CREATE TABLE Specs(
-                SpecID INT IDENTITY(1,1) PRIMARY KEY,
-                SpecName VARCHAR(100) NOT NULL UNIQUE,
-                TypeID INT Not null
-                    FOREIGN KEY REFERENCES Types(TypeID)  ON DELETE CASCADE
-            )
-        END");
-
-    private static void CreateDevicesTable() =>
-       ExecuteScript(@"
-        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Devices')
-        BEGIN
-            CREATE TABLE Devices(
-                DeviceID INT IDENTITY(1,1) PRIMARY KEY,
-                SerialNumber VARCHAR(100) NULL,
-                ModelName VARCHAR(200) NULL,
-                CustomerID INT
-                    FOREIGN KEY REFERENCES Customers(PersonID) ON DELETE CASCADE,
-                BrandID INT FOREIGN KEY REFERENCES Brands(BrandID),
-                TypeID INT FOREIGN KEY REFERENCES Types(TypeID),
-                SpecID INT FOREIGN KEY REFERENCES Specs(SpecID)
-            )
-        END");
-    private static void CreateBrandsTable() =>
-    ExecuteScript(@"
-        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Brands')
-        BEGIN
-            CREATE TABLE Brands(
-                BrandID INT IDENTITY(1,1) PRIMARY KEY,
-                BrandName VARCHAR(100) NOT NULL UNIQUE
-            )
-        END");
+    
 
     public static void InitializeDatabase()
     {
         CreateDatabaseIfNotExist();
 
-
-        //CreatePersonsTable();
-        //CreateCustomersTable();
-        //CreatePhonesTable();
-        //CreatePhoneNumberIndex();
-
-        //CreateBrandsTable();
-        //CreateTypesTable();
-        //CreateSpecsTable();
-        //CreateDevicesTable();
+       ExecuteScript(@"Scripts\Tables\CreatePersonsTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateCustomersTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreatePhonesTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreatePhoneNumberIndex.sql");
+       ExecuteScript(@"Scripts\Tables\CreateTypesTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateBrandsTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateSpecsTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateDevicesTable.sql");
        ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetPagedCustomerSummaries.sql");
        ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_UpdateCustomerInfo.sql");
        ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetCustomerCount.sql");
