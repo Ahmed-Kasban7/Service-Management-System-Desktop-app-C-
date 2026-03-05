@@ -622,7 +622,7 @@ Background="#2563EB" Style="{StaticResource IconButtonStyle}"
                                             <Grid>
                                                 <TextBox x:Name="SearchBox" Background="Transparent" BorderThickness="0" FontSize="14"
                  Foreground="Black" VerticalContentAlignment="Center" KeyDown="SearchBox_KeyDown"/>
-                                                <TextBlock Text="🔍 بحث بالاسم أو كود العميل" Foreground="{StaticResource GrayText}" IsHitTestVisible="False" VerticalAlignment="Center">
+                                                <TextBlock Text="🔍 بحث بالاسم أو كود العميل" Foreground="{StaticResource GrayText}" IsHitTestVisible="False" VerticalAlignment="Center" Height="20">
                                                     <TextBlock.Style>
                                                         <Style TargetType="{x:Type TextBlock}">
                                                             <Setter Property="Visibility" Value="Collapsed"/>

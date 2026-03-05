@@ -188,6 +188,7 @@ public static class DatabaseInitializer
        ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetPagedCustomerSummaries.sql");
        ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_UpdateCustomerInfo.sql");
        ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetCustomerCount.sql");
+       ExecuteScript(@"Scripts\Functions\GetFirstPersonPhoneNumber.sql");
 
     }
 }

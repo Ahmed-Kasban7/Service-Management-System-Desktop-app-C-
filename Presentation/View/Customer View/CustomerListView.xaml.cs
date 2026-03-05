@@ -583,10 +583,6 @@ namespace Presentation.View.Customer_View
             BtnNextPage.IsEnabled = (CurrentPage < TotalPages);
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
 
         
     }

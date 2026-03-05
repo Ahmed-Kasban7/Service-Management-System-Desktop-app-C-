@@ -41,6 +41,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Update="Scripts\Functions\GetFirstPersonPhoneNumber.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\StoredProcedures\Customers\SP_GetCustomerCount.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
