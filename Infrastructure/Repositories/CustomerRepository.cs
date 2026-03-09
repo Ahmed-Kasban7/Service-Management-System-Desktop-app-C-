@@ -68,33 +68,18 @@ public class CustomerRepository : ICustomerRepository
 
         return row > 0;
     }
-
-
-    public List<CustomerSummary> SearchCustomerBy(string s)
+    public List<CustomerSummary> SearchCustomerPagedBy(string word , int PageNumber , int RowPerPage)
     {
         List<CustomerSummary> customers = new List<CustomerSummary>();
         var conn = DatabaseInitializer.GetConnection();
 
-        string script = @"select p.PersonID ,name ,c.Address , 
-                        (select top 1 PhoneNumber from Phones where PersonID = p.PersonID) as PhoneNumber 
-                        from  Persons p  join Customers c on p.PersonID = c.PersonID 
-                        where p.Name like @searchName or (@searchId IS NOT NULL AND p.PersonID = @searchId)  ";
-
         conn.Open();
 
-        using SqlCommand command = new SqlCommand(script, conn);
-
-        command.Parameters.Add("@searchName", SqlDbType.NVarChar).Value = "%" + s + "%";
-
-        if (int.TryParse(s, out int id))
-        {
-            command.Parameters.Add("@searchId", SqlDbType.Int).Value = id;
-        }
-        else
-        {
-            command.Parameters.Add("@searchId", SqlDbType.Int).Value = DBNull.Value;
-        }
-
+        using SqlCommand command = new SqlCommand("SP_SearchCustomerPaged", conn);
+        command.Parameters.AddWithValue("@word", word);
+        command.Parameters.AddWithValue("@PageNumber", PageNumber);
+        command.Parameters.AddWithValue("@RowPerPage", RowPerPage);
+        command.CommandType = CommandType.StoredProcedure;
         using var reader = command.ExecuteReader();
 
         while (reader.Read())
@@ -104,6 +89,55 @@ public class CustomerRepository : ICustomerRepository
         }
 
         return customers;
+    }
+    public bool UpdateCustomerInfo(Customer customerInfo)
+    {
+
+         using var conn = DatabaseInitializer.GetConnection();
+         using var command = new SqlCommand("SP_UpdateCustomerInfo", conn);
+         command.Parameters.AddWithValue("@Name", customerInfo.Name);
+         command.Parameters.AddWithValue("@Sex", (int)customerInfo.Sex );
+         command.Parameters.AddWithValue("@Age", customerInfo.Age is null ? DBNull.Value : customerInfo.Age);
+         command.Parameters.AddWithValue("@PersonId", customerInfo.Id);
+         command.Parameters.AddWithValue("@Address", customerInfo.Address);
+         command.Parameters.AddWithValue("@Discount", customerInfo.Discount);
+         command.CommandType = CommandType.StoredProcedure;
+         conn.Open();
+         var rows = command.ExecuteNonQuery();
+        return rows > 0;
+    }
+
+    public int GetSearchCustomerCount(string word)
+    {
+        var conn = DatabaseInitializer.GetConnection();
+
+        using SqlCommand command = new SqlCommand("SP_SearchCustomerCount", conn);
+        command.Parameters.AddWithValue("@word", word);
+        command.CommandType = CommandType.StoredProcedure;
+        conn.Open();
+
+        return  (int) command.ExecuteScalar();
+    }
+    public Customer GetCustomerById(int customerId)
+    {
+        using var conn = DatabaseInitializer.GetConnection();
+       using var command = new SqlCommand("SP_GetCustomerByID", conn);
+
+       command.Parameters.AddWithValue("@customerId", customerId);
+        command.CommandType= CommandType.StoredProcedure;
+        conn.Open();
+        using var reader = command.ExecuteReader();
+        Customer customer = null;
+
+        if (reader.Read())
+        {
+             customer = new Customer(customerId, reader["Name"].ToString(),
+                reader["Age"] != DBNull.Value ? Convert.ToInt32(reader["Age"]) : null,
+                (ESex)Convert.ToInt32(reader["Sex"])
+                , reader["Address"].ToString(), Convert.ToInt32(reader["Discount"]) );
+        }
+
+        return customer;
     }
     public CustomerProfileDTO GetCustomerFullProfile(int id)
     {
@@ -139,78 +173,6 @@ public class CustomerRepository : ICustomerRepository
        customerProfileDTO.Phones= _phoneRepository.GetCustomerPhonesBy(id);
 
         return customerProfileDTO;
-    }
-    public Customer GetCustomerById(int id)
-    {
-
-        var script = @"select 
-                      p.Name, 
-                      p.Sex ,
-                      p.Age, 
-                      c.Address,
-                      c.Discount
-               from Persons p
-               join Customers c on p.PersonID = c.PersonID
-               where p.PersonID = @id";
-
-        using var conn = DatabaseInitializer.GetConnection();
-       using var command = new SqlCommand(script, conn);
-       command.Parameters.AddWithValue("id", id);
-        conn.Open();
-        using var reader = command.ExecuteReader();
-
-        Customer customer = null;
-        if (reader.Read())
-        {
-             customer = new Customer(reader["Name"].ToString(),
-                reader["Age"] != DBNull.Value ? Convert.ToInt32(reader["Age"]) : null,
-                (ESex)Convert.ToInt32(reader["Sex"])
-                , reader["Address"].ToString(), reader["Discount"] != DBNull.Value ? Convert.ToInt32(reader["Discount"]) : 0);
-          
-        }
-
-        return customer;
-    }
-    public bool UpdateCustomerInfo(CustomerUpdateDTO customerInfo)
-    {
-        var script = @"
-        BEGIN TRANSACTION;
-        BEGIN TRY
-            UPDATE Persons
-            SET Name = @Name, Age = @Age, Sex = @Sex
-            WHERE PersonID = @PersonId;
-
-            UPDATE Customers
-            SET Address = @Address, Discount = @Discount
-            WHERE PersonID = @PersonId;
-
-            COMMIT;
-        END TRY
-        BEGIN CATCH
-            ROLLBACK;
-            THROW; 
-        END CATCH;
-    ";
-
-        try
-        {
-            using var conn = DatabaseInitializer.GetConnection();
-            using var command = new SqlCommand(script, conn);
-            command.Parameters.AddWithValue("Name", customerInfo.Name);
-            command.Parameters.AddWithValue("Sex", (int)customerInfo.Sex );
-            command.Parameters.AddWithValue("Age", customerInfo.Age is null ? DBNull.Value : customerInfo.Age);
-            command.Parameters.AddWithValue("PersonId", customerInfo.Id);
-            command.Parameters.AddWithValue("Address", customerInfo.Address);
-            command.Parameters.AddWithValue("Discount", customerInfo.Discount);
-            conn.Open();
-            command.ExecuteNonQuery(); 
-            return true; 
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error updating customer info: " + ex.Message);
-            return false; 
-        }
     }
 
     public int CreateCustomer(Customer customer)

@@ -41,9 +41,27 @@ public class CustomerService
         return deleted ? Result.Success() : Result.Failure("العميل غير موجود");
     }
 
-    public List<CustomerSummary> SearchCustomerBy(string searchWord)
+    public List<CustomerSummary> SearchCustomerPagedBy(string searchWord , int pageNumber, int rowPerPage)
     {
-        return _customerRepository.SearchCustomerBy(searchWord);
+        return _customerRepository.SearchCustomerPagedBy(searchWord, pageNumber, rowPerPage);
+    }
+    public int GetSearchCustomerCount(string word)
+    {
+        return _customerRepository.GetSearchCustomerCount(word);
+    }
+
+    public bool UpdateCustomerInfo(CustomerUpdate customerInfo)
+    {
+        
+        Customer ? customer = _customerRepository.GetCustomerById(customerInfo.Id);
+
+        if (customer == null)
+        {
+            throw new ArgumentException($"العميل رقم {customerInfo.Id} غير موجود.");
+        }
+        customer.UpdateDetails(customerInfo.Name , customerInfo.Age , customerInfo.Sex , customerInfo.Address , customerInfo.Discount);
+
+        return _customerRepository.UpdateCustomerInfo(customer);
     }
     public int CreateCustomer(CustomerCreateDTO customerDto)
     {
@@ -78,17 +96,5 @@ public class CustomerService
     }
 
 
-    public bool UpdateCustomerInfo(CustomerUpdateDTO customerInfo)
-    {
-        
-        Customer ? customer = _customerRepository.GetCustomerById(customerInfo.Id);
-        if (customer == null)
-        {
-            throw new ArgumentException($"العميل رقم {customerInfo.Id} غير موجود.");
-        }
-        customer.UpdateDetails(customerInfo.Name , customerInfo.Age , customerInfo.Sex , customerInfo.Address , customerInfo.Discount);
-
-        return _customerRepository.UpdateCustomerInfo(customerInfo);
-    }
 
 }

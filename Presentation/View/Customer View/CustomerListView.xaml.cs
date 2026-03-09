@@ -1,14 +1,16 @@
 ﻿using Application.Common;
-using Application.Repositories;
 using Application.DTOs;
 using Application.DTOs.CustomerDTOs;
+using Application.Repositories;
 using Application.Services;
+using Domain.Entities;
 using Domain.Enums;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Drawing.Printing;
 using System.Globalization;
 using System.IO;
+using System.Net.NetworkInformation;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,7 +18,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Button = System.Windows.Controls.Button;
-using System.Net.NetworkInformation;
 
 
 namespace Presentation.View.Customer_View
@@ -25,11 +26,11 @@ namespace Presentation.View.Customer_View
     {
         private int CurrentPage = 1;
         private const int ROWPERPAGE = 8;
-        private int TotalPages;
-        private int TotalCustomers;
+        private int TotalPages ;
+        private int TotalCustomers ;
+        private string? _searchWord = null;
 
-      
-        
+
 
         private readonly CustomerService _customerService;
         private readonly DeviceBrandService _deviceBrandService;
@@ -53,21 +54,21 @@ namespace Presentation.View.Customer_View
             _deviceService = deviceService;
             _deviceTypeService = deviceTypeService;
 
-            UpdatePageInfo();
-            LoadPagedCustomers(CurrentPage, ROWPERPAGE);
-            UpdatePageInfo();
+           UpdatePageInfo();
 
         }
 
-
-        private void LoadPagedCustomers(int pageNumber , int rowPerPage)
+        private void LoadCustomers()
         {
             try
             {
-                DgCustomers.ItemsSource = _customerService.GetPagedCustomerSummaries(pageNumber , rowPerPage);
+                if (_searchWord == null)
+                    DgCustomers.ItemsSource = _customerService.GetPagedCustomerSummaries(CurrentPage, ROWPERPAGE);
+                else
+                    DgCustomers.ItemsSource = _customerService.SearchCustomerPagedBy(_searchWord, CurrentPage, ROWPERPAGE);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
+
                 System.Windows.MessageBox.Show($"خطأ في تحميل  قائمه العملاء: {ex.Message}");
             }
         }
@@ -86,8 +87,9 @@ namespace Presentation.View.Customer_View
 
         private void ChangePage()
         {
-            LoadPagedCustomers(CurrentPage, ROWPERPAGE);
+            LoadCustomers();
             TxtPageInfo.Text = CurrentPage.ToString();
+
             UpdateButtonPage();
         }
 
@@ -102,7 +104,11 @@ namespace Presentation.View.Customer_View
 
         private void UpdatePageInfo()
         {
-            TotalCustomers = _customerService.GetCustomerCount();
+            if (_searchWord == null)
+                TotalCustomers = _customerService.GetCustomerCount();
+            else
+                TotalCustomers = _customerService.GetSearchCustomerCount(_searchWord);
+
             TxtCustomerCountNumber.Text = TotalCustomers.ToString();
 
             TotalPages = (int)Math.Ceiling((double)TotalCustomers / ROWPERPAGE);
@@ -112,6 +118,10 @@ namespace Presentation.View.Customer_View
 
             if (TotalPages == 0)
                 CurrentPage = 1;
+
+            TxtPageInfo.Text = CurrentPage.ToString();
+
+            LoadCustomers();
 
             UpdateButtonPage();
         }
@@ -141,7 +151,7 @@ namespace Presentation.View.Customer_View
                     {
                         System.Windows.MessageBox.Show("تم حذف العميل بنجاح", "نجاح");
                         UpdatePageInfo();
-                       LoadPagedCustomers(CurrentPage , ROWPERPAGE);
+
                     }
                     else
                     {
@@ -154,9 +164,95 @@ namespace Presentation.View.Customer_View
                 }
             }
         }
+        private void SearchBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+
+            if (e.Key == Key.Enter )
+            {
+                try
+                {
+                    if (string.IsNullOrWhiteSpace(SearchBox.Text))
+                    {
+                        _searchWord = null;
+                        CurrentPage = 1;
+                        UpdatePageInfo();
+                        return;
+                    }
+
+                    var search = SearchBox.Text;
+
+                    if (SearchBox.Text.ToLower().StartsWith("c-"))
+                    {
+                        search = SearchBox.Text.ToLower().Replace("c-", "");
+                    }
+
+                    _searchWord = search;
+                    CurrentPage = 1;
+
+                    UpdatePageInfo();
+                    DgCustomers.SelectedItem = null;
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show($"خطأ في تحميل العملاء: {ex.Message}");
+                }
+            }
+
+        }
+        private void BtnEditCustomer_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentCustomer == null)
+            {
+                System.Windows.MessageBox.Show("الرجاء اختيار عميل قبل التعديل.", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            int customerId = GetCurrentCustomerId();
 
 
+            var customerUpdateDTO = new CustomerUpdate(customerId, _currentCustomer.Name, _currentCustomer.Age,
+                _currentCustomer.Sex, _currentCustomer.Address, _currentCustomer.Discount);
 
+            try
+            {
+                var editWindow = new EditCustomerView(_customerService, customerUpdateDTO, customerId)
+                {
+                    Owner = this
+                };
+
+
+                bool? dialogResult = editWindow.ShowDialog();
+
+
+                if (dialogResult == true)
+                {
+
+                    LoadCustomers();
+                    var customers = DgCustomers.ItemsSource as IEnumerable<CustomerSummary>;
+                    var updatedCustomer = customers.FirstOrDefault(c => c.ID == $"C-{customerUpdateDTO.Id}");
+
+                    if (updatedCustomer != null)
+                    {
+                        DgCustomers.SelectedItem = updatedCustomer;
+                        DgCustomers.ScrollIntoView(updatedCustomer);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message, "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private int GetCurrentCustomerId()
+        {
+            if (!int.TryParse(_currentCustomer.ID.Replace("C-", ""), out int customerId))
+            {
+                System.Windows.MessageBox.Show("رقم العميل غير صالح.", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return customerId;
+        }
+    
         //----------------------------------------------------------------------
         private void DgCustomers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -233,34 +329,6 @@ namespace Presentation.View.Customer_View
                 ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        private void SearchBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter && SearchBox.Text != "")
-            {
-                try
-                {
-                    var search = SearchBox.Text;
-
-                    if (SearchBox.Text.ToLower().StartsWith("c-"))
-                    {
-                        search = SearchBox.Text.ToLower().Replace("c-", "");
-                    }
-
-                    var results = _customerService.SearchCustomerBy(search);
-                    DgCustomers.ItemsSource = results;
-
-                    DgCustomers.SelectedItem = null;
-
-                    ProfileSection.Visibility = Visibility.Visible;
-                    ProfileSection.Opacity = 0.3;
-                }
-                catch (Exception ex)
-                {
-                    System.Windows.MessageBox.Show($"خطأ في تحميل العملاء: {ex.Message}");
-                }
-            }
-
-        }
 
 
         private void BtnAddPhone_Click(object sender, RoutedEventArgs e)
@@ -391,57 +459,6 @@ namespace Presentation.View.Customer_View
         }
 
 
-        private void BtnEditCustomer_Click(object sender, RoutedEventArgs e)
-        {
-            //if (_currentCustomer == null)
-            //{
-            //    System.Windows.MessageBox.Show("الرجاء اختيار عميل قبل التعديل.", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Warning);
-            //    return;
-            //}
-
-            //if (!int.TryParse(_currentCustomer.ID.Replace("C-", ""), out int customerId))
-            //{
-            //    System.Windows.MessageBox.Show("رقم العميل غير صالح.", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    return;
-            //}
-
-            //var customerUpdateDTO = new CustomerUpdateDTO
-            //{
-            //    Name = _currentCustomer.Name,
-            //    Age = _currentCustomer.Age,
-            //    Sex = _currentCustomer.Sex,
-            //    Address = _currentCustomer.Address,
-            //    Discount = _currentCustomer.Discount
-            //};
-
-            //try
-            //{
-            //    var editWindow = new EditCustomerView(_customerService, customerUpdateDTO, customerId)
-            //    {
-            //        Owner = this
-            //    };
-
-            //    bool? dialogResult = editWindow.ShowDialog();
-
-            //    if (dialogResult == true)
-            //    {
-            //        RefreshCustomerProfile(customerId);
-
-            //        if (DgCustomers.SelectedItem is CustomerSummary selected)
-            //        {
-
-            //            selected.Address = _currentCustomer.Address;
-            //            selected.Name = _currentCustomer.Name;
-
-            //            DgCustomers.Items.Refresh();
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    System.Windows.MessageBox.Show(ex.Message, "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
-            //}
-        }
         private void BtnCreateCustomer_Click(object sender, RoutedEventArgs e)
         {
             //var createWin = new CreateCustomerWindow(_customerService, _deviceBrandService, _deviceTypeService, _deviceSpecService);
@@ -590,19 +607,6 @@ namespace Presentation.View.Customer_View
             }
         }
 
-        //private void RefreshCustomerProfile(int customerId)
-        //{
-        //    DgCustomers.ItemsSource = null;
-        //    DgCustomers.ItemsSource = _customerService.GetPagedCustomerSummaries();
-
-        //    DgCustomers.SelectedItem = null;
-
-
-        //    var customerInGrid = DgCustomers.Items.Cast<CustomerSummary>()
-        //                   .FirstOrDefault(c => c.ID == $"C-{customerId}");
-        //    if (customerInGrid != null)
-        //        DgCustomers.SelectedItem = customerInGrid;
-        //}
 
     }
 

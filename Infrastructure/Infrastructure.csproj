@@ -41,6 +41,15 @@
     <None Update="Scripts\Functions\GetFirstPersonPhoneNumber.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Scripts\StoredProcedures\Customers\SP_GetCustomerByID.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\StoredProcedures\Customers\SP_SearchCustomerCount.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\StoredProcedures\Customers\SP_SearchCustomerPaged.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\StoredProcedures\Persons\SP_DeletePerson.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -17,11 +17,12 @@ public interface ICustomerRepository  : IRepository
 
     int GetCustomerCount();
     CustomerProfileDTO GetCustomerFullProfile(int id );
-    List<CustomerSummary> SearchCustomerBy(string s);
+    List<CustomerSummary> SearchCustomerPagedBy(string word , int pageNumber, int rowPerPage);
+    public int GetSearchCustomerCount(string word);
 
     Customer GetCustomerById(int id);
 
-    public bool UpdateCustomerInfo(CustomerUpdateDTO customerInfo);
+    public bool UpdateCustomerInfo(Customer customerInfo);
 
 
 }

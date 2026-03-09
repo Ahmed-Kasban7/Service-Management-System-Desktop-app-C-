@@ -27,6 +27,15 @@ public class Person : BaseEntity
         _phones = new();
         CreatedDate = DateTime.Now;
     }
+    public Person(int id ,string name , int? age , ESex sex)
+    {
+        base.Id = id;
+        UpdateName(name);
+        UpdateAge(age);
+        UpdateSex(sex);
+        _phones = new();
+
+    }
 
     public void UpdateName(string Name)
     {

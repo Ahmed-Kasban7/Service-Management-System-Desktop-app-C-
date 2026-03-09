@@ -83,7 +83,10 @@ public static class DatabaseInitializer
        // Stored Procedure 
        ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetPagedCustomerSummaries.sql");
        ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_UpdateCustomerInfo.sql");
-       ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetCustomerCount.sql");
+       ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_SearchCustomerPaged.sql");
+       ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_SearchCustomerCount.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetCustomerCount.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetCustomerByID.sql");
        ExecuteScript(@"Scripts\StoredProcedures\Persons\SP_DeletePerson.sql");
 
        // Functions 

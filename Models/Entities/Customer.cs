@@ -17,6 +17,12 @@ public class Customer : Person
         UpdateDiscount(discount);
         _customerDevice = new();
     }
+    public Customer(int id ,string name , int ?age , ESex sex , string address , int ?discount ): base( id ,name , age , sex )
+    {
+        UpdateAddress(address);
+        UpdateDiscount(discount);
+        _customerDevice = new();
+    }
 
     public void UpdateAddress(string address)
     {
