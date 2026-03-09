@@ -54,7 +54,7 @@
 
                         <StackPanel Grid.Column="0" Margin="0,0,10,0">
                             <TextBlock Text="العمر" Style="{StaticResource FieldHeader}"/>
-                            <TextBox x:Name="TxtAge" Style="{StaticResource ModernTextBox}" TextChanged="TxtAge_TextChanged"/>
+                            <TextBox x:Name="TxtAge" Style="{StaticResource ModernTextBox}"/>
                         </StackPanel>
 
                         <StackPanel Grid.Column="1">

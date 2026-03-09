@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.CustomerDTOs;
 using Application.Services;
 using Domain.Enums;
 using System;
@@ -10,11 +10,11 @@ namespace Presentation.View.Customer_View
     public partial class EditCustomerView : Window
     {
         private readonly CustomerService _customerService;
-        private readonly CustomerUpdateDTO _customer;
+        private readonly CustomerUpdate _customer;
         private readonly int _customerId;
 
         public EditCustomerView(CustomerService customerService,
-                                CustomerUpdateDTO customer ,int customerId)
+                                CustomerUpdate customer ,int customerId)
         {
             InitializeComponent();
 
@@ -88,15 +88,7 @@ namespace Presentation.View.Customer_View
                 );
                 return;
             }
-            var updatedCustomer = new CustomerUpdateDTO
-            {
-                Id = _customerId,
-                Name = name,
-                Age = age,
-                Sex = sex,
-                Address = address,
-                Discount = discount
-            };
+            var updatedCustomer = new CustomerUpdate(_customerId, name, age, sex, address, discount);
 
             try
             {
@@ -122,9 +114,5 @@ namespace Presentation.View.Customer_View
             DialogResult = false;
         }
 
-        private void TxtAge_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
     }
 }
