@@ -36,13 +36,12 @@ public class PhoneRepository :IPhoneRepository
     }
     public bool UpdatePhone(string newPhone , string oldPhone)
     {
-        var script = @"update Phones
-                        set PhoneNumber = @newPhone
-                        where PhoneNumber=@oldPhone ";
+
         using var conn = DatabaseInitializer.GetConnection();
-        using var command = new SqlCommand(script, conn);
-        command.Parameters.AddWithValue("newPhone", newPhone);
-        command.Parameters.AddWithValue("oldPhone", oldPhone);
+        using var command = new SqlCommand("SP_UpdateCustomerPhone", conn);
+        command.CommandType = CommandType.StoredProcedure;
+        command.Parameters.AddWithValue("@newPhone", newPhone);
+        command.Parameters.AddWithValue("@oldPhone", oldPhone);
 
         conn.Open();
         var result = command.ExecuteNonQuery();

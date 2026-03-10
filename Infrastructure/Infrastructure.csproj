@@ -80,6 +80,9 @@
     <None Update="Scripts\StoredProcedures\Phones\SP_GetCustomerPhones.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Scripts\StoredProcedures\Phones\SP_UpdateCustomerPhone.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\Tables\CreateBrandsTable.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

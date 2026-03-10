@@ -296,49 +296,41 @@ namespace Presentation.View.Customer_View
 
         private void BtnEditPhone_Click(object sender, RoutedEventArgs e)
         {
-        //    if (sender is System.Windows.Controls.Button btn && btn.Tag is string oldPhone)
-        //    {
-        //        var newPhone = Microsoft.VisualBasic.Interaction.InputBox(
-        //            "عدل رقم الهاتف:",
-        //            "تعديل رقم",
-        //            oldPhone);
+            if (sender is System.Windows.Controls.Button btn && btn.Tag is string oldPhone)
+            {
+                var newPhone = Microsoft.VisualBasic.Interaction.InputBox(
+                    "عدل رقم الهاتف:",
+                    "تعديل رقم",
+                    oldPhone);
 
-        //        if (string.IsNullOrWhiteSpace(newPhone) || newPhone == oldPhone)
-        //            return;
+                if (string.IsNullOrWhiteSpace(newPhone) || newPhone == oldPhone)
+                    return;
 
-        //        try
-        //        {
-        //            int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
+                try
+                {
+                    int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
 
-        //            bool updated = _phoneService.UpdatePhone(newPhone, oldPhone);
+                    bool updated = _phoneService.UpdatePhone(newPhone, oldPhone);
 
-        //            if (updated)
-        //            {
-        //                System.Windows.MessageBox.Show("تم تعديل الرقم بنجاح", "نجاح",
-        //                    MessageBoxButton.OK, MessageBoxImage.Information);
+                    if (updated)
+                    {
+                        System.Windows.MessageBox.Show("تم تعديل الرقم بنجاح", "نجاح",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
 
-        //                RefreshCustomerProfile(customerId);
+                        ReloadCustomerProfile(customerId);
 
-        //                if (DgCustomers.SelectedItem is CustomerSummary selected)
-        //                {
-
-        //                    selected.Phone = newPhone;
-
-        //                    DgCustomers.Items.Refresh();
-        //                }
-
-        //            }
-        //            else
-        //            {
-        //                System.Windows.MessageBox.Show("فشل في تعديل الرقم", "خطأ",
-        //                    MessageBoxButton.OK, MessageBoxImage.Error);
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            System.Windows.MessageBox.Show($"حدث خطأ: {ex.Message}");
-        //        }
-        //    }
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show("فشل في تعديل الرقم", "خطأ",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show($"حدث خطأ: {ex.Message}");
+                }
+            }
         }
         private void BtnDeletePhone_Click(object sender, RoutedEventArgs e)
         {
