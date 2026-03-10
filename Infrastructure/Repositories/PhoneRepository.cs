@@ -1,13 +1,7 @@
-﻿using Domain.Entities;
-using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application;
-using Microsoft.Data.SqlClient.DataClassification;
+﻿using Microsoft.Data.SqlClient;
+
 using Application.Repositories;
+using System.Data;
 
 namespace Infrastructure.Data;
 
@@ -32,10 +26,10 @@ public class PhoneRepository :IPhoneRepository
 
     public bool DeletePhone(string phoneNumber)
     {
-        var script = @"DELETE FROM Phones WHERE Phones.PhoneNumber = @PhoneNumber";
         using var conn = DatabaseInitializer.GetConnection();
-        using var command = new SqlCommand(script, conn);
+        using var command = new SqlCommand("SP_DeletePhone", conn);
         command.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
+        command.CommandType =CommandType.StoredProcedure;
         conn.Open();
         var result = command.ExecuteNonQuery();
         return result > 0;

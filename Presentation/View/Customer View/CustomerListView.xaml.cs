@@ -62,7 +62,7 @@ namespace Presentation.View.Customer_View
         {
             try
             {
-                if (_searchWord == null)
+                if (string.IsNullOrWhiteSpace(_searchWord))
                     DgCustomers.ItemsSource = _customerService.GetPagedCustomerSummaries(CurrentPage, ROWPERPAGE);
                 else
                     DgCustomers.ItemsSource = _customerService.SearchCustomerPagedBy(_searchWord, CurrentPage, ROWPERPAGE);
@@ -226,16 +226,8 @@ namespace Presentation.View.Customer_View
 
                 if (dialogResult == true)
                 {
-
-                    LoadCustomers();
-                    var customers = DgCustomers.ItemsSource as IEnumerable<CustomerSummaryDto>;
-                    var updatedCustomer = customers.FirstOrDefault(c => c.ID == $"C-{customerUpdateDTO.Id}");
-
-                    if (updatedCustomer != null)
-                    {
-                        DgCustomers.SelectedItem = updatedCustomer;
-                        DgCustomers.ScrollIntoView(updatedCustomer);
-                    }
+                    ReloadCustomerProfile(customerUpdateDTO.Id);
+                   
                 }
             }
             catch (Exception ex)
@@ -266,40 +258,40 @@ namespace Presentation.View.Customer_View
         }
         private void BtnAddPhone_Click(object sender, RoutedEventArgs e)
         {
-            //if (_currentCustomer == null)
-            //    return;
+            if (_currentCustomer == null)
+                return;
 
-            //var input = Microsoft.VisualBasic.Interaction.InputBox(
-            //    "أدخل رقم الهاتف الجديد:",
-            //    "إضافة رقم هاتف",
-            //    "");
+            var input = Microsoft.VisualBasic.Interaction.InputBox(
+                "أدخل رقم الهاتف الجديد:",
+                "إضافة رقم هاتف",
+                "");
 
-            //if (string.IsNullOrWhiteSpace(input))
-            //    return;
+            if (string.IsNullOrWhiteSpace(input))
+                return;
 
-            //try
-            //{
-            //    int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
+            try
+            {
+                int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
 
-            //    bool added = _phoneService.AddPhone(input, customerId);
+                bool added = _phoneService.AddPhone(input, customerId);
 
-            //    if (added)
-            //    {
-            //        System.Windows.MessageBox.Show("تمت إضافة الرقم بنجاح", "نجاح",
-            //            MessageBoxButton.OK, MessageBoxImage.Information);
+                if (added)
+                {
+                    System.Windows.MessageBox.Show("تمت إضافة الرقم بنجاح", "نجاح",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
 
-            //        RefreshCustomerProfile(customerId);
-            //    }
-            //    else
-            //    {
-            //        System.Windows.MessageBox.Show("فشل في إضافة الرقم", "خطأ",
-            //            MessageBoxButton.OK, MessageBoxImage.Error);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    System.Windows.MessageBox.Show($"حدث خطأ: {ex.Message}");
-            //}
+                    ReloadCustomerProfile(customerId);
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("فشل في إضافة الرقم", "خطأ",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"حدث خطأ: {ex.Message}");
+            }
         }
 
         private void BtnEditPhone_Click(object sender, RoutedEventArgs e)
@@ -371,7 +363,8 @@ namespace Presentation.View.Customer_View
                             System.Windows.MessageBox.Show("تم حذف الرقم بنجاح", "نجاح",
                                 MessageBoxButton.OK, MessageBoxImage.Information);
 
-                            UpdatePageInfo();
+                            ReloadCustomerProfile(customerId);
+
                         }
                         else
                         {
@@ -387,6 +380,23 @@ namespace Presentation.View.Customer_View
             }
         }
 
+        private void ReloadCustomerProfile(int customerId)
+        {
+
+            _currentCustomer = _customerService.GetCustomerFullProfile(customerId);
+            LoadCustomerProfile(_currentCustomer);
+
+            LoadCustomers();
+
+            var customers = DgCustomers.ItemsSource as IEnumerable<CustomerSummaryDto>;
+            var updatedCustomer = customers.FirstOrDefault(c => c.ID == $"C-{customerId}");
+
+            if (updatedCustomer != null)
+            {
+                DgCustomers.SelectedItem = updatedCustomer;
+                DgCustomers.ScrollIntoView(updatedCustomer);
+            }
+        }
     
         //----------------------------------------------------------------------
         private void DgCustomers_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -463,11 +473,6 @@ namespace Presentation.View.Customer_View
             TxtNoDevicesMessage.Visibility = (customer.Devices == null || customer.Devices.Count == 0)
                 ? Visibility.Visible : Visibility.Collapsed;
         }
-
-
-
-
-
 
         private void BtnEditDevice_Click(object sender, RoutedEventArgs e)
         {
