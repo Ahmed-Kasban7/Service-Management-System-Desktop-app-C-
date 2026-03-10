@@ -4,6 +4,7 @@ using Domain.Entities;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,27 +17,11 @@ public class DeviceRepository : IDevcieRepository
     {
         var customerDevices = new List<DeviceInfoDTO>();
 
-        // تم إضافة d.BrandID, d.TypeID, d.SpecID للاستعلام
-        var script = @"
-    SELECT 
-        d.DeviceID,
-        d.BrandID,  
-        d.TypeID,   
-        d.SpecID,   
-        b.BrandName AS Brand, 
-        t.TypeName AS Type, 
-        s.SpecName AS Spec, 
-        d.ModelName, 
-        d.SerialNumber
-    FROM Devices d
-    LEFT JOIN Brands b ON d.BrandID = b.BrandID
-    LEFT JOIN Types t ON d.TypeID = t.TypeID
-    LEFT JOIN Specs s ON d.SpecID = s.SpecID
-    WHERE d.CustomerID = @customerId";
 
         using var conn = DatabaseInitializer.GetConnection();
         conn.Open();
-        using var command = new SqlCommand(script, conn);
+        using var command = new SqlCommand("SP_GetCustomerDevices", conn);
+        command.CommandType = CommandType.StoredProcedure;
         command.Parameters.AddWithValue("@customerId", customerId);
         using var reader = command.ExecuteReader();
 

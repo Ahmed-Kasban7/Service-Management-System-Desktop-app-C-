@@ -11,9 +11,9 @@ public class PhoneRepository :IPhoneRepository
     {
         var phones = new List<string>();
 
-        var script = @"select PhoneNumber from Phones where PersonID = @customerid";
         using var conn = DatabaseInitializer.GetConnection();
-        using var command = new  SqlCommand(script, conn);
+        using var command = new  SqlCommand("SP_GetCustomerPhones", conn);
+        command.CommandType = CommandType.StoredProcedure;
         command.Parameters.AddWithValue("customerid", customerid);
         conn.Open();
         using var reader = command.ExecuteReader();
@@ -51,13 +51,12 @@ public class PhoneRepository :IPhoneRepository
 
     public bool AddPhone(string phoneNumber, int personId)
     {
-        var script = @"insert into Phones (PhoneNumber , PersonID)
-                       values (@phoneNumber , @personId)";
 
         using var conn = DatabaseInitializer.GetConnection();
-        using var command = new SqlCommand(script, conn);
-        command.Parameters.AddWithValue("phoneNumber", phoneNumber);
-        command.Parameters.AddWithValue("personId", personId);
+        using var command = new SqlCommand("SP_AddCustomerPhone", conn);
+        command.CommandType = CommandType.StoredProcedure;
+        command.Parameters.AddWithValue("@phoneNumber", phoneNumber);
+        command.Parameters.AddWithValue("@personId", personId);
 
         conn.Open();
         var result = command.ExecuteNonQuery();

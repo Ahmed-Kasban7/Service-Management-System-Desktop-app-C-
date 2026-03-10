@@ -379,7 +379,6 @@ namespace Presentation.View.Customer_View
                 }
             }
         }
-
         private void ReloadCustomerProfile(int customerId)
         {
 

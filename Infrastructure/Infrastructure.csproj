@@ -47,10 +47,16 @@
     <None Update="Scripts\StoredProcedures\Customers\SP_GetCustomerByID.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Scripts\StoredProcedures\Customers\SP_GetCustomerProfile.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\StoredProcedures\Customers\SP_SearchCustomerCount.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\StoredProcedures\Customers\SP_SearchCustomerPaged.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\StoredProcedures\Devices\SP_GetCustomerDevices.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\StoredProcedures\Persons\SP_DeletePerson.sql">
@@ -65,7 +71,13 @@
     <None Update="Scripts\StoredProcedures\Customers\SP_UpdateCustomerInfo.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Scripts\StoredProcedures\Phones\SP_AddCustomerPhone.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\StoredProcedures\Phones\SP_DeletePhone.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\StoredProcedures\Phones\SP_GetCustomerPhones.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\Tables\CreateBrandsTable.sql">

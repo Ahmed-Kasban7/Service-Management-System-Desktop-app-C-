@@ -143,19 +143,11 @@ public class CustomerRepository : ICustomerRepository
     {
         CustomerProfileDTO customerProfileDTO = new CustomerProfileDTO();
 
-        var script = @"select p.PersonID, 
-                      p.Name, 
-                      p.Sex ,
-                      p.Age, 
-                      c.Address,
-                      c.Discount
-               from Persons p
-               join Customers c on p.PersonID = c.PersonID
-               where p.PersonID = @id";
 
         using var conn = DatabaseInitializer.GetConnection();
-       using var command = new SqlCommand(script, conn);
-       command.Parameters.AddWithValue("id", id);
+       using var command = new SqlCommand("SP_GetCustomerProfile", conn);
+        command.CommandType = CommandType.StoredProcedure;
+       command.Parameters.AddWithValue("@id", id);
         conn.Open();
         using var reader = command.ExecuteReader();
 

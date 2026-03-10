@@ -90,8 +90,12 @@ public static class DatabaseInitializer
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetCustomerCount.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetCustomerByID.sql");
        ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_CreateCustomer.sql");
+       ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetCustomerProfile.sql");
        ExecuteScript(@"Scripts\StoredProcedures\Persons\SP_DeletePerson.sql");
        ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_DeletePhone.sql");
+       ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_GetCustomerPhones.sql");
+       ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_AddCustomerPhone.sql");
+       ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_GetCustomerDevices.sql");
 
        // Functions 
        ExecuteScript(@"Scripts\Functions\GetFirstPersonPhoneNumber.sql");
