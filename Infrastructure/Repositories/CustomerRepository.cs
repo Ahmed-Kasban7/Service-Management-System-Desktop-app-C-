@@ -24,9 +24,9 @@ public class CustomerRepository : ICustomerRepository
         _deviceRepository = new DeviceRepository();
         _phoneRepository = new PhoneRepository();
     }
-    public List<CustomerSummary> GetPagedCustomerSummaries( int pageNumber , int rowsPerPage)
+    public List<CustomerSummaryDto> GetPagedCustomerSummaries( int pageNumber , int rowsPerPage)
     {
-        List<CustomerSummary> customers = new List<CustomerSummary>();
+        List<CustomerSummaryDto> customers = new List<CustomerSummaryDto>();
         using var conn = DatabaseInitializer.GetConnection();
 
         using SqlCommand command = new SqlCommand("SP_GetPagedCustomerSummaries", conn);
@@ -41,7 +41,7 @@ public class CustomerRepository : ICustomerRepository
         while (reader.Read())
         {
 
-            customers.Add(new CustomerSummary("C-" + reader["PersonID"].ToString()
+            customers.Add(new CustomerSummaryDto("C-" + reader["PersonID"].ToString()
                 , reader["Name"].ToString(), reader["Address"].ToString(), reader["PhoneNumber"].ToString()));
         }
         return customers;
@@ -68,9 +68,9 @@ public class CustomerRepository : ICustomerRepository
 
         return row > 0;
     }
-    public List<CustomerSummary> SearchCustomerPagedBy(string word , int PageNumber , int RowPerPage)
+    public List<CustomerSummaryDto> SearchCustomerPagedBy(string word , int PageNumber , int RowPerPage)
     {
-        List<CustomerSummary> customers = new List<CustomerSummary>();
+        List<CustomerSummaryDto> customers = new List<CustomerSummaryDto>();
         var conn = DatabaseInitializer.GetConnection();
 
         conn.Open();
@@ -84,7 +84,7 @@ public class CustomerRepository : ICustomerRepository
 
         while (reader.Read())
         {
-            customers.Add(new CustomerSummary("C-" + reader["PersonID"].ToString()
+            customers.Add(new CustomerSummaryDto("C-" + reader["PersonID"].ToString()
                 , reader["Name"].ToString(), reader["Address"].ToString(), reader["PhoneNumber"].ToString()));
         }
 
@@ -180,60 +180,50 @@ public class CustomerRepository : ICustomerRepository
         using var conn = DatabaseInitializer.GetConnection();
         conn.Open();
 
-       using  SqlTransaction transaction = conn.BeginTransaction();
-        try
+        using var cmd = new SqlCommand("SP_CreateCustomer", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+
+        cmd.Parameters.AddWithValue("@Name", customer.Name);
+        cmd.Parameters.AddWithValue("@Age", customer.Age);
+        cmd.Parameters.AddWithValue("@Sex", (int)customer.Sex);
+        cmd.Parameters.AddWithValue("@Discount", customer.Discount);
+        cmd.Parameters.AddWithValue("@Address", customer.Address);
+
+        var phoneTable = new DataTable();
+        phoneTable.Columns.Add("Phone", typeof(string));
+
+        foreach (var phone in customer.Phones)
         {
-            var scriptperson = "insert into Persons(Name , Age , Sex)  values(@Name , @Age , @Sex)  SELECT SCOPE_IDENTITY();";
-            using var cmdPerson = new SqlCommand(scriptperson, conn, transaction);
-            cmdPerson.Parameters.AddWithValue("Name", customer.Name);
-            cmdPerson.Parameters.AddWithValue("Age", (object)customer.Age ?? DBNull.Value);
-            cmdPerson.Parameters.AddWithValue("Sex", (int)customer.Sex);
-
-            int personId=  Convert.ToInt32(cmdPerson.ExecuteScalar());
-
-            var scriptCustomer = "insert into Customers(PersonID,Address , Discount) values (@PersonId, @Address , @Discount)";
-            using  var cmdCustomer = new SqlCommand(scriptCustomer, conn, transaction);
-            cmdCustomer.Parameters.AddWithValue("PersonId", personId);
-            cmdCustomer.Parameters.AddWithValue("Address", customer.Address);
-            cmdCustomer.Parameters.AddWithValue("Discount", customer.Discount);
-            cmdCustomer.ExecuteNonQuery();
-
-            var scriptphone = "insert into phones(personid , phonenumber) values (@personid , @phone)";
-            using var cmdphone = new SqlCommand(scriptphone, conn, transaction);
-            foreach (var phone in customer.Phones)
-            {
-                cmdphone.Parameters.Clear();
-
-                cmdphone.Parameters.AddWithValue("personid", personId);
-                cmdphone.Parameters.AddWithValue("phone", phone.PhoneNumber);
-                cmdphone.ExecuteNonQuery();
-            }
-
-            var scriptdevice = "insert into devices (customerid ,brandid , typeid , specid ,serialnumber , modelname) values (@customerid , @brandid , @typeid , @specid , @serialnumber , @modelname)";
-            using var cmddevice = new SqlCommand(scriptdevice, conn, transaction);
-            foreach (var device in customer.Devices)
-            {
-                cmddevice.Parameters.Clear();
-
-                cmddevice.Parameters.AddWithValue("customerid", personId);
-                cmddevice.Parameters.AddWithValue("brandid", device.BrandID);
-                cmddevice.Parameters.AddWithValue("typeid", device.TypeID);
-                cmddevice.Parameters.AddWithValue("specid", device.SpecID);
-                cmddevice.Parameters.AddWithValue("serialnumber", device.SerialNumber ?? (object)DBNull.Value);
-                cmddevice.Parameters.AddWithValue("modelname", device.SerialNumber ?? (object)DBNull.Value);
-                cmddevice.ExecuteNonQuery();
-            }
-
-            transaction.Commit();
-
-            return personId;
-        }
-        catch
-        {
-            transaction.Rollback();
-            throw;
+            phoneTable.Rows.Add(phone.PhoneNumber);
         }
 
+        var phoneParam = cmd.Parameters.AddWithValue("@Phones", phoneTable);
+        phoneParam.SqlDbType = SqlDbType.Structured;
+        phoneParam.TypeName = "PhoneList";
+
+        var deviceTable = new DataTable();
+        deviceTable.Columns.Add("BrandId", typeof(int));
+        deviceTable.Columns.Add("TypeId", typeof(int));
+        deviceTable.Columns.Add("SpecId", typeof(int));
+        deviceTable.Columns.Add("SerialNumber", typeof(string));
+        deviceTable.Columns.Add("Model", typeof(string));
+
+        foreach (var d in customer.Devices)
+        {
+            deviceTable.Rows.Add(
+                d.BrandID,
+                d.TypeID,
+                d.SpecID,
+                d.SerialNumber,
+                d.ModelName
+            );
+        }
+
+        var deviceParam = cmd.Parameters.AddWithValue("@Devices", deviceTable);
+        deviceParam.SqlDbType = SqlDbType.Structured;
+        deviceParam.TypeName = "DeviceList";
+
+        return cmd.ExecuteNonQuery();
     }
 
 }

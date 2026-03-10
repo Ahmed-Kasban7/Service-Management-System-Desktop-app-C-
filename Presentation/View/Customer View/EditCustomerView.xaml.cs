@@ -10,11 +10,11 @@ namespace Presentation.View.Customer_View
     public partial class EditCustomerView : Window
     {
         private readonly CustomerService _customerService;
-        private readonly CustomerUpdate _customer;
+        private readonly CustomerUpdateDto _customer;
         private readonly int _customerId;
 
         public EditCustomerView(CustomerService customerService,
-                                CustomerUpdate customer ,int customerId)
+                                CustomerUpdateDto customer ,int customerId)
         {
             InitializeComponent();
 
@@ -88,7 +88,7 @@ namespace Presentation.View.Customer_View
                 );
                 return;
             }
-            var updatedCustomer = new CustomerUpdate(_customerId, name, age, sex, address, discount);
+            var updatedCustomer = new CustomerUpdateDto(_customerId, name, age, sex, address, discount);
 
             try
             {

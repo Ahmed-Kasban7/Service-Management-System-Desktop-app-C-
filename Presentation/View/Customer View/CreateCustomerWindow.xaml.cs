@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.DeviceDTOs;
 using Application.Services;
 using Domain.Enums;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace Presentation.View.Customer_View
     public partial class CreateCustomerWindow : Window
     {
         public ObservableCollection<string> PhonesList { get; set; } = new ObservableCollection<string>();
-        public ObservableCollection<DeviceCreateDTO> DevicesList { get; set; } = new ObservableCollection<DeviceCreateDTO>();
+        public ObservableCollection<DeviceCreateDto> DevicesList { get; set; } = new ObservableCollection<DeviceCreateDto>();
         private readonly CustomerService _customerService;
         private readonly DeviceBrandService _deviceBrandService;
         private readonly DeviceTypeService _deviceTypeService;
@@ -76,19 +77,8 @@ namespace Presentation.View.Customer_View
                 return;
             }
 
-            DevicesList.Add(new DeviceCreateDTO
-            {
-                TypeID = selectedType.TypeID,
-                BrandID = selectedBrand.BrandID,
-                SpecID = selectedSpec.SpecID,
-
-                TypeName = selectedType.TypeName,
-                BrandName = selectedBrand.BrandName,
-                SpecName = selectedSpec.SpecName,
-
-                Model = TxtDeviceModel.Text,
-                SerialNumber = TxtSerial.Text
-            });
+            DevicesList.Add(new DeviceCreateDto(selectedBrand.BrandID, selectedBrand.BrandName,
+                selectedType.TypeID, selectedType.TypeName, selectedSpec.SpecID, selectedBrand.BrandName, TxtDeviceModel.Text, TxtSerial.Text));
 
             TxtDeviceModel.Clear();
             TxtSerial.Clear();
@@ -137,7 +127,7 @@ namespace Presentation.View.Customer_View
 
             try
             {
-                var customerDto = new CustomerCreateDTO(
+                var customerDto = new CustomerCreateDto(
                      TxtName.Text.Trim(),
                      TxtAddress.Text?.Trim() ?? "",
                      int.TryParse(TxtDiscount.Text, out int d) ? d : 0,
@@ -162,7 +152,7 @@ namespace Presentation.View.Customer_View
         {
             var button = sender as System.Windows.Controls.Button;
 
-            var deviceDto = button?.DataContext as DeviceCreateDTO;
+            var deviceDto = button?.DataContext as DeviceCreateDto;
 
             if (deviceDto != null)
             {

@@ -1,14 +1,15 @@
-﻿using Application.DTOs;
-using System;
+﻿using Application.Common;
+using Application.DTOs;
+using Application.DTOs.CustomerDTOs;
+using Application.DTOs.DeviceDTOs;
+using Application.Repositories;
+using Domain;
 using Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Domain;
-using Application.DTOs.CustomerDTOs;
-using Application.Common;
-using Application.Repositories;
 namespace Application.Services;
 
 public class CustomerService
@@ -19,7 +20,7 @@ public class CustomerService
         _customerRepository = customerRepository;
     }
 
-    public List<CustomerSummary> GetPagedCustomerSummaries(int pageNumber , int rowPerPage)
+    public List<CustomerSummaryDto> GetPagedCustomerSummaries(int pageNumber , int rowPerPage)
     {
         if (pageNumber <= 0) throw new ArgumentOutOfRangeException("Page number must be greater than 0.");
         if (rowPerPage <= 0) throw new ArgumentOutOfRangeException("Rows per page must be greater than 0.");
@@ -41,7 +42,7 @@ public class CustomerService
         return deleted ? Result.Success() : Result.Failure("العميل غير موجود");
     }
 
-    public List<CustomerSummary> SearchCustomerPagedBy(string searchWord , int pageNumber, int rowPerPage)
+    public List<CustomerSummaryDto> SearchCustomerPagedBy(string searchWord , int pageNumber, int rowPerPage)
     {
         return _customerRepository.SearchCustomerPagedBy(searchWord, pageNumber, rowPerPage);
     }
@@ -50,7 +51,7 @@ public class CustomerService
         return _customerRepository.GetSearchCustomerCount(word);
     }
 
-    public bool UpdateCustomerInfo(CustomerUpdate customerInfo)
+    public bool UpdateCustomerInfo(CustomerUpdateDto customerInfo)
     {
         
         Customer ? customer = _customerRepository.GetCustomerById(customerInfo.Id);
@@ -63,7 +64,7 @@ public class CustomerService
 
         return _customerRepository.UpdateCustomerInfo(customer);
     }
-    public int CreateCustomer(CustomerCreateDTO customerDto)
+    public int CreateCustomer(CustomerCreateDto customerDto)
     {
         if (customerDto == null)
             throw new ArgumentNullException(nameof(customerDto), "بيانات العميل غير موجودة.");

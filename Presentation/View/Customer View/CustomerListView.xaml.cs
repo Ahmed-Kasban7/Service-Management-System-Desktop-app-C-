@@ -129,7 +129,7 @@ namespace Presentation.View.Customer_View
         private void BtnDeleteCustomer_Click(object sender, RoutedEventArgs e)
         {
             var clickedButton = sender as Button;
-            var selectedSummary = clickedButton?.DataContext as CustomerSummary;
+            var selectedSummary = clickedButton?.DataContext as CustomerSummaryDto;
 
             if (selectedSummary == null) return;
 
@@ -210,7 +210,7 @@ namespace Presentation.View.Customer_View
             int customerId = GetCurrentCustomerId();
 
 
-            var customerUpdateDTO = new CustomerUpdate(customerId, _currentCustomer.Name, _currentCustomer.Age,
+            var customerUpdateDTO = new CustomerUpdateDto(customerId, _currentCustomer.Name, _currentCustomer.Age,
                 _currentCustomer.Sex, _currentCustomer.Address, _currentCustomer.Discount);
 
             try
@@ -228,7 +228,7 @@ namespace Presentation.View.Customer_View
                 {
 
                     LoadCustomers();
-                    var customers = DgCustomers.ItemsSource as IEnumerable<CustomerSummary>;
+                    var customers = DgCustomers.ItemsSource as IEnumerable<CustomerSummaryDto>;
                     var updatedCustomer = customers.FirstOrDefault(c => c.ID == $"C-{customerUpdateDTO.Id}");
 
                     if (updatedCustomer != null)
@@ -252,85 +252,18 @@ namespace Presentation.View.Customer_View
             }
             return customerId;
         }
-    
-        //----------------------------------------------------------------------
-        private void DgCustomers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void BtnCreateCustomer_Click(object sender, RoutedEventArgs e)
         {
-            if (DgCustomers.SelectedItem is CustomerSummary selectedSummary)
-            {
-                ProfileSection.Visibility = Visibility.Visible;
-                ProfileColumn.Width = new GridLength(450);
-                ProfileSection.Opacity = 1.0;
-                try
-                {
-                    int customerId = int.Parse(selectedSummary.ID.Replace("C-", ""));
-                    var fullProfile = _customerService.GetCustomerFullProfile(customerId);
+            var createWin = new CreateCustomerWindow(_customerService, _deviceBrandService, _deviceTypeService, _deviceSpecService);
 
-                    if (fullProfile != null)
-                    {
-                        SetButtonsEnabled(true);
-                        LoadCustomerProfile(fullProfile);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    System.Windows.MessageBox.Show($"خطأ: {ex.Message}");
-                }
-            }
-            else
+            createWin.Owner = Window.GetWindow(this);
+
+            if (createWin.ShowDialog() == true)
             {
-                ProfileColumn.Width = new GridLength(0);
-                ProfileSection.Visibility = Visibility.Collapsed;
+
+                UpdatePageInfo();
             }
         }
-        private void BtnChangeLogo_Click(object sender, RoutedEventArgs e)
-        {
-            var dlg = new Microsoft.Win32.OpenFileDialog();
-            dlg.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
-
-            if (dlg.ShowDialog() == true)
-            {
-                string selectedFileName = dlg.FileName;
-
-                CompanyLogo.Source = new BitmapImage(new Uri(selectedFileName));
-
-                try
-                {
-                    string json = File.ReadAllText("appsettings.json");
-                    dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-                    jsonObj["ImageSettings"]["LogoPath"] = selectedFileName;
-
-                    string output = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
-                    File.WriteAllText("appsettings.json", output);
-                }
-                catch (Exception ex)
-                {
-                    System.Windows.MessageBox.Show("فشل حفظ مسار الصورة في الإعدادات: " + ex.Message);
-                }
-            }
-        }
-        private void LoadCustomerProfile(CustomerProfileDTO customer)
-        {
-            _currentCustomer = customer;
-
-            TxtProfileID.Text = customer.ID;
-            TxtProfileName.Text = customer.Name;
-            TxtProfileAge.Text = customer.Age?.ToString() ?? "---";
-            TxtProfileSex.Text = customer.Sex == ESex.MALE ? "ذكر" : "أنثى";
-            TxtProfileAddress.Text = customer.Address;
-            TxtProfileDiscount.Text = $"{customer.Discount}%";
-
-            PhonesList.ItemsSource = customer.Phones;
-            TxtNoPhonesMessage.Visibility = (customer.Phones == null || customer.Phones.Count == 0)
-                ? Visibility.Visible : Visibility.Collapsed;
-
-            DevicesList.ItemsSource = customer.Devices;
-            TxtNoDevicesMessage.Visibility = (customer.Devices == null || customer.Devices.Count == 0)
-                ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-
-
         private void BtnAddPhone_Click(object sender, RoutedEventArgs e)
         {
             //if (_currentCustomer == null)
@@ -438,11 +371,7 @@ namespace Presentation.View.Customer_View
                             System.Windows.MessageBox.Show("تم حذف الرقم بنجاح", "نجاح",
                                 MessageBoxButton.OK, MessageBoxImage.Information);
 
-                            if (_currentCustomer != null)
-                            {
-                                var refreshedProfile = _customerService.GetCustomerFullProfile(customerId);
-                                LoadCustomerProfile(refreshedProfile!);
-                            }
+                            UpdatePageInfo();
                         }
                         else
                         {
@@ -458,19 +387,87 @@ namespace Presentation.View.Customer_View
             }
         }
 
-
-        private void BtnCreateCustomer_Click(object sender, RoutedEventArgs e)
+    
+        //----------------------------------------------------------------------
+        private void DgCustomers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //var createWin = new CreateCustomerWindow(_customerService, _deviceBrandService, _deviceTypeService, _deviceSpecService);
+            if (DgCustomers.SelectedItem is CustomerSummaryDto selectedSummary)
+            {
+                ProfileSection.Visibility = Visibility.Visible;
+                ProfileColumn.Width = new GridLength(450);
+                ProfileSection.Opacity = 1.0;
+                try
+                {
+                    int customerId = int.Parse(selectedSummary.ID.Replace("C-", ""));
+                    var fullProfile = _customerService.GetCustomerFullProfile(customerId);
 
-            //createWin.Owner = Window.GetWindow(this);
-
-            //if (createWin.ShowDialog() == true)
-            //{
-
-            //    LoadAllCustomers();
-            //}
+                    if (fullProfile != null)
+                    {
+                        SetButtonsEnabled(true);
+                        LoadCustomerProfile(fullProfile);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show($"خطأ: {ex.Message}");
+                }
+            }
+            else
+            {
+                ProfileColumn.Width = new GridLength(0);
+                ProfileSection.Visibility = Visibility.Collapsed;
+            }
         }
+        private void BtnChangeLogo_Click(object sender, RoutedEventArgs e)
+        {
+            var dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
+
+            if (dlg.ShowDialog() == true)
+            {
+                string selectedFileName = dlg.FileName;
+
+                CompanyLogo.Source = new BitmapImage(new Uri(selectedFileName));
+
+                try
+                {
+                    string json = File.ReadAllText("appsettings.json");
+                    dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+                    jsonObj["ImageSettings"]["LogoPath"] = selectedFileName;
+
+                    string output = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
+                    File.WriteAllText("appsettings.json", output);
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show("فشل حفظ مسار الصورة في الإعدادات: " + ex.Message);
+                }
+            }
+        }
+        private void LoadCustomerProfile(CustomerProfileDTO customer)
+        {
+            _currentCustomer = customer;
+
+            TxtProfileID.Text = customer.ID;
+            TxtProfileName.Text = customer.Name;
+            TxtProfileAge.Text = customer.Age?.ToString() ?? "---";
+            TxtProfileSex.Text = customer.Sex == ESex.MALE ? "ذكر" : "أنثى";
+            TxtProfileAddress.Text = customer.Address;
+            TxtProfileDiscount.Text = $"{customer.Discount}%";
+
+            PhonesList.ItemsSource = customer.Phones;
+            TxtNoPhonesMessage.Visibility = (customer.Phones == null || customer.Phones.Count == 0)
+                ? Visibility.Visible : Visibility.Collapsed;
+
+            DevicesList.ItemsSource = customer.Devices;
+            TxtNoDevicesMessage.Visibility = (customer.Devices == null || customer.Devices.Count == 0)
+                ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+
+
+
+
 
         private void BtnEditDevice_Click(object sender, RoutedEventArgs e)
         {

@@ -6,4 +6,4 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.CustomerDTOs;
 
-public record  CustomerSummary(string ID, string Name , string Address , string Phone);
+public record  CustomerSummaryDto(string ID, string Name , string Address , string Phone);

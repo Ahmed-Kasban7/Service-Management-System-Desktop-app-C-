@@ -7,4 +7,4 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.CustomerDTOs;
 
-public record CustomerUpdate(int Id , string Name , int? Age , ESex Sex , string Address , int? Discount = 0);
+public record CustomerUpdateDto(int Id , string Name , int? Age , ESex Sex , string Address , int? Discount = 0);

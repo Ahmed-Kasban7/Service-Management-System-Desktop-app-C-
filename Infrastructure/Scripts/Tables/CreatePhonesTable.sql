@@ -2,7 +2,7 @@
         BEGIN
             CREATE TABLE Phones(
                 PhoneID INT IDENTITY(1,1) PRIMARY KEY,
-                PhoneNumber NVARCHAR(11) NOT NULL UNIQUE
+                PhoneNumber VARCHAR(11) NOT NULL UNIQUE
                     CHECK (
                         LEN(PhoneNumber) = 11 AND
                         (PhoneNumber LIKE '010%' OR

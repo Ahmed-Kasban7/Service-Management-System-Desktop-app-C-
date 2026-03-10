@@ -13,11 +13,11 @@ namespace Application.Repositories;
 public interface ICustomerRepository  : IRepository
 {
     int CreateCustomer(Customer customer);
-    List<CustomerSummary> GetPagedCustomerSummaries(int pageNumber , int rowPerPage);
+    List<CustomerSummaryDto> GetPagedCustomerSummaries(int pageNumber , int rowPerPage);
 
     int GetCustomerCount();
     CustomerProfileDTO GetCustomerFullProfile(int id );
-    List<CustomerSummary> SearchCustomerPagedBy(string word , int pageNumber, int rowPerPage);
+    List<CustomerSummaryDto> SearchCustomerPagedBy(string word , int pageNumber, int rowPerPage);
     public int GetSearchCustomerCount(string word);
 
     Customer GetCustomerById(int id);
