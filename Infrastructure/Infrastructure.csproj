@@ -56,6 +56,9 @@
     <None Update="Scripts\StoredProcedures\Customers\SP_SearchCustomerPaged.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Scripts\StoredProcedures\Devices\SP_DeleteCustomerDevice.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\StoredProcedures\Devices\SP_GetCustomerDevices.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

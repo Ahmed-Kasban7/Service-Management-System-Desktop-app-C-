@@ -388,8 +388,87 @@ namespace Presentation.View.Customer_View
                 DgCustomers.ScrollIntoView(updatedCustomer);
             }
         }
+        private void LoadCustomerProfile(CustomerProfileDTO customer)
+        {
+            _currentCustomer = customer;
+
+            TxtProfileID.Text = customer.ID;
+            TxtProfileName.Text = customer.Name;
+            TxtProfileAge.Text = customer.Age?.ToString() ?? "---";
+            TxtProfileSex.Text = customer.Sex == ESex.MALE ? "ذكر" : "أنثى";
+            TxtProfileAddress.Text = customer.Address;
+            TxtProfileDiscount.Text = $"{customer.Discount}%";
+
+            PhonesList.ItemsSource = customer.Phones;
+            TxtNoPhonesMessage.Visibility = (customer.Phones == null || customer.Phones.Count == 0)
+                ? Visibility.Visible : Visibility.Collapsed;
+
+            DevicesList.ItemsSource = customer.Devices;
+            TxtNoDevicesMessage.Visibility = (customer.Devices == null || customer.Devices.Count == 0)
+                ? Visibility.Visible : Visibility.Collapsed;
+        }
+        private void LoadSavedLogo()
+        {
+            try
+            {
+                var config = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                    .Build();
+
+                string savedPath = config["ImageSettings:LogoPath"];
+
+                if (!string.IsNullOrEmpty(savedPath) && File.Exists(savedPath))
+                {
+                    CompanyLogo.Source = new BitmapImage(new Uri(savedPath));
+                }
+                else
+                {
+                    CompanyLogo.Source = null;
+                }
+            }
+            catch (Exception)
+            {
+                CompanyLogo.Source = null;
+            }
+        }
+        private void SetButtonsEnabled(bool isEnabled)
+        {
+            BtnEditCustomer.IsEnabled = isEnabled;
+            btnAddNum.IsEnabled = isEnabled;
+            btnAddDevice.IsEnabled = isEnabled;
+        }
+        private void BtnChangeLogo_Click(object sender, RoutedEventArgs e)
+        {
+            var dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
+
+            if (dlg.ShowDialog() == true)
+            {
+                string selectedFileName = dlg.FileName;
+
+                CompanyLogo.Source = new BitmapImage(new Uri(selectedFileName));
+
+                try
+                {
+                    string json = File.ReadAllText("appsettings.json");
+                    dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+                    jsonObj["ImageSettings"]["LogoPath"] = selectedFileName;
+
+                    string output = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
+                    File.WriteAllText("appsettings.json", output);
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show("فشل حفظ مسار الصورة في الإعدادات: " + ex.Message);
+                }
+            }
+        }
+        private void BtnDeviceHistory_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     
-        //----------------------------------------------------------------------
         private void DgCustomers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (DgCustomers.SelectedItem is CustomerSummaryDto selectedSummary)
@@ -418,51 +497,6 @@ namespace Presentation.View.Customer_View
                 ProfileColumn.Width = new GridLength(0);
                 ProfileSection.Visibility = Visibility.Collapsed;
             }
-        }
-        private void BtnChangeLogo_Click(object sender, RoutedEventArgs e)
-        {
-            var dlg = new Microsoft.Win32.OpenFileDialog();
-            dlg.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
-
-            if (dlg.ShowDialog() == true)
-            {
-                string selectedFileName = dlg.FileName;
-
-                CompanyLogo.Source = new BitmapImage(new Uri(selectedFileName));
-
-                try
-                {
-                    string json = File.ReadAllText("appsettings.json");
-                    dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-                    jsonObj["ImageSettings"]["LogoPath"] = selectedFileName;
-
-                    string output = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
-                    File.WriteAllText("appsettings.json", output);
-                }
-                catch (Exception ex)
-                {
-                    System.Windows.MessageBox.Show("فشل حفظ مسار الصورة في الإعدادات: " + ex.Message);
-                }
-            }
-        }
-        private void LoadCustomerProfile(CustomerProfileDTO customer)
-        {
-            _currentCustomer = customer;
-
-            TxtProfileID.Text = customer.ID;
-            TxtProfileName.Text = customer.Name;
-            TxtProfileAge.Text = customer.Age?.ToString() ?? "---";
-            TxtProfileSex.Text = customer.Sex == ESex.MALE ? "ذكر" : "أنثى";
-            TxtProfileAddress.Text = customer.Address;
-            TxtProfileDiscount.Text = $"{customer.Discount}%";
-
-            PhonesList.ItemsSource = customer.Phones;
-            TxtNoPhonesMessage.Visibility = (customer.Phones == null || customer.Phones.Count == 0)
-                ? Visibility.Visible : Visibility.Collapsed;
-
-            DevicesList.ItemsSource = customer.Devices;
-            TxtNoDevicesMessage.Visibility = (customer.Devices == null || customer.Devices.Count == 0)
-                ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void BtnEditDevice_Click(object sender, RoutedEventArgs e)
@@ -518,87 +552,52 @@ namespace Presentation.View.Customer_View
 
         private void BtnDeleteDevice_Click(object sender, RoutedEventArgs e)
         {
-            //if (_currentCustomer == null)
-            //    return;
+            if (_currentCustomer == null)
+                return;
 
-            //if (sender is Button btn && btn.Tag is DeviceInfoDTO selectedDevice)
-            //{
-            //    var result = System.Windows.MessageBox.Show(
-            //        $"هل أنت متأكد من حذف الجهاز ؟",
-            //        "تأكيد الحذف",
-            //        MessageBoxButton.YesNo,
-            //        MessageBoxImage.Warning);
+            if (sender is Button btn && btn.Tag is DeviceInfoDTO selectedDevice)
+            {
+                var result = System.Windows.MessageBox.Show(
+                    $"هل أنت متأكد من حذف الجهاز ؟",
+                    "تأكيد الحذف",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
 
-            //    if (result == MessageBoxResult.Yes)
-            //    {
-            //        try
-            //        {
-            //            int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
-            //            bool deleted = _deviceService.DeleteCustomerDevice(selectedDevice.DeviceId);
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
+                        bool deleted = _deviceService.DeleteCustomerDevice(selectedDevice.DeviceId);
 
-            //            if (deleted)
-            //            {
-            //                System.Windows.MessageBox.Show("تم حذف الجهاز بنجاح", "نجاح",
-            //                    MessageBoxButton.OK, MessageBoxImage.Information);
+                        if (deleted)
+                        {
+                            System.Windows.MessageBox.Show("تم حذف الجهاز بنجاح", "نجاح",
+                                MessageBoxButton.OK, MessageBoxImage.Information);
 
-            //                RefreshCustomerProfile(customerId);
-            //            }
-            //            else
-            //            {
-            //                System.Windows.MessageBox.Show("فشل في حذف الجهاز", "خطأ",
-            //                    MessageBoxButton.OK, MessageBoxImage.Error);
-            //            }
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            System.Windows.MessageBox.Show($"حدث خطأ أثناء الحذف: {ex.Message}", "خطأ",
-            //                MessageBoxButton.OK, MessageBoxImage.Error);
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    System.Windows.MessageBox.Show("الرجاء اختيار جهاز للحذف", "تنبيه",
-            //        MessageBoxButton.OK, MessageBoxImage.Warning);
-            //}
-        }
-        private void BtnDeviceHistory_Click(object sender, RoutedEventArgs e)
-        {
-
+                            ReloadCustomerProfile(customerId);
+                        }
+                        else
+                        {
+                            System.Windows.MessageBox.Show("فشل في حذف الجهاز", "خطأ",
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Windows.MessageBox.Show($"حدث خطأ أثناء الحذف: {ex.Message}", "خطأ",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("الرجاء اختيار جهاز للحذف", "تنبيه",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
      
-        private void SetButtonsEnabled(bool isEnabled)
-        {
-            BtnEditCustomer.IsEnabled = isEnabled;
-            btnAddNum.IsEnabled = isEnabled;
-            btnAddDevice.IsEnabled = isEnabled;
-        }
 
-        private void LoadSavedLogo()
-        {
-            try
-            {
-                var config = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                    .Build();
-
-                string savedPath = config["ImageSettings:LogoPath"];
-
-                if (!string.IsNullOrEmpty(savedPath) && File.Exists(savedPath))
-                {
-                    CompanyLogo.Source = new BitmapImage(new Uri(savedPath));
-                }
-                else
-                {
-                    CompanyLogo.Source = null;
-                }
-            }
-            catch (Exception)
-            {
-                CompanyLogo.Source = null;
-            }
-        }
 
 
     }

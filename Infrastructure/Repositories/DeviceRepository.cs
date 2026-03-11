@@ -63,23 +63,17 @@ public class DeviceRepository : IDevcieRepository
         cmd.Parameters.AddWithValue("modelname", device.ModelName is null? (object)DBNull.Value : device.ModelName);
         conn.Open();
         int affected = cmd.ExecuteNonQuery();
+
         return affected>0;
 
     }
 
     public bool DeleteCustomerDevice(int deviceId)
     {
-        var script = @"
-DELETE FROM Devices
-WHERE DeviceID = @deviceId
-AND (
-    SELECT COUNT(*) 
-    FROM Devices AS d
-    WHERE d.CustomerID = Devices.CustomerID
-) > 1;";
 
         using var conn = DatabaseInitializer.GetConnection();
-        using var cmd = new SqlCommand(script, conn);
+        using var cmd = new SqlCommand("SP_DeleteCustomerDevice", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@deviceId", deviceId);
 
         conn.Open();
