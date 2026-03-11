@@ -81,18 +81,10 @@ public class DeviceRepository : IDevcieRepository
     }
     public bool UpdateCustomerDevice(DeviceInfoDTO device)
     {
-        var script = @"
-        UPDATE Devices 
-        SET BrandID = @brandId, 
-            TypeID = @typeId, 
-            SpecID = @specId, 
-            ModelName = @model, 
-            SerialNumber = @serial
-        WHERE DeviceID = @deviceId";
 
         using var conn = DatabaseInitializer.GetConnection();
-        using var cmd = new SqlCommand(script, conn);
-
+        using var cmd = new SqlCommand("SP_UpdateDevice", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@brandId", device.BrandID);
         cmd.Parameters.AddWithValue("@typeId", device.TypeID);
         cmd.Parameters.AddWithValue("@specId", device.SpecID);

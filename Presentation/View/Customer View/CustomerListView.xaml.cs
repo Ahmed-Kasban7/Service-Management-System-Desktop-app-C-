@@ -62,14 +62,31 @@ namespace Presentation.View.Customer_View
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(_searchWord))
-                    DgCustomers.ItemsSource = _customerService.GetPagedCustomerSummaries(CurrentPage, ROWPERPAGE);
-                else
-                    DgCustomers.ItemsSource = _customerService.SearchCustomerPagedBy(_searchWord, CurrentPage, ROWPERPAGE);
-            }
-            catch (Exception ex) {
+                // 1. جلب البيانات وتخزينها في قائمة مؤقتة
+                var customers = string.IsNullOrWhiteSpace(_searchWord)
+                    ? _customerService.GetPagedCustomerSummaries(CurrentPage, ROWPERPAGE)
+                    : _customerService.SearchCustomerPagedBy(_searchWord, CurrentPage, ROWPERPAGE);
 
-                System.Windows.MessageBox.Show($"خطأ في تحميل  قائمه العملاء: {ex.Message}");
+                DgCustomers.ItemsSource = customers;
+
+                if (customers == null || !customers.Any())
+                {
+                    DgCustomers.Visibility = Visibility.Collapsed;
+                    EmptyStateOverlay.Visibility = Visibility.Visible;
+
+                    TxtEmptyMessage.Text = string.IsNullOrWhiteSpace(_searchWord)
+                        ? "لا يوجد عملاء مسجلين حالياً"
+                        : $"لا توجد نتائج للبحث عن: \"{_searchWord}\"";
+                }
+                else
+                {
+                    DgCustomers.Visibility = Visibility.Visible;
+                    EmptyStateOverlay.Visibility = Visibility.Collapsed;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"خطأ في تحميل قائمة العملاء: {ex.Message}");
             }
         }
 
@@ -501,38 +518,38 @@ namespace Presentation.View.Customer_View
 
         private void BtnEditDevice_Click(object sender, RoutedEventArgs e)
         {
-            //if (_currentCustomer == null)
-            //{
-            //    System.Windows.MessageBox.Show("الرجاء اختيار عميل أولاً.", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Warning);
-            //    return;
-            //}
+            if (_currentCustomer == null)
+            {
+                System.Windows.MessageBox.Show("الرجاء اختيار عميل أولاً.", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
-            //if (sender is Button btn && btn.Tag is DeviceInfoDTO selectedDevice)
-            //{
-            //    int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
+            if (sender is Button btn && btn.Tag is DeviceInfoDTO selectedDevice)
+            {
+                int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
 
-            //    var updateWindow = new UpdateDeviceWindow(
-            //        selectedDevice,
-            //        _deviceService,
-            //        _deviceBrandService,
-            //        _deviceTypeService,
-            //        _deviceSpecService
-            //    )
-            //    {
-            //        Owner = this
-            //    };
+                var updateWindow = new UpdateDeviceWindow(
+                    selectedDevice,
+                    _deviceService,
+                    _deviceBrandService,
+                    _deviceTypeService,
+                    _deviceSpecService
+                )
+                {
+                    Owner = this
+                };
 
-            //    bool? result = updateWindow.ShowDialog();
+                bool? result = updateWindow.ShowDialog();
 
-            //    if (result == true)
-            //    {
-            //        RefreshCustomerProfile(customerId);
-            //    }
-            //}
-            //else
-            //{
-            //    System.Windows.MessageBox.Show("برجاء اختيار الجهاز الذي تريد تعديله");
-            //}
+                if (result == true)
+                {
+                    ReloadCustomerProfile(customerId);
+                }
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("برجاء اختيار الجهاز الذي تريد تعديله");
+            }
         }
 
         private void BtnAddDevice_Click(object sender, RoutedEventArgs e)

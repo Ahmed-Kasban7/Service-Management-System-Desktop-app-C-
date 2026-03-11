@@ -599,30 +599,26 @@ Background="#2563EB" Style="{StaticResource IconButtonStyle}"
                                 <Border x:Name="customerheader" Grid.Row="0" Padding="25,15">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <Button x:Name="BtnAddCustomer" Content="➕ إنشاء عميل" Height="38"
-                    Padding="18,8" Background="{StaticResource PrimaryBlue}" Foreground="White"
-                    BorderThickness="0" Cursor="Hand" FontWeight="SemiBold" FontSize="13"
-                    Click="BtnCreateCustomer_Click" Grid.Column="2" HorizontalAlignment="Left">
-                                            <Button.Template>
-                                                <ControlTemplate TargetType="{x:Type Button}">
-                                                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
-                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                    </Border>
-                                                </ControlTemplate>
-                                            </Button.Template>
-                                        </Button>
+                                        <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,20,0">
+                                            <TextBlock Text="قائمة العملاء" FontSize="16" FontWeight="Bold" Foreground="#1E293B"/>
+                                            <TextBlock FontSize="12" Foreground="#64748B" Margin="0,4,0,0">
+                <Run Text="عدد العملاء: "/>
+                <Run x:Name="TxtCustomerCountNumber" Text="0" FontWeight="Bold"/>
+                                            </TextBlock>
+                                        </StackPanel>
 
-                                        <Border Grid.Column="0" Grid.ColumnSpan="3" Background="White" BorderBrush="{StaticResource BorderGray}"
-        BorderThickness="1" CornerRadius="8" Padding="12,8" MaxWidth="450" HorizontalAlignment="Center" Width="303">
+                                        <Border Grid.Column="1" Background="White" BorderBrush="{StaticResource BorderGray}"
+                BorderThickness="1" CornerRadius="8" Padding="12,8" MaxWidth="400" HorizontalAlignment="Center" Width="350">
                                             <Grid>
                                                 <TextBox x:Name="SearchBox" Background="Transparent" BorderThickness="0" FontSize="14"
-                 Foreground="Black" VerticalContentAlignment="Center" KeyDown="SearchBox_KeyDown"/>
-                                                <TextBlock Text="🔍 بحث بالاسم أو كود العميل" Foreground="{StaticResource GrayText}" IsHitTestVisible="False" VerticalAlignment="Center" Height="20">
+                         Foreground="Black" VerticalContentAlignment="Center" KeyDown="SearchBox_KeyDown"/>
+                                                <TextBlock Text="🔍 بحث بالاسم أو كود العميل" Foreground="{StaticResource GrayText}" 
+                           IsHitTestVisible="False" VerticalAlignment="Center">
                                                     <TextBlock.Style>
                                                         <Style TargetType="{x:Type TextBlock}">
                                                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -636,36 +632,62 @@ Background="#2563EB" Style="{StaticResource IconButtonStyle}"
                                                 </TextBlock>
                                             </Grid>
                                         </Border>
+
+                                        <Button x:Name="BtnAddCustomer" Grid.Column="2" Content="➕ إنشاء عميل" Height="38"
+                Padding="18,8" Background="{StaticResource PrimaryBlue}" Foreground="White"
+                BorderThickness="0" Cursor="Hand" FontWeight="SemiBold" FontSize="14"
+                Click="BtnCreateCustomer_Click" HorizontalAlignment="Left">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
                                     </Grid>
                                 </Border>
 
-                                <DataGrid Grid.Row="1" 
-              x:Name="DgCustomers" 
-              AutoGenerateColumns="False" 
-              GridLinesVisibility="None" 
-              Background="Transparent" 
-              BorderThickness="0" 
-              SelectionMode="Single" 
-              CanUserAddRows="False" 
-              IsReadOnly="True" 
-              RowHeaderWidth="0" 
-              SelectionChanged="DgCustomers_SelectionChanged">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="كود العميل" Binding="{Binding ID}" Width="150"/>
-                                        <DataGridTextColumn Header="الاسم" Binding="{Binding Name}" Width="1.5*"/>
-                                        <DataGridTextColumn Header="الهاتف" Binding="{Binding Phone}" Width="150"/>
-                                        <DataGridTextColumn Header="العنوان" Binding="{Binding Address}" Width="*"/>
-                                        <DataGridTemplateColumn Width="60">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <Button Background="Transparent" BorderThickness="0" Cursor="Hand" Click="BtnDeleteCustomer_Click">
-                                                        <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" Fill="#EF4444" Width="16" Height="16" Stretch="Uniform"/>
-                                                    </Button>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                    </DataGrid.Columns>
-                                </DataGrid>
+                                <Grid Grid.Row="1">
+                                    <DataGrid x:Name="DgCustomers" 
+                  AutoGenerateColumns="False" 
+                  GridLinesVisibility="None" 
+                  Background="Transparent" 
+                  BorderThickness="0" 
+                  SelectionMode="Single" 
+                  CanUserAddRows="False" 
+                  IsReadOnly="True" 
+                  RowHeaderWidth="0" 
+                  SelectionChanged="DgCustomers_SelectionChanged">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="كود العميل" Binding="{Binding ID}" Width="150"/>
+                                            <DataGridTextColumn Header="الاسم" Binding="{Binding Name}" Width="1.5*"/>
+                                            <DataGridTextColumn Header="الهاتف" Binding="{Binding Phone}" Width="150"/>
+                                            <DataGridTextColumn Header="العنوان" Binding="{Binding Address}" Width="*"/>
+                                            <DataGridTemplateColumn Width="60">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Button Background="Transparent" BorderThickness="0" Cursor="Hand" Click="BtnDeleteCustomer_Click">
+                                                            <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" Fill="#EF4444" Width="16" Height="16" Stretch="Uniform"/>
+                                                        </Button>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+
+                                    <Border x:Name="EmptyStateOverlay" 
+                Background="#AAFFFFFF" 
+                Visibility="Collapsed" 
+                CornerRadius="12">
+                                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <TextBlock Text="👥" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,15" Opacity="0.2"/>
+                                            <TextBlock x:Name="TxtEmptyMessage" 
+                           Text="لا توجد بيانات لعرضها" 
+                           FontSize="15" FontWeight="Bold" Foreground="#475569" HorizontalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
 
                                 <Border Grid.Row="3" Padding="15" Background="White" BorderBrush="#F1F5F9" BorderThickness="0">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -735,16 +757,7 @@ Background="#2563EB" Style="{StaticResource IconButtonStyle}"
 
                                     </StackPanel>
                                 </Border>
-                                <StackPanel Grid.Row="0" Orientation="Vertical" Margin="25,10,0,10">
-                                    <TextBlock Text="قائمة العملاء"
-                   FontSize="16"
-                   FontWeight="Bold"
-                   Foreground="#1E293B"/>
-                                    <TextBlock FontSize="12" Foreground="#64748B" Margin="0,4,0,0">
-    <Run Text="عدد العملاء: "/>
-    <Run x:Name="TxtCustomerCountNumber" Text="0" FontWeight="Bold"/>
-                                    </TextBlock>
-                                </StackPanel >
+   
                             </Grid>
 
 

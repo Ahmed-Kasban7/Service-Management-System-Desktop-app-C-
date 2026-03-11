@@ -65,6 +65,9 @@
     <None Update="Scripts\StoredProcedures\Devices\SP_GetCustomerDevices.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Scripts\StoredProcedures\Devices\SP_UpdateDevice.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\StoredProcedures\Persons\SP_DeletePerson.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
