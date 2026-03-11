@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs;
+namespace Application.DTOs.DeviceDTOs;
 
-public record BrandDTO(int BrandID , string BrandName) {
+public record BrandDto(int BrandID , string BrandName) {
     public override string ToString()
     {
         return BrandName;

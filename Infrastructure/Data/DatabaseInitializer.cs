@@ -98,6 +98,7 @@ public static class DatabaseInitializer
        ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_UpdateCustomerPhone.sql");
        ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_GetCustomerDevices.sql");
        ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_DeleteCustomerDevice.sql");
+       ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_CreateDevice.sql");
 
        // Functions 
        ExecuteScript(@"Scripts\Functions\GetFirstPersonPhoneNumber.sql");

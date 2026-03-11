@@ -38,7 +38,7 @@ namespace Presentation.View.Customer_View
         private readonly DeviceSpecService _deviceSpecService;
         private readonly DeviceService _deviceService;
         private readonly PhoneService _phoneService;
-        private CustomerProfileDTO? _currentCustomer;
+        private CustomerProfileDto? _currentCustomer;
 
         public CustomerListView(CustomerService customerService, PhoneService phoneService
             , DeviceBrandService deviceBrandService, DeviceTypeService deviceTypeService, DeviceSpecService specService, DeviceService deviceService)
@@ -388,7 +388,7 @@ namespace Presentation.View.Customer_View
                 DgCustomers.ScrollIntoView(updatedCustomer);
             }
         }
-        private void LoadCustomerProfile(CustomerProfileDTO customer)
+        private void LoadCustomerProfile(CustomerProfileDto customer)
         {
             _currentCustomer = customer;
 
@@ -537,17 +537,17 @@ namespace Presentation.View.Customer_View
 
         private void BtnAddDevice_Click(object sender, RoutedEventArgs e)
         {
-            //int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
+            int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
 
-            //var AddWin = new AddDeviceWindow(customerId, _deviceService, _customerService, _deviceBrandService, _deviceTypeService, _deviceSpecService);
+            var AddWin = new AddDeviceWindow(customerId, _deviceService, _customerService, _deviceBrandService, _deviceTypeService, _deviceSpecService);
 
-            //AddWin.Owner = Window.GetWindow(this);
+            AddWin.Owner = Window.GetWindow(this);
 
-            //if (AddWin.ShowDialog() == true)
-            //{
+            if (AddWin.ShowDialog() == true)
+            {
 
-            //    RefreshCustomerProfile(customerId);
-            //}
+                ReloadCustomerProfile(customerId);
+            }
         }
 
         private void BtnDeleteDevice_Click(object sender, RoutedEventArgs e)

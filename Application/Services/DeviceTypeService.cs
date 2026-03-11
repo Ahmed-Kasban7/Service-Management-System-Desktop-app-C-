@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.DeviceDTOs;
 using Application.Repositories;
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ public class DeviceTypeService
         _typeRepository = typeRepository;
     }
 
-    public List<TypeDTO> GetAllTypes()
+    public List<TypeDto> GetAllTypes()
     {
         return _typeRepository.GetAllTypes();
     }

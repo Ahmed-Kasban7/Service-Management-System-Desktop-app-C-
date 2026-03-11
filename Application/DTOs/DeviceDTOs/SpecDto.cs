@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs;
+namespace Application.DTOs.DeviceDTOs;
 
-public record TypeDTO(int TypeID, string TypeName) {
+public record SpecDto(int SpecID, string SpecName, int TypeID) {
+
     public override string ToString()
     {
-        return TypeName;
+        return SpecName;
     }
+
 }
 

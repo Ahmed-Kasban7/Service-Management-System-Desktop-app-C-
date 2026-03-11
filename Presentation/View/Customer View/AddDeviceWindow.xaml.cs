@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.DeviceDTOs;
 using Application.Services;
 using System;
 using System.Collections.Generic;
@@ -64,9 +65,9 @@ namespace Presentation.View.Customer_View
 
         private void BtnSaveAll_Click(object sender, RoutedEventArgs e)
         {
-            if (CbType.SelectedItem is not TypeDTO selectedType ||
-                CbBrand.SelectedItem is not BrandDTO selectedBrand ||
-                CbSpec.SelectedItem is not SpecDTO selectedSpec)
+            if (CbType.SelectedItem is not TypeDto selectedType ||
+                CbBrand.SelectedItem is not BrandDto selectedBrand ||
+                CbSpec.SelectedItem is not SpecDto selectedSpec)
             {
                System.Windows.MessageBox.Show("برجاء ادخال بيانات الجهاز");
                 return;

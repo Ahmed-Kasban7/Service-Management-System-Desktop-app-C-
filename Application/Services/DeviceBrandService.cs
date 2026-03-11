@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.DeviceDTOs;
 using Application.Repositories;
 using Domain.Entities;
 using System;
@@ -18,11 +18,11 @@ public class DeviceBrandService
         _brandRepository = brandRepository;
     }
 
-    public List<BrandDTO> GetAllBrands()
+    public List<BrandDto> GetAllBrands()
     {
         return _brandRepository.GetAllBrands();
     }
-    public BrandDTO GetBrandBy(int Id)
+    public BrandDto GetBrandBy(int Id)
     {
         return _brandRepository.GetBrandBy(Id);
     }

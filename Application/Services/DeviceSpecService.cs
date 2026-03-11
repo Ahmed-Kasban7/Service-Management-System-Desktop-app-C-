@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.DeviceDTOs;
 using Application.Repositories;
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ public class DeviceSpecService
         _deviceSpecRepository = deviceSpecRepository;
     }
 
-    public List<SpecDTO> GetSpecsByTypeId(int typeId)
+    public List<SpecDto> GetSpecsByTypeId(int typeId)
     {
         return _deviceSpecRepository.GetSpecsByTypeId(typeId);
     }

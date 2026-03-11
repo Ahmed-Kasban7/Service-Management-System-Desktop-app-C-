@@ -16,7 +16,7 @@ public interface ICustomerRepository  : IRepository
     List<CustomerSummaryDto> GetPagedCustomerSummaries(int pageNumber , int rowPerPage);
 
     int GetCustomerCount();
-    CustomerProfileDTO GetCustomerFullProfile(int id );
+    CustomerProfileDto GetCustomerFullProfile(int id );
     List<CustomerSummaryDto> SearchCustomerPagedBy(string word , int pageNumber, int rowPerPage);
     public int GetSearchCustomerCount(string word);
 

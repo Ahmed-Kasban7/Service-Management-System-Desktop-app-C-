@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.DeviceDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace Application.Repositories;
 
 public interface IDeviceBrandRepository
 {
-    List<BrandDTO> GetAllBrands();
-    BrandDTO GetBrandBy(int id);
+    List<BrandDto> GetAllBrands();
+    BrandDto GetBrandBy(int id);
     public bool AddBrand(string brandName);
 }

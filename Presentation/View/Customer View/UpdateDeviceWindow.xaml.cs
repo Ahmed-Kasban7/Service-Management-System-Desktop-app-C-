@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.DTOs.DeviceDTOs;
 using Application.Services;
 using System;
 using System.Linq;
@@ -93,9 +94,9 @@ namespace Presentation.View.Customer_View
                 _editingDevice.BrandID = (int)CbBrand.SelectedValue;
                 _editingDevice.SpecID = (int)CbSpec.SelectedValue;
 
-                _editingDevice.TypeName = (CbType.SelectedItem as TypeDTO)?.TypeName;
-                _editingDevice.BrandName = (CbBrand.SelectedItem as BrandDTO)?.BrandName;
-                _editingDevice.SpecName = (CbSpec.SelectedItem as SpecDTO)?.SpecName;
+                _editingDevice.TypeName = (CbType.SelectedItem as TypeDto)?.TypeName;
+                _editingDevice.BrandName = (CbBrand.SelectedItem as BrandDto)?.BrandName;
+                _editingDevice.SpecName = (CbSpec.SelectedItem as SpecDto)?.SpecName;
 
                 _editingDevice.Model = TxtDeviceModel.Text.Trim();
                 _editingDevice.SerialNumber = TxtSerial.Text?.Trim();

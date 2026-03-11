@@ -70,9 +70,9 @@ namespace Presentation.View.Customer_View
 
         private void BtnAddDeviceToList_Click(object sender, RoutedEventArgs e)
         {
-            if (CbType.SelectedItem is not TypeDTO selectedType ||
-                CbBrand.SelectedItem is not BrandDTO selectedBrand ||
-                CbSpec.SelectedItem is not SpecDTO selectedSpec)
+            if (CbType.SelectedItem is not TypeDto selectedType ||
+                CbBrand.SelectedItem is not BrandDto selectedBrand ||
+                CbSpec.SelectedItem is not SpecDto selectedSpec)
             {
                 return;
             }

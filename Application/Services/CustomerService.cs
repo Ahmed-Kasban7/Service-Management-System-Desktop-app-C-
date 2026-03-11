@@ -91,7 +91,7 @@ public class CustomerService
         return _customerRepository.CreateCustomer(newCustomer);
     }
 
-    public CustomerProfileDTO GetCustomerFullProfile(int id)
+    public CustomerProfileDto GetCustomerFullProfile(int id)
     {
         return _customerRepository.GetCustomerFullProfile(id);
     }

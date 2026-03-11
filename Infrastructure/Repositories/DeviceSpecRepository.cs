@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.DeviceDTOs;
 using Application.Repositories;
 using Microsoft.Data.SqlClient;
 using System;
@@ -11,9 +11,9 @@ namespace Infrastructure.Data;
 
 public class DeviceSpecRepository:IDeviceSpecRepository
 {
-    public List<SpecDTO> GetSpecsByTypeId(int typeId)
+    public List<SpecDto> GetSpecsByTypeId(int typeId)
     {
-        List<SpecDTO> specDTOs = new List<SpecDTO>();
+        List<SpecDto> specDTOs = new List<SpecDto>();
         using var conn = DatabaseInitializer.GetConnection();
 
         string script = @"select * from Specs where TypeID = @typeId ";
@@ -24,9 +24,8 @@ public class DeviceSpecRepository:IDeviceSpecRepository
 
         while (reader.Read())
         {
-            specDTOs.Add(new SpecDTO(Convert.ToInt32(reader["SpecID"]), reader["SpecName"].ToString() ,Convert.ToInt32(reader["TypeID"])));
+            specDTOs.Add(new SpecDto(Convert.ToInt32(reader["SpecID"]), reader["SpecName"].ToString(), Convert.ToInt32(reader["TypeID"])));
         }
-
         return specDTOs;
     }
 }

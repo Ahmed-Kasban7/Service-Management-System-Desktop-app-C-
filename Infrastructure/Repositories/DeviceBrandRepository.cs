@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.DeviceDTOs;
 using Application.Repositories;
 using Microsoft.Data.SqlClient;
 using System;
@@ -11,9 +11,9 @@ namespace Infrastructure.Data;
 
 public class DeviceBrandRepository:IDeviceBrandRepository
 {
-    public List<BrandDTO> GetAllBrands()
+    public List<BrandDto> GetAllBrands()
     {
-        List<BrandDTO> brands = new List<BrandDTO>();
+        List<BrandDto> brands = new List<BrandDto>();
         using var conn = DatabaseInitializer.GetConnection();
 
         string script = @"select * from Brands ";
@@ -23,14 +23,14 @@ public class DeviceBrandRepository:IDeviceBrandRepository
 
         while (reader.Read())
         {
-            brands.Add(new BrandDTO(Convert.ToInt32(reader["BrandID"]), reader["BrandName"].ToString()));
+            brands.Add(new BrandDto(Convert.ToInt32(reader["BrandID"]), reader["BrandName"].ToString()));
         }
 
         return brands;
     }
-    public BrandDTO GetBrandBy(int id)
+    public BrandDto GetBrandBy(int id)
     {
-        BrandDTO brand = null;
+        BrandDto brand = null;
         using var conn = DatabaseInitializer.GetConnection();
 
         string script = @"select * from Brands where BrandID = @id";
@@ -41,7 +41,7 @@ public class DeviceBrandRepository:IDeviceBrandRepository
 
         if(reader.Read())
         {
-            brand = new BrandDTO(Convert.ToInt32(reader["BrandID"]), reader["BrandName"].ToString());
+            brand = new BrandDto(Convert.ToInt32(reader["BrandID"]), reader["BrandName"].ToString());
         }
 
         return brand;

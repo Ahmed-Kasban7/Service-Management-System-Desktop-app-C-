@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.DeviceDTOs;
 using Application.Repositories;
 using Domain.Entities;
 using Microsoft.Data.SqlClient;
@@ -12,9 +12,9 @@ namespace Infrastructure.Data;
 
 public class DeviceTypeRepository:IDeviceTypeRepository
 {
-    public List<TypeDTO> GetAllTypes()
+    public List<TypeDto> GetAllTypes()
     {
-        List<TypeDTO> types = new List<TypeDTO>();
+        List<TypeDto> types = new List<TypeDto>();
         using var conn = DatabaseInitializer.GetConnection();
 
         string script = @"select * from Types ";
@@ -24,7 +24,7 @@ public class DeviceTypeRepository:IDeviceTypeRepository
 
         while (reader.Read())
         {
-            types.Add(new TypeDTO(Convert.ToInt32(reader["TypeID"]), reader["TypeName"].ToString()));
+            types.Add(new TypeDto(Convert.ToInt32(reader["TypeID"]), reader["TypeName"].ToString()));
         }
 
         return types;

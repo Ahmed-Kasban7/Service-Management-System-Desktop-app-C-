@@ -48,19 +48,17 @@ public class DeviceRepository : IDevcieRepository
     }
     public bool AddDeviceToCustomer(int customerId, Device device)
     {
-        var script = @"insert into devices (customerid ,brandid , typeid , specid ,serialnumber , modelname) 
-            values (@customerid , @brandid , @typeid , @specid , @serialnumber , @modelname)";
-
         using var conn = DatabaseInitializer.GetConnection();
 
-        using var cmd = new SqlCommand(script, conn);
-
+        using var cmd = new SqlCommand("SP_CreateDevice", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("customerid", customerId);
         cmd.Parameters.AddWithValue("brandid", device.BrandID);
         cmd.Parameters.AddWithValue("typeid", device.TypeID);
         cmd.Parameters.AddWithValue("specid", device.SpecID);
         cmd.Parameters.AddWithValue("serialnumber", device.SerialNumber is null ? (object)DBNull.Value : device.SerialNumber);
         cmd.Parameters.AddWithValue("modelname", device.ModelName is null? (object)DBNull.Value : device.ModelName);
+
         conn.Open();
         int affected = cmd.ExecuteNonQuery();
 

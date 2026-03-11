@@ -139,31 +139,29 @@ public class CustomerRepository : ICustomerRepository
 
         return customer;
     }
-    public CustomerProfileDTO GetCustomerFullProfile(int id)
+    public CustomerProfileDto GetCustomerFullProfile(int id)
     {
-        CustomerProfileDTO customerProfileDTO = new CustomerProfileDTO();
-
-
         using var conn = DatabaseInitializer.GetConnection();
-       using var command = new SqlCommand("SP_GetCustomerProfile", conn);
+        using var command = new SqlCommand("SP_GetCustomerProfile", conn);
+
         command.CommandType = CommandType.StoredProcedure;
-       command.Parameters.AddWithValue("@id", id);
+        command.Parameters.AddWithValue("@id", id);
+
         conn.Open();
+
         using var reader = command.ExecuteReader();
 
-        if (reader.Read())
-        {
-            customerProfileDTO.ID = "C-" + reader["PersonID"].ToString();
-            customerProfileDTO.Name = reader["Name"].ToString();
-            customerProfileDTO.Address = reader["Address"].ToString();
-            customerProfileDTO.Discount = reader["Discount"] != DBNull.Value ? Convert.ToInt32(reader["Discount"]) : 0;
-            customerProfileDTO.Age = reader["Age"] != DBNull.Value ? Convert.ToInt32(reader["Age"]) : null;
-            customerProfileDTO.Sex = (ESex)Convert.ToInt32(reader["Sex"]);
-        }
+        if (!reader.Read())
+            return null;
 
-       customerProfileDTO.Devices=  _deviceRepository.GetCustomerDevicesBy(id);
-       customerProfileDTO.Phones= _phoneRepository.GetCustomerPhonesBy(id);
-
+        var customerProfileDTO = new CustomerProfileDto(
+            "C-" + reader["PersonID"].ToString(),
+            reader["Name"].ToString(),
+            reader["Address"].ToString(),
+            reader["Discount"] != DBNull.Value ? Convert.ToInt32(reader["Discount"]) : 0,
+            reader["Age"] != DBNull.Value ? Convert.ToInt32(reader["Age"]) : null,
+            (ESex)Convert.ToInt32(reader["Sex"]) , _deviceRepository.GetCustomerDevicesBy(id) , _phoneRepository.GetCustomerPhonesBy(id)
+        );
         return customerProfileDTO;
     }
 
