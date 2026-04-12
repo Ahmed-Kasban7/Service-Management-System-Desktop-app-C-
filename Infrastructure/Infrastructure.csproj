@@ -1,134 +1,69 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <SSDTUnitTestPath Condition="'$(SSDTUnitTestPath)' == ''">$(VsInstallRoot)\Common7\IDE\Extensions\Microsoft\SQLDB</SSDTUnitTestPath>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SSDTPath Condition="'$(SSDTPath)' == ''">$(VsInstallRoot)\Common7\IDE\Extensions\Microsoft\SQLDB\DAC</SSDTPath>
-  </PropertyGroup>
-  <PropertyGroup>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-  </PropertyGroup>
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Extended.Wpf.Toolkit" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.2" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Application\Application.csproj" />
-    <ProjectReference Include="..\Models\Domain.csproj" />
-  </ItemGroup>
-  <ItemGroup Condition="$(VisualStudioVersion) == '17.0'">
-    <Reference Include="Microsoft.Data.Tools.Schema.Sql, Version=16.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>$(SSDTPath)\Microsoft.Data.Tools.Schema.Sql.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Data.Tools.Schema.Sql.UnitTesting, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>$(SSDTUnitTestPath)\Microsoft.Data.Tools.Schema.Sql.UnitTesting.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Data.Tools.Schema.Sql.UnitTestingAdapter, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>$(SSDTUnitTestPath)\Microsoft.Data.Tools.Schema.Sql.UnitTestingAdapter.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Scripts\Functions\GetFirstPersonPhoneNumber.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\StoredProcedures\Customers\SP_CreateCustomer.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\StoredProcedures\Customers\SP_GetCustomerByID.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\StoredProcedures\Customers\SP_GetCustomerProfile.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\StoredProcedures\Customers\SP_SearchCustomerCount.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\StoredProcedures\Customers\SP_SearchCustomerPaged.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\StoredProcedures\Devices\SP_CreateDevice.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\StoredProcedures\Devices\SP_DeleteCustomerDevice.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\StoredProcedures\Devices\SP_GetCustomerDevices.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\StoredProcedures\Devices\SP_UpdateDevice.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\StoredProcedures\Persons\SP_DeletePerson.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\StoredProcedures\Customers\SP_GetCustomerCount.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\StoredProcedures\Customers\SP_GetPagedCustomerSummaries.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\StoredProcedures\Customers\SP_UpdateCustomerInfo.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\StoredProcedures\Phones\SP_AddCustomerPhone.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\StoredProcedures\Phones\SP_DeletePhone.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\StoredProcedures\Phones\SP_GetCustomerPhones.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\StoredProcedures\Phones\SP_UpdateCustomerPhone.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\Tables\CreateBrandsTable.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\Tables\CreateCustomersTable.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\Tables\CreateDeviceListType.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\Tables\CreateDevicesTable.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\Tables\CreatePersonsTable.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\Tables\CreatePhoneListType.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\Tables\CreatePhoneNumberIndex.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\Tables\CreatePhonesTable.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\Tables\CreateSpecsTable.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\Tables\CreateTypesTable.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\Triggers\trg_InsteadOfDeletePerson.sql">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <PropertyGroup>
-    <SsdtUnitTestVersion>3.1</SsdtUnitTestVersion>
-  </PropertyGroup>
-  <Import Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.Sql.UnitTesting.targets" Condition="$(VisualStudioVersion) != '15.0' And '$(SQLDBExtensionsRefPath)' != ''" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.Sql.UnitTesting.targets" Condition="$(VisualStudioVersion) != '15.0' And '$(SQLDBExtensionsRefPath)' == ''" />
+
+	<PropertyGroup>
+		<SSDTUnitTestPath Condition="'$(SSDTUnitTestPath)' == ''">$(VsInstallRoot)\Common7\IDE\Extensions\Microsoft\SQLDB</SSDTUnitTestPath>
+		<SSDTPath Condition="'$(SSDTPath)' == ''">$(VsInstallRoot)\Common7\IDE\Extensions\Microsoft\SQLDB\DAC</SSDTPath>
+		<VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="Scripts\**\*.sql">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup Condition="$(VisualStudioVersion) == '17.0'">
+		<Reference Include="Microsoft.Data.Tools.Schema.Sql">
+			<HintPath>$(SSDTPath)\Microsoft.Data.Tools.Schema.Sql.dll</HintPath>
+			<Private>True</Private>
+		</Reference>
+		<Reference Include="Microsoft.Data.Tools.Schema.Sql.UnitTesting">
+			<HintPath>$(SSDTUnitTestPath)\Microsoft.Data.Tools.Schema.Sql.UnitTesting.dll</HintPath>
+			<Private>True</Private>
+		</Reference>
+		<Reference Include="Microsoft.Data.Tools.Schema.Sql.UnitTestingAdapter">
+			<HintPath>$(SSDTUnitTestPath)\Microsoft.Data.Tools.Schema.Sql.UnitTestingAdapter.dll</HintPath>
+			<Private>True</Private>
+		</Reference>
+
+		<!-- نسخ الـ DLLs مع الـ publish -->
+		<Content Include="$(SSDTPath)\Microsoft.Data.Tools.Schema.Sql.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+		<Content Include="$(SSDTUnitTestPath)\Microsoft.Data.Tools.Schema.Sql.UnitTesting.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+		<Content Include="$(SSDTUnitTestPath)\Microsoft.Data.Tools.Schema.Sql.UnitTestingAdapter.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
+
+	<!-- Packages -->
+	<ItemGroup>
+		<PackageReference Include="Extended.Wpf.Toolkit" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.2" />
+	</ItemGroup>
+
+	<!-- Project References -->
+	<ItemGroup>
+		<ProjectReference Include="..\Application\Application.csproj" />
+		<ProjectReference Include="..\Models\Domain.csproj" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<SsdtUnitTestVersion>3.1</SsdtUnitTestVersion>
+	</PropertyGroup>
+
+	<Import Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.Sql.UnitTesting.targets" Condition="$(VisualStudioVersion) != '15.0' And '$(SQLDBExtensionsRefPath)' != ''" />
+	<Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.Sql.UnitTesting.targets" Condition="$(VisualStudioVersion) != '15.0' And '$(SQLDBExtensionsRefPath)' == ''" />
+
 </Project>

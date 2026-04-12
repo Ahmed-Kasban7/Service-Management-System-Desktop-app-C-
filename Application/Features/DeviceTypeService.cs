@@ -22,4 +22,15 @@ public class DeviceTypeService
         return _typeRepository.GetAllTypes();
     }
 
+    public bool AddType(string type)
+    {
+        if (string.IsNullOrWhiteSpace(type))
+            throw new ArgumentNullException("لا يمكن أن يكون النوع فارغًا.");
+
+        if(type.Length >100)
+            throw new ArgumentException("لا يمكن أن يتجاوز طول النوع 100 حرف.");
+
+
+        return _typeRepository.AddType(type);
+    }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities;
+namespace Domain.Common;
 
 public abstract class BaseEntity
 {
@@ -12,6 +12,5 @@ public abstract class BaseEntity
     //public bool IsDeleted { get;  private set; } = false;
 
     //public void MarkAsDeleted()=> IsDeleted = true;
-
 
 }

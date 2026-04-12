@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace Application.Repositories;
 
-public interface ICustomerRepository  : IRepository
+public interface ICustomerRepository  : IRepository<Customer>
 {
-    int CreateCustomer(Customer customer);
-    List<CustomerSummaryDto> GetPagedCustomerSummaries(int pageNumber , int rowPerPage);
+    void Create(Customer customer);
+    IEnumerable<CustomerSummaryDto> GetPagedCustomerSummaries(int pageNumber , int rowPerPage);
 
     int GetCustomerCount();
     CustomerProfileDto GetCustomerFullProfile(int id );
@@ -23,6 +23,4 @@ public interface ICustomerRepository  : IRepository
     Customer GetCustomerById(int id);
 
     public bool UpdateCustomerInfo(Customer customerInfo);
-
-
 }

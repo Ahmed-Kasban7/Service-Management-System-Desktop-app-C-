@@ -10,5 +10,7 @@ namespace Application.Repositories;
 public interface IDeviceSpecRepository
 {
     public List<SpecDto> GetSpecsByTypeId(int typeId);
+    public List<SpecDto> GetAllSpecs();
+    bool AddSpec(string spec, int TypeId);
 
 }

@@ -1,5 +1,5 @@
 ﻿using Application.DTOs.CustomerDTOs;
-using Application.Services;
+using Application.Features.CustomerManagment;
 using Domain.Enums;
 using System;
 using System.Windows;
@@ -39,7 +39,7 @@ namespace Presentation.View.Customer_View
             string name = TxtName.Text.Trim();
             if (string.IsNullOrEmpty(name))
             {
-                System.Windows.MessageBox.Show("الرجاء إدخال الاسم", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("الرجاء إدخال الاسم", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -49,7 +49,7 @@ namespace Presentation.View.Customer_View
             {
                 if (!int.TryParse(TxtAge.Text, out int parsedAge) || parsedAge <= 0)
                 {
-                    System.Windows.MessageBox.Show("الرجاء إدخال عمر صالح أكبر من صفر", "خطأ",
+                    MessageBox.Show("الرجاء إدخال عمر صالح أكبر من صفر", "خطأ",
                         MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
@@ -59,7 +59,7 @@ namespace Presentation.View.Customer_View
 
             if (TxtSex.SelectedItem == null)
             {
-                System.Windows.MessageBox.Show("الرجاء اختيار الجنس", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("الرجاء اختيار الجنس", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
             ESex sex = TxtSex.SelectedIndex ==0 ?ESex.MALE : ESex.FEMALE;
@@ -68,7 +68,7 @@ namespace Presentation.View.Customer_View
 
             if (string.IsNullOrEmpty(address))
             {
-                System.Windows.MessageBox.Show("الرجاء إدخال العنوان", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("الرجاء إدخال العنوان", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -80,11 +80,11 @@ namespace Presentation.View.Customer_View
             }
             else if (!int.TryParse(TxtDiscount.Text, out discount) || discount < 0 || discount > 100)
             {
-                System.Windows.MessageBox.Show(
+                MessageBox.Show(
                     "الرجاء إدخال نسبة خصم صحيحة بين 0 و 100",
                     "خطأ",
-                    System.Windows.MessageBoxButton.OK,
-                    System.Windows.MessageBoxImage.Warning
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning
                 );
                 return;
             }
@@ -95,17 +95,17 @@ namespace Presentation.View.Customer_View
                 bool updated = _customerService.UpdateCustomerInfo(updatedCustomer);
                 if (updated)
                 {
-                    System.Windows.MessageBox.Show("تم تعديل بيانات العميل بنجاح", "نجاح", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("تم تعديل بيانات العميل بنجاح", "نجاح", MessageBoxButton.OK, MessageBoxImage.Information);
                     DialogResult = true;
                 }
                 else
                 {
-                    System.Windows.MessageBox.Show("فشل في تعديل البيانات", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("فشل في تعديل البيانات", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(ex.Message, "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(ex.Message, "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

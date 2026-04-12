@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.DTOs.DeviceDTOs;
+using Application.Features.CustomerManagment;
 using Application.Services;
 using Domain.Enums;
 using System.Collections.Generic;
@@ -97,31 +98,31 @@ namespace Presentation.View.Customer_View
                  PhonesList.Count == 0 &&
                  DevicesList.Count == 0)
             {
-                System.Windows.MessageBox.Show("برجاء إدخال بيانات العميل ");
+                MessageBox.Show("برجاء إدخال بيانات العميل ");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(TxtName.Text))
             {
-                System.Windows.MessageBox.Show("برجاء إدخال اسم العميل");
+                MessageBox.Show("برجاء إدخال اسم العميل");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(TxtAddress.Text))
             {
-                System.Windows.MessageBox.Show("برجاء إدخال العنوان");
+                MessageBox.Show("برجاء إدخال العنوان");
                 return;
             }
 
             if(PhonesList is null ||PhonesList.Count==0)
             {
-                System.Windows.MessageBox.Show("يجب إدخال رقم هاتف واحد على الأقل للعميل");
+                MessageBox.Show("يجب إدخال رقم هاتف واحد على الأقل للعميل");
                 return;
             }
 
             if(DevicesList is null || DevicesList.Count==0)
             {
-                System.Windows.MessageBox.Show("يجب إدخال جهاز واحد على الأقل للعميل");
+                MessageBox.Show("يجب إدخال جهاز واحد على الأقل للعميل");
                 return;
             }
 
@@ -138,14 +139,14 @@ namespace Presentation.View.Customer_View
 
                 _customerService.CreateCustomer(customerDto);
 
-                System.Windows.MessageBox.Show("تم حفظ بيانات العميل بنجاح");
+                MessageBox.Show("تم حفظ بيانات العميل بنجاح");
 
                 this.DialogResult = true;
                 this.Close();
             }
             catch (System.Exception ex)
             {
-                System.Windows.MessageBox.Show($"حدث خطأ أثناء الحفظ: {ex.Message}");
+                MessageBox.Show($"حدث خطأ أثناء الحفظ: {ex.Message}");
             }
         }
         private void BtnDeleteDevice_Click(object sender, RoutedEventArgs e)

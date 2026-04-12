@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Common;
-
-public interface IRepository<T>
+namespace Application.Features.CustomerManagment.Commands
 {
-    void Create(T entity);
+    internal class DeleteCustomer
+    {
+    }
 }

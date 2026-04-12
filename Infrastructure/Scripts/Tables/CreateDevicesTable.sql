@@ -5,7 +5,7 @@
                 SerialNumber VARCHAR(100) NULL,
                 ModelName VARCHAR(200) NULL,
                 CustomerID INT
-                    FOREIGN KEY REFERENCES Customers(PersonID) ON DELETE CASCADE,
+                    FOREIGN KEY REFERENCES Customers(CustomerID) ON DELETE CASCADE,
                 BrandID INT FOREIGN KEY REFERENCES Brands(BrandID),
                 TypeID INT FOREIGN KEY REFERENCES Types(TypeID),
                 SpecID INT FOREIGN KEY REFERENCES Specs(SpecID)

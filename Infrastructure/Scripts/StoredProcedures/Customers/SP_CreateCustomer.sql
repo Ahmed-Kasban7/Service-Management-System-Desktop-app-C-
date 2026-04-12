@@ -8,20 +8,24 @@
 @Devices DeviceList READONLY
 AS
 BEGIN
+SET NOCOUNT ON;
 
 BEGIN TRY
     BEGIN TRANSACTION;
+
+    DECLARE @personId INT;
 
     -- create person
     INSERT INTO Persons(Name , Age , Sex)
     VALUES(@Name , @Age , @Sex);
 
-    DECLARE @personId INT;
-    SELECT @personId = SCOPE_IDENTITY();
+    
+    SET @personId = SCOPE_IDENTITY();
 
     -- create customer
     INSERT INTO Customers(PersonID, Address , Discount)
     VALUES (@personId, @Address , @Discount);
+
 
     -- add phones
     INSERT INTO Phones(PersonID , PhoneNumber)
@@ -31,9 +35,8 @@ BEGIN TRY
     -- add devices
     INSERT INTO Devices
     (CustomerID , BrandID , TypeID , SpecID , SerialNumber , ModelName)
-
     SELECT
-    @personId ,
+    @CustomerId ,
     BrandId ,
     TypeId ,
     SpecId ,
@@ -42,6 +45,7 @@ BEGIN TRY
     FROM @Devices;
 
     COMMIT TRANSACTION;
+
 
 END TRY
 BEGIN CATCH

@@ -4,6 +4,7 @@ using Domain.Entities;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,8 +18,8 @@ public class DeviceTypeRepository:IDeviceTypeRepository
         List<TypeDto> types = new List<TypeDto>();
         using var conn = DatabaseInitializer.GetConnection();
 
-        string script = @"select * from Types ";
-        using var cmd = new SqlCommand(script, conn);
+        using var cmd = new SqlCommand("SP_GetAllTypes", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
         conn.Open();
         using var reader = cmd.ExecuteReader();
 
@@ -30,22 +31,18 @@ public class DeviceTypeRepository:IDeviceTypeRepository
         return types;
     }
 
-    public bool AddDeviceToCustomer(int customerId , Device device)
+  
+    public bool AddType(string type )
     {
+        List<TypeDto> types = new List<TypeDto>();
         using var conn = DatabaseInitializer.GetConnection();
 
-        var script = @"insert into Devices (CustomerID , BrandID , TypeID , SpecID , ModelName , SerialNumber)
-                       values (@customerId , @brandId , @typeId , @specId , @modelName , @serialNumber)";
-        using var cmd = new SqlCommand(script, conn);
-        cmd.Parameters.AddWithValue("customerId", customerId);
-        cmd.Parameters.AddWithValue("brandId", device.BrandID);
-        cmd.Parameters.AddWithValue("typeId", device.TypeID);
-        cmd.Parameters.AddWithValue("specId", device.SpecID);
-        cmd.Parameters.AddWithValue("modelName", device.ModelName is null ? DBNull.Value : device.ModelName);
-        cmd.Parameters.AddWithValue("serialNumber", device.SerialNumber is null ? DBNull.Value : device.SerialNumber);
+        using var cmd = new SqlCommand("SP_AddDeviceType", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@TypeName", type );
         conn.Open();
-        var affected =Convert.ToInt32(cmd.ExecuteNonQuery());
+        var result =cmd.ExecuteNonQuery();
 
-        return affected > 0;
+        return result>0;
     }
 }

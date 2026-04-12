@@ -38,9 +38,9 @@ public partial class App : System.Windows.Application
         }
         catch (Exception ex)
         {
-            System.Windows.MessageBox.Show(
+            MessageBox.Show(
                 ex.InnerException?.Message ?? ex.Message,
-                "خطأ حقيقي من SQL",
+                "خطاء",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error
             );

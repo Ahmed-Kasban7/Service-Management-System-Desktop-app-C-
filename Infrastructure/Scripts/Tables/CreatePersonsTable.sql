@@ -5,7 +5,6 @@
                 Name NVARCHAR(200) NOT NULL,
                 Age INT NULL CHECK (Age IS NULL OR Age > 0),
                 Sex TINYINT NOT NULL check (Sex = 0 or Sex = 1),
-                DateCreated DATETIME  Not Null DEFAULT GETDATE(),
-                IsDeleted BIT not null DEFAULT 0
+                DateCreated DATETIME NOT NULL DEFAULT GETDATE(),
             )
 END

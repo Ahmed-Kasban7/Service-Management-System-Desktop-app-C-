@@ -58,7 +58,7 @@ namespace Presentation.View.Customer_View
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"خطأ أثناء تحميل البيانات: {ex.Message}");
+                MessageBox.Show($"خطأ أثناء تحميل البيانات: {ex.Message}");
             }
         }
 
@@ -84,7 +84,7 @@ namespace Presentation.View.Customer_View
         {
             if (CbType.SelectedValue == null || CbBrand.SelectedValue == null || CbSpec.SelectedValue == null)
             {
-                System.Windows.MessageBox.Show("برجاء إكمال البيانات الإلزامية (*)");
+                MessageBox.Show("برجاء إكمال البيانات الإلزامية (*)");
                 return;
             }
 
@@ -105,18 +105,18 @@ namespace Presentation.View.Customer_View
 
                 if (isUpdated)
                 {
-                    System.Windows.MessageBox.Show("تم تحديث بيانات الجهاز بنجاح");
+                    MessageBox.Show("تم تحديث بيانات الجهاز بنجاح");
                     this.DialogResult = true;
                     this.Close();
                 }
                 else
                 {
-                    System.Windows.MessageBox.Show("فشل تحديث البيانات في قاعدة البيانات");
+                    MessageBox.Show("فشل تحديث البيانات في قاعدة البيانات");
                 }
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"حدث خطأ أثناء التحديث: {ex.Message}");
+                MessageBox.Show($"حدث خطأ أثناء التحديث: {ex.Message}");
             }
         }
 

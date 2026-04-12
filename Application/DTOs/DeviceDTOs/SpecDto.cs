@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.DeviceDTOs;
 
-public record SpecDto(int SpecID, string SpecName, int TypeID) {
+public record SpecDto(int SpecID, string SpecName, int TypeID , string TypeName) {
 
     public override string ToString()
     {

@@ -26,9 +26,16 @@ public class DeviceBrandService
     {
         return _brandRepository.GetBrandBy(Id);
     }
-    public bool AddDeviceBrand(string name)
+    public bool AddDeviceBrand(string brand)
     {
-        return _brandRepository.AddBrand(name);
+
+        if (string.IsNullOrWhiteSpace(brand))
+            throw new ArgumentNullException("لا يمكن أن يكون الماركة فارغًا.");
+
+        if (brand.Length > 100)
+            throw new ArgumentException("لا يمكن أن يتجاوز طول النوع 100 حرف.");
+
+        return _brandRepository.AddBrand(brand);
     }
 
 }

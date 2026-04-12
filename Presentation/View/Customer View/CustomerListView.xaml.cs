@@ -1,23 +1,21 @@
 ﻿using Application.Common;
 using Application.DTOs;
 using Application.DTOs.CustomerDTOs;
+using Application.Features.CustomerManagment;
 using Application.Repositories;
 using Application.Services;
 using Domain.Entities;
 using Domain.Enums;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Drawing.Printing;
+using Presentation.View.Settings_View;
+using System.Configuration;
 using System.Globalization;
 using System.IO;
-using System.Net.NetworkInformation;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Button = System.Windows.Controls.Button;
 
 
 namespace Presentation.View.Customer_View
@@ -53,6 +51,7 @@ namespace Presentation.View.Customer_View
             _deviceSpecService = specService;
             _deviceService = deviceService;
             _deviceTypeService = deviceTypeService;
+            _customerService.CustomerAdded += UpdatePageInfo;
 
            UpdatePageInfo();
 
@@ -62,7 +61,6 @@ namespace Presentation.View.Customer_View
         {
             try
             {
-                // 1. جلب البيانات وتخزينها في قائمة مؤقتة
                 var customers = string.IsNullOrWhiteSpace(_searchWord)
                     ? _customerService.GetPagedCustomerSummaries(CurrentPage, ROWPERPAGE)
                     : _customerService.SearchCustomerPagedBy(_searchWord, CurrentPage, ROWPERPAGE);
@@ -86,7 +84,7 @@ namespace Presentation.View.Customer_View
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"خطأ في تحميل قائمة العملاء: {ex.Message}");
+                MessageBox.Show($"خطأ في تحميل قائمة العملاء: {ex.Message}");
             }
         }
 
@@ -150,7 +148,7 @@ namespace Presentation.View.Customer_View
 
             if (selectedSummary == null) return;
 
-            var result = System.Windows.MessageBox.Show(
+            var result = MessageBox.Show(
                 $"هل أنت متأكد من حذف العميل {selectedSummary.Name}؟",
                 "تأكيد الحذف",
                 MessageBoxButton.YesNo,
@@ -166,18 +164,18 @@ namespace Presentation.View.Customer_View
 
                     if (deleted.IsSuccess)
                     {
-                        System.Windows.MessageBox.Show("تم حذف العميل بنجاح", "نجاح");
+                        MessageBox.Show("تم حذف العميل بنجاح", "نجاح");
                         UpdatePageInfo();
 
                     }
                     else
                     {
-                        System.Windows.MessageBox.Show($"فشل في حذف العميل: {deleted.Error}");
+                        MessageBox.Show($"فشل في حذف العميل: {deleted.Error}");
                     }
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.MessageBox.Show($"حدث خطأ: {ex.Message}");
+                    MessageBox.Show($"حدث خطأ: {ex.Message}");
                 }
             }
         }
@@ -211,7 +209,7 @@ namespace Presentation.View.Customer_View
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.MessageBox.Show($"خطأ في تحميل العملاء: {ex.Message}");
+                    MessageBox.Show($"خطأ في تحميل العملاء: {ex.Message}");
                 }
             }
 
@@ -220,7 +218,7 @@ namespace Presentation.View.Customer_View
         {
             if (_currentCustomer == null)
             {
-                System.Windows.MessageBox.Show("الرجاء اختيار عميل قبل التعديل.", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("الرجاء اختيار عميل قبل التعديل.", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -249,7 +247,7 @@ namespace Presentation.View.Customer_View
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(ex.Message, "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(ex.Message, "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -257,7 +255,7 @@ namespace Presentation.View.Customer_View
         {
             if (!int.TryParse(_currentCustomer.ID.Replace("C-", ""), out int customerId))
             {
-                System.Windows.MessageBox.Show("رقم العميل غير صالح.", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("رقم العميل غير صالح.", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             return customerId;
         }
@@ -266,12 +264,7 @@ namespace Presentation.View.Customer_View
             var createWin = new CreateCustomerWindow(_customerService, _deviceBrandService, _deviceTypeService, _deviceSpecService);
 
             createWin.Owner = Window.GetWindow(this);
-
-            if (createWin.ShowDialog() == true)
-            {
-
-                UpdatePageInfo();
-            }
+            createWin.ShowDialog();
         }
         private void BtnAddPhone_Click(object sender, RoutedEventArgs e)
         {
@@ -294,20 +287,20 @@ namespace Presentation.View.Customer_View
 
                 if (added)
                 {
-                    System.Windows.MessageBox.Show("تمت إضافة الرقم بنجاح", "نجاح",
+                    MessageBox.Show("تمت إضافة الرقم بنجاح", "نجاح",
                         MessageBoxButton.OK, MessageBoxImage.Information);
 
                     ReloadCustomerProfile(customerId);
                 }
                 else
                 {
-                    System.Windows.MessageBox.Show("فشل في إضافة الرقم", "خطأ",
+                    MessageBox.Show("فشل في إضافة الرقم", "خطأ",
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"حدث خطأ: {ex.Message}");
+                MessageBox.Show($"حدث خطأ: {ex.Message}");
             }
         }
 
@@ -331,7 +324,7 @@ namespace Presentation.View.Customer_View
 
                     if (updated)
                     {
-                        System.Windows.MessageBox.Show("تم تعديل الرقم بنجاح", "نجاح",
+                        MessageBox.Show("تم تعديل الرقم بنجاح", "نجاح",
                             MessageBoxButton.OK, MessageBoxImage.Information);
 
                         ReloadCustomerProfile(customerId);
@@ -339,13 +332,13 @@ namespace Presentation.View.Customer_View
                     }
                     else
                     {
-                        System.Windows.MessageBox.Show("فشل في تعديل الرقم", "خطأ",
+                        MessageBox.Show("فشل في تعديل الرقم", "خطأ",
                             MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.MessageBox.Show($"حدث خطأ: {ex.Message}");
+                    MessageBox.Show($"حدث خطأ: {ex.Message}");
                 }
             }
         }
@@ -353,7 +346,7 @@ namespace Presentation.View.Customer_View
         {
             if (sender is System.Windows.Controls.Button btn && btn.Tag is string phoneNumber)
             {
-                var result = System.Windows.MessageBox.Show(
+                var result = MessageBox.Show(
                     $"هل أنت متأكد من حذف الرقم {phoneNumber} ؟",
                     "تأكيد الحذف",
                     MessageBoxButton.YesNo,
@@ -369,7 +362,7 @@ namespace Presentation.View.Customer_View
 
                         if (deleted)
                         {
-                            System.Windows.MessageBox.Show("تم حذف الرقم بنجاح", "نجاح",
+                            MessageBox.Show("تم حذف الرقم بنجاح", "نجاح",
                                 MessageBoxButton.OK, MessageBoxImage.Information);
 
                             ReloadCustomerProfile(customerId);
@@ -377,13 +370,13 @@ namespace Presentation.View.Customer_View
                         }
                         else
                         {
-                            System.Windows.MessageBox.Show("فشل في حذف الرقم", "خطأ",
+                            MessageBox.Show("فشل في حذف الرقم", "خطأ",
                                 MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
                     catch (Exception ex)
                     {
-                        System.Windows.MessageBox.Show($"حدث خطأ أثناء الحذف: {ex.Message}");
+                        MessageBox.Show($"حدث خطأ أثناء الحذف: {ex.Message}");
                     }
                 }
             }
@@ -477,7 +470,7 @@ namespace Presentation.View.Customer_View
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.MessageBox.Show("فشل حفظ مسار الصورة في الإعدادات: " + ex.Message);
+                    MessageBox.Show("فشل حفظ مسار الصورة في الإعدادات: " + ex.Message);
                 }
             }
         }
@@ -506,7 +499,7 @@ namespace Presentation.View.Customer_View
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.MessageBox.Show($"خطأ: {ex.Message}");
+                    MessageBox.Show($"خطأ: {ex.Message}");
                 }
             }
             else
@@ -520,7 +513,7 @@ namespace Presentation.View.Customer_View
         {
             if (_currentCustomer == null)
             {
-                System.Windows.MessageBox.Show("الرجاء اختيار عميل أولاً.", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Warning);
+               MessageBox.Show("الرجاء اختيار عميل أولاً.", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -548,7 +541,7 @@ namespace Presentation.View.Customer_View
             }
             else
             {
-                System.Windows.MessageBox.Show("برجاء اختيار الجهاز الذي تريد تعديله");
+                MessageBox.Show("برجاء اختيار الجهاز الذي تريد تعديله");
             }
         }
 
@@ -574,7 +567,7 @@ namespace Presentation.View.Customer_View
 
             if (sender is Button btn && btn.Tag is DeviceInfoDTO selectedDevice)
             {
-                var result = System.Windows.MessageBox.Show(
+                var result = MessageBox.Show(
                     $"هل أنت متأكد من حذف الجهاز ؟",
                     "تأكيد الحذف",
                     MessageBoxButton.YesNo,
@@ -589,34 +582,64 @@ namespace Presentation.View.Customer_View
 
                         if (deleted)
                         {
-                            System.Windows.MessageBox.Show("تم حذف الجهاز بنجاح", "نجاح",
+                            MessageBox.Show("تم حذف الجهاز بنجاح", "نجاح",
                                 MessageBoxButton.OK, MessageBoxImage.Information);
 
                             ReloadCustomerProfile(customerId);
                         }
                         else
                         {
-                            System.Windows.MessageBox.Show("فشل في حذف الجهاز", "خطأ",
+                            MessageBox.Show("فشل في حذف الجهاز", "خطأ",
                                 MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
                     catch (Exception ex)
                     {
-                        System.Windows.MessageBox.Show($"حدث خطأ أثناء الحذف: {ex.Message}", "خطأ",
+                        MessageBox.Show($"حدث خطأ أثناء الحذف: {ex.Message}", "خطأ",
                             MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             }
             else
             {
-                System.Windows.MessageBox.Show("الرجاء اختيار جهاز للحذف", "تنبيه",
+                MessageBox.Show("الرجاء اختيار جهاز للحذف", "تنبيه",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
-     
 
+        private void BtnSettingsTab_Click(object sender, RoutedEventArgs e)
+        {
+            if (CustomersContainer == null || SettingsContent == null) return;
 
+            CustomersContainer.Visibility = Visibility.Collapsed;
+            SettingsContent.Visibility = Visibility.Visible;
+            ProfileSection.Visibility = Visibility.Collapsed;
+            ProfileColumn.Width = new GridLength(0);
+            SettingsContent.InitializeServices(_deviceTypeService, _deviceBrandService, _deviceSpecService);
 
+            BtnSettingsTab.Foreground = (Brush)new BrushConverter().ConvertFromString("#4169E1"); 
+            BtnSettingsTab.BorderBrush = (Brush)new BrushConverter().ConvertFromString("#4169E1");
+            BtnSettingsTab.FontWeight = FontWeights.Bold;
+
+            BtnCustomersTab.Foreground = (Brush)new BrushConverter().ConvertFromString("#6B7280"); 
+            BtnCustomersTab.BorderBrush = Brushes.Transparent; 
+            BtnCustomersTab.FontWeight = FontWeights.Normal;
+        }
+        private void BtnCustomersTab_Click(object sender, RoutedEventArgs e)
+        {
+            if (CustomersContainer == null || SettingsContent == null) return;
+
+            SettingsContent.Visibility = Visibility.Collapsed;
+            CustomersContainer.Visibility = Visibility.Visible;
+
+            BtnCustomersTab.Foreground = (Brush)new BrushConverter().ConvertFromString("#4169E1");
+            BtnCustomersTab.BorderBrush = (Brush)new BrushConverter().ConvertFromString("#4169E1");
+            BtnCustomersTab.FontWeight = FontWeights.Bold;
+
+            BtnSettingsTab.Foreground = (Brush)new BrushConverter().ConvertFromString("#6B7280");
+            BtnSettingsTab.BorderBrush = Brushes.Transparent;
+            BtnSettingsTab.FontWeight = FontWeights.Normal;
+        }
     }
 
 }

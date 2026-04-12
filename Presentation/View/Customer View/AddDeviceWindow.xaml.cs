@@ -1,5 +1,6 @@
 ﻿using Application.DTOs;
 using Application.DTOs.DeviceDTOs;
+using Application.Features.CustomerManagment;
 using Application.Services;
 using System;
 using System.Collections.Generic;
@@ -69,7 +70,7 @@ namespace Presentation.View.Customer_View
                 CbBrand.SelectedItem is not BrandDto selectedBrand ||
                 CbSpec.SelectedItem is not SpecDto selectedSpec)
             {
-               System.Windows.MessageBox.Show("برجاء ادخال بيانات الجهاز");
+               MessageBox.Show("برجاء ادخال بيانات الجهاز");
                 return;
             }
 
@@ -87,14 +88,14 @@ namespace Presentation.View.Customer_View
 
                 _deviceService.AddDeviceToCustomer(_customerId, deviceDto);
 
-                System.Windows.MessageBox.Show("تم إضافة الجهاز بنجاح");
+                MessageBox.Show("تم إضافة الجهاز بنجاح");
 
                 this.DialogResult = true;
                 this.Close();
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"حدث خطأ أثناء الحفظ: {ex.Message}");
+                MessageBox.Show($"حدث خطأ أثناء الحفظ: {ex.Message}");
             }
         }
     }

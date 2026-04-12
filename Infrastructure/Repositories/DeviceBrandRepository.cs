@@ -3,6 +3,7 @@ using Application.Repositories;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,10 +17,10 @@ public class DeviceBrandRepository:IDeviceBrandRepository
         List<BrandDto> brands = new List<BrandDto>();
         using var conn = DatabaseInitializer.GetConnection();
 
-        string script = @"select * from Brands ";
-        using var cmd = new SqlCommand(script, conn);
+        using var cmd = new SqlCommand("SP_GetAllBrands", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
         conn.Open();
-        using var reader=   cmd.ExecuteReader();
+        using var reader=cmd.ExecuteReader();
 
         while (reader.Read())
         {
@@ -48,22 +49,17 @@ public class DeviceBrandRepository:IDeviceBrandRepository
     }
     public bool AddBrand(string brandName)
     {
-        try
-        {
+       
             using var conn = DatabaseInitializer.GetConnection();
-            string script = @"INSERT INTO Brands (BrandName) VALUES (@name)";
 
-            using var cmd = new SqlCommand(script, conn);
-            cmd.Parameters.AddWithValue("@name", brandName);
+            using var cmd = new SqlCommand("SP_AddBrand", conn);
+             cmd.CommandType  = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@brandName", brandName);
 
             conn.Open();
             int rowsAffected = cmd.ExecuteNonQuery();
 
             return rowsAffected > 0;
-        }
-        catch (Exception)
-        {
-            return false;
-        }
+       
     }
 }
