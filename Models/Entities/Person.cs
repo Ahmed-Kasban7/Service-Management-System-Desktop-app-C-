@@ -1,13 +1,5 @@
 ﻿using Domain.Common;
 using Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Domain.Entities;
 
 public class Person : BaseEntity 
@@ -20,23 +12,27 @@ public class Person : BaseEntity
 
     private readonly HashSet<Phone> _phones = new();
     public IReadOnlySet<Phone> Phones => _phones;
-    public Person(string name , int? age , ESex sex)
+    public Person(string name , int? age , ESex sex , HashSet<Phone> phones , DateTime ? createdDate )
     {
         UpdateName(name);
         UpdateAge(age);
         UpdateSex(sex);
-        _phones = new();
-        CreatedDate = DateTime.Now;
-    }
-    public Person(int id ,string name , int? age , ESex sex)
+
+        if (phones == null || phones.Count == 0)
+            throw new ArgumentException("يجب إضافة رقم هاتف واحد على الأقل");
+
+        foreach (var p in phones)
+        {
+            AddPhone(p);
+        }
+
+        CreatedDate = createdDate ?? DateTime.Now ;
+    } // when create a new person 
+
+    public Person(int id ,string name , int? age , ESex sex , HashSet<Phone> phones , DateTime? createdDate) :this(name , age , sex , phones , createdDate) 
     {
         base.Id = id;
-        UpdateName(name);
-        UpdateAge(age);
-        UpdateSex(sex);
-        _phones = new();
-
-    }
+    } // when retrive data from data base 
 
     public void UpdateName(string Name)
     {
@@ -55,7 +51,7 @@ public class Person : BaseEntity
     public void UpdateAge(int? age)
     {
         if (age.HasValue && age <= 0)
-            throw new ArgumentException("العمر يجب أن يكون رقمًا أكبر من صفر", nameof(age));
+            throw new ArgumentException("العمر يجب أن يكون رقمًا أكبر من صفر");
 
         Age = age;
     }
@@ -63,7 +59,7 @@ public class Person : BaseEntity
     public void UpdateSex(ESex sex)
     {
         if (!Enum.IsDefined(typeof(ESex), sex))
-            throw new ArgumentException("قيمة الجنس غير صالحة", nameof(sex));
+            throw new ArgumentException("قيمة الجنس غير صالحة");
 
         this.Sex = sex;
     }
@@ -73,6 +69,13 @@ public class Person : BaseEntity
         Phone phone = new Phone(newphone);
 
         if (!_phones.Add(phone))
+        {
+            throw new InvalidOperationException("لا يمكن إدخال نفس رقم الهاتف أكثر من مرة.");
+        }
+    }
+    public void AddPhone(Phone newphone)
+    {
+        if (!_phones.Add(newphone))
         {
             throw new InvalidOperationException("لا يمكن إدخال نفس رقم الهاتف أكثر من مرة.");
         }
@@ -87,10 +90,28 @@ public class Person : BaseEntity
     public void DeletePhone(string phone)
     {
 
+        Phone p = new Phone(phone);
+
+        if(!_phones.Contains(p))
+            throw new InvalidOperationException("رقم الهاتف غير موجود.");
+
+        if (_phones.Count <= 1)
+            throw new InvalidOperationException("لا يمكن حذف الهاتف يجب ان يكون هنا رقم واحد مسجل على الاقل.");
+
+        _phones.Remove(p);
+
     }
-    public void UpdatePhone(string phone)
+    public void UpdatePhone(string curPhone, string newPhone)
     {
 
+        Phone newP = new Phone(newPhone);
+        Phone curP = new Phone(curPhone);
+
+        if (!_phones.Contains(curP))
+            throw new InvalidOperationException("رقم الهاتف غير موجود.");
+
+        _phones.Remove(curP);
+        _phones.Add(newP);
     }
 
 }

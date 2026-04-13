@@ -8,9 +8,11 @@ namespace Domain.Common;
 
 public abstract class BaseEntity
 {
-    public int Id { get; init; }
-    //public bool IsDeleted { get;  private set; } = false;
-
-    //public void MarkAsDeleted()=> IsDeleted = true;
+    public int Id { get; protected set; }
+    public BaseEntity( int id )
+    {
+        this.Id = id;
+    }
+    public BaseEntity() { }
 
 }

@@ -6,17 +6,18 @@ namespace Domain.Entities;
 public class Customer : Person
 {
     public string Address { get; private set; }
-    public int? Discount { get; private set; }
+    public int Discount { get; private set; }
+    public string CustomerNumber { get; private set; }
 
     private readonly HashSet<Device> _customerDevice;
 
     public IReadOnlySet<Device> Devices => _customerDevice;
-    public Customer(string name , int ?age , ESex sex , string address , int ?discount ): base(name , age , sex )
+    public Customer(string name , int ?age , ESex sex , string address , int discount ): base(name , age , sex )
     {
         UpdateAddress(address);
         UpdateDiscount(discount);
         _customerDevice = new();
-    }
+    } // create new customer constructor
     public Customer(int id ,string name , int ?age , ESex sex , string address , int ?discount ): base( id ,name , age , sex )
     {
         UpdateAddress(address);
