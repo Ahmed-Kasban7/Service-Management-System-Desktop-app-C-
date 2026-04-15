@@ -1,5 +1,7 @@
 ﻿using Application.DTOs.DeviceDTOs;
-using Application.Services;
+using Application.Features.BrandManagement;
+using Application.Features.SpecManagement;
+using Application.Features.TypeManagement;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;

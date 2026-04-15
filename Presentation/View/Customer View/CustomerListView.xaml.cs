@@ -1,9 +1,14 @@
 ﻿using Application.Common;
 using Application.DTOs;
 using Application.DTOs.CustomerDTOs;
+using Application.DTOs.DeviceDTOs;
+using Application.Features.BrandManagement;
 using Application.Features.CustomerManagment;
+using Application.Features.DeviceManagement;
+using Application.Features.PhoneManagement;
+using Application.Features.SpecManagement;
+using Application.Features.TypeManagement;
 using Application.Repositories;
-using Application.Services;
 using Domain.Entities;
 using Domain.Enums;
 using Microsoft.Extensions.Configuration;

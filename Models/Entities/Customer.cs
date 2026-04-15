@@ -12,18 +12,26 @@ public class Customer : Person
     private readonly HashSet<Device> _customerDevice;
 
     public IReadOnlySet<Device> Devices => _customerDevice;
-    public Customer(string name , int ?age , ESex sex , string address , int discount ): base(name , age , sex )
+    public Customer(string name , int ?age , ESex sex , string address , int discount , HashSet<Device> devices , HashSet<Phone> phones): base(name , age , sex , phones)
     {
         UpdateAddress(address);
         UpdateDiscount(discount);
-        _customerDevice = new();
+
+        if (devices == null || devices.Count == 0)
+            throw new InvalidOperationException("يجب اضافه جهاز واحد على الاقل ");
+
+        foreach (var device in devices)
+        {
+            AddDevice(device);
+        }
+
     } // create new customer constructor
-    public Customer(int id ,string name , int ?age , ESex sex , string address , int ?discount ): base( id ,name , age , sex )
+    public Customer(int id ,string name , int ?age , ESex sex , string address , int discount ): base( id ,name , age , sex )
     {
         UpdateAddress(address);
         UpdateDiscount(discount);
         _customerDevice = new();
-    }
+    } // when retrive data from data base 
 
     public void UpdateAddress(string address)
     {
@@ -35,17 +43,17 @@ public class Customer : Person
 
         this.Address = address.Trim();
     }
-    public void UpdateDiscount(int ?discount)
+    public void UpdateDiscount(int discount)
     {
-        if (discount.HasValue && discount < 0)
+        if ( discount < 0)
             throw new ArgumentException("الخصم لا يمكن أن يكون بالسالب", nameof(discount));
 
-        if (discount.HasValue && discount > 100)
+        if ( discount > 100)
             throw new ArgumentException("الخصم لا يمكن أن يكون أكبر من 100%", nameof(discount));
 
-        Discount = discount ?? 0;
+        Discount = discount;
     }
-    public void UpdateDetails(string name, int? age, ESex sex, string address, int? discount)
+    public void UpdateDetails(string name, int? age, ESex sex, string address, int discount)
     {
         base.UpdateDetails(name, age, sex);
         UpdateAddress(address);
@@ -54,7 +62,7 @@ public class Customer : Person
     public void AddDevice(Device device)
     {
         if (device == null)
-            throw new ArgumentNullException(nameof(device));
+            throw new ArgumentNullException("بيانات الجهاز غير صالحه");
 
         _customerDevice.Add(device);
     }

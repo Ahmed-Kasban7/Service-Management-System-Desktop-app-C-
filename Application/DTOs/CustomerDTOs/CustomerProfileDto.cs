@@ -1,4 +1,5 @@
-﻿using Domain.Enums;
+﻿using Application.DTOs.DeviceDTOs;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;

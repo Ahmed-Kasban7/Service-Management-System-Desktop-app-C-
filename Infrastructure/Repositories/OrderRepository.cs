@@ -1,4 +1,6 @@
-﻿using Application.Repositories;
+﻿using Application.Common;
+using Application.DTOs.OrderDTOs;
+using Application.Repositories;
 using Domain.Entities;
 using Domain.Enums;
 using Microsoft.Data.SqlClient;
@@ -6,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using static Azure.Core.HttpHeader;
@@ -93,4 +96,51 @@ public class OrderRepository:IOrderRepository
 
         return null;
     }
+
+    public PagedResult<OrderSummaryDto> GetPagedOrderSummaries(int pageNumber, int pageSize)
+    {
+        var orders = new List<OrderSummaryDto>();
+        using var conn = DatabaseInitializer.GetConnection();
+
+        using var cmd = new SqlCommand("SP_GetPagedOrderSummaries", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+
+        cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
+        cmd.Parameters.AddWithValue("@PageSize", pageSize);
+
+        var totalParam = new SqlParameter("@TotalOrderCount", SqlDbType.Int)
+        {
+            Direction = ParameterDirection.Output
+        };
+        cmd.Parameters.Add(totalParam);
+
+        conn.Open();
+
+        using var reader = cmd.ExecuteReader();
+
+        while (reader.Read()) {
+
+            orders.Add(new OrderSummaryDto(reader["OrderNumber"].ToString(), reader["CustomerName"].ToString(), reader["CustomerPhone"].ToString()
+                , reader["Address"].ToString(), reader["Problem"].ToString(), (DateTime) reader["StartDate"],(EOrderState)Convert.ToByte( reader["state"])));
+        
+        }
+        int totalCount = (int)totalParam.Value;
+
+        return new PagedResult<OrderSummaryDto> (orders , totalCount, pageNumber , pageSize);
+    }
+
+    
+    public int GetOrderCount()
+    {
+        using var conn = DatabaseInitializer.GetConnection();
+
+        using var cmd = new SqlCommand("SP_GetOrderCount", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+        conn.Open();
+
+        int reader =(int)cmd.ExecuteScalar();
+
+        return reader;
+    }
+
 }

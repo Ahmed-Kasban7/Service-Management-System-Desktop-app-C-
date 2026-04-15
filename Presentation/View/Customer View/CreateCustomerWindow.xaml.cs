@@ -1,7 +1,9 @@
 ﻿using Application.DTOs;
 using Application.DTOs.DeviceDTOs;
+using Application.Features.BrandManagement;
 using Application.Features.CustomerManagment;
-using Application.Services;
+using Application.Features.SpecManagement;
+using Application.Features.TypeManagement;
 using Domain.Enums;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

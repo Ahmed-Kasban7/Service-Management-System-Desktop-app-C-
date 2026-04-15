@@ -120,6 +120,8 @@ public static class DatabaseInitializer
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_CreateOrder.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_UpdateOrder.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetOrder.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetPagedOrderSummaries.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetOrderCount.sql");
 
         // Functions 
         ExecuteScript(@"Scripts\Functions\GetFirstPersonPhoneNumber.sql");

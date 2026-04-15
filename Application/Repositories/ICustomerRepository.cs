@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Application.Repositories;
 
-public interface ICustomerRepository  : ICommandRepository<Customer>
+public interface ICustomerRepository  : ICommandRepository<Customer> , IQueryRepository<Customer>
 {
     IEnumerable<CustomerSummaryDto> GetPagedCustomerSummaries(int pageNumber , int rowPerPage);
 
@@ -18,8 +18,6 @@ public interface ICustomerRepository  : ICommandRepository<Customer>
     CustomerProfileDto GetCustomerFullProfile(int id );
     List<CustomerSummaryDto> SearchCustomerPagedBy(string word , int pageNumber, int rowPerPage);
     public int GetSearchCustomerCount(string word);
-
-    Customer GetCustomerById(int id);
 
     public bool UpdateCustomerInfo(Customer customerInfo);
 

@@ -1,7 +1,9 @@
-﻿using Application.DTOs;
-using Application.DTOs.DeviceDTOs;
+﻿using Application.DTOs.DeviceDTOs;
+using Application.Features.BrandManagement;
 using Application.Features.CustomerManagment;
-using Application.Services;
+using Application.Features.DeviceManagement;
+using Application.Features.SpecManagement;
+using Application.Features.TypeManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;

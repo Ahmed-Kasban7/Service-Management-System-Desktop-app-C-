@@ -12,7 +12,7 @@ public class Person : BaseEntity
 
     private readonly HashSet<Phone> _phones = new();
     public IReadOnlySet<Phone> Phones => _phones;
-    public Person(string name , int? age , ESex sex , HashSet<Phone> phones , DateTime ? createdDate )
+    public Person(string name , int? age , ESex sex , HashSet<Phone> phones )
     {
         UpdateName(name);
         UpdateAge(age);
@@ -26,12 +26,13 @@ public class Person : BaseEntity
             AddPhone(p);
         }
 
-        CreatedDate = createdDate ?? DateTime.Now ;
+        CreatedDate = DateTime.Now ;
     } // when create a new person 
 
-    public Person(int id ,string name , int? age , ESex sex , HashSet<Phone> phones , DateTime? createdDate) :this(name , age , sex , phones , createdDate) 
+    public Person(int id ,string name , int? age , ESex sex , HashSet<Phone> phones , DateTime createdDate) :this(name , age , sex , phones) 
     {
         base.Id = id;
+        CreatedDate = createdDate;
     } // when retrive data from data base 
 
     public void UpdateName(string Name)
@@ -103,12 +104,14 @@ public class Person : BaseEntity
     }
     public void UpdatePhone(string curPhone, string newPhone)
     {
-
-        Phone newP = new Phone(newPhone);
         Phone curP = new Phone(curPhone);
+        Phone newP = new Phone(newPhone);
 
         if (!_phones.Contains(curP))
-            throw new InvalidOperationException("رقم الهاتف غير موجود.");
+            throw new InvalidOperationException("رقم الهاتف القديم غير موجود.");
+
+        if (_phones.Contains(newP))
+            throw new InvalidOperationException("رقم الهاتف الجديد موجود بالفعل.");
 
         _phones.Remove(curP);
         _phones.Add(newP);

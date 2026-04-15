@@ -1,6 +1,8 @@
-﻿using Application.DTOs;
-using Application.DTOs.DeviceDTOs;
-using Application.Services;
+﻿using Application.DTOs.DeviceDTOs;
+using Application.Features.BrandManagement;
+using Application.Features.DeviceManagement;
+using Application.Features.SpecManagement;
+using Application.Features.TypeManagement;
 using System;
 using System.Linq;
 using System.Windows;

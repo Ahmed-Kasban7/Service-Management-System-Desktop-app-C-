@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Services;
+namespace Application.Features.TypeManagement;
 
 public class DeviceTypeService
 {
