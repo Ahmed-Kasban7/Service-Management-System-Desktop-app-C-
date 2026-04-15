@@ -118,6 +118,8 @@ public static class DatabaseInitializer
         ExecuteScript(@"Scripts\StoredProcedures\Types\SP_GetAllTypes.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Types\SP_AddDeviceType.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_CreateOrder.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_UpdateOrder.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetOrder.sql");
 
         // Functions 
         ExecuteScript(@"Scripts\Functions\GetFirstPersonPhoneNumber.sql");

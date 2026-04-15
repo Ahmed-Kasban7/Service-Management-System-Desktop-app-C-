@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.Common;
 
-public interface IQueryRepository
+public interface IQueryRepository<T>
 {
-
+    T Get(int id);
 }

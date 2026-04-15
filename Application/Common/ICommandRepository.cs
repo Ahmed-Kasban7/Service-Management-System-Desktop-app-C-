@@ -9,4 +9,5 @@ namespace Application.Common;
 public interface ICommandRepository<T>
 {
     int Create(T entity);
+    int Update(T entity);
 }

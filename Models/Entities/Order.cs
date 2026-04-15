@@ -86,4 +86,11 @@ public class Order : BaseEntity
         if (newState == EOrderState.Completed || newState == EOrderState.Cancelled)
             EndDate = DateTime.Now;
     }
+    public void UpdateOrder(string problem , string? notes , EOrderState newState)
+    {
+        UpdateProblem(problem);
+        UpdateNotes(notes);
+        UpdateState(newState);
+    }
+
 }

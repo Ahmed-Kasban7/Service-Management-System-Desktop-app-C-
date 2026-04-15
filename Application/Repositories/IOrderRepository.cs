@@ -8,7 +8,7 @@ using Domain;
 using Domain.Entities;
 namespace Application.Repositories;
 
-public interface IOrderRepository:ICommandRepository<Order>
+public interface IOrderRepository:ICommandRepository<Order> , IQueryRepository<Order>
 {
 
 }
