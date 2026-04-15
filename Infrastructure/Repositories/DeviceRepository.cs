@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data;
 
-public class DeviceRepository : IDevcieRepository
+public class DeviceRepository : IDeviceRepository
 {
     public List<DeviceInfoDTO> GetCustomerDevicesBy(int customerId)
     {
@@ -56,8 +56,8 @@ public class DeviceRepository : IDevcieRepository
         cmd.Parameters.AddWithValue("brandid", device.BrandID);
         cmd.Parameters.AddWithValue("typeid", device.TypeID);
         cmd.Parameters.AddWithValue("specid", device.SpecID);
-        cmd.Parameters.AddWithValue("serialnumber", device.SerialNumber is null ? (object)DBNull.Value : device.SerialNumber);
-        cmd.Parameters.AddWithValue("modelname", device.ModelName is null? (object)DBNull.Value : device.ModelName);
+        cmd.Parameters.AddWithValue("serialnumber", device.SerialNumber ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("modelname", device.ModelName ?? (object)DBNull.Value);
 
         conn.Open();
         int affected = cmd.ExecuteNonQuery();
@@ -103,4 +103,20 @@ public class DeviceRepository : IDevcieRepository
             return false;
         }
     }
+
+    public bool IsDeviceExist(int deviceId)
+    {
+        using var conn = DatabaseInitializer.GetConnection();
+
+        using var cmd = new SqlCommand("SP_CreateDevice", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+
+        cmd.Parameters.AddWithValue("@deviceId", deviceId);
+        conn.Open();
+
+        var res = cmd.ExecuteScalar();
+
+        return res != null;
+    }
+
 }

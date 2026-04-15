@@ -11,7 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\CustomerManagment\Queries\" />
+    <Folder Include="Features\CustomerManagement\Queries\" />
+    <Folder Include="Features\OrderManagement\Queries\" />
   </ItemGroup>
 
 </Project>

@@ -86,10 +86,11 @@ public static class DatabaseInitializer
        ExecuteScript(@"Scripts\Tables\CreateBrandsTable.sql");
        ExecuteScript(@"Scripts\Tables\CreateSpecsTable.sql");
        ExecuteScript(@"Scripts\Tables\CreateDevicesTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateOrdersTable.sql");
        ExecuteScript(@"Scripts\Tables\CreatePhoneListType.sql");
        ExecuteScript(@"Scripts\Tables\CreateDeviceListType.sql");
 
-        //// Stored Procedure 
+        // Stored Procedure 
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetPagedCustomerSummaries.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_UpdateCustomerInfo.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_SearchCustomerPaged.sql");
@@ -98,6 +99,7 @@ public static class DatabaseInitializer
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetCustomerByID.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_CreateCustomer.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetCustomerProfile.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_IsCustomerExist.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Persons\SP_DeletePerson.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_DeletePhone.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_GetCustomerPhones.sql");
@@ -107,6 +109,7 @@ public static class DatabaseInitializer
         ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_DeleteCustomerDevice.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_CreateDevice.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_UpdateDevice.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_IsDeviceExist.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Brands\SP_GetAllBrands.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Brands\SP_AddBrand.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Specs\SP_GetAllSpecs.sql");
@@ -114,6 +117,7 @@ public static class DatabaseInitializer
         ExecuteScript(@"Scripts\StoredProcedures\Specs\SP_GetSpecsByType.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Types\SP_GetAllTypes.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Types\SP_AddDeviceType.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_CreateOrder.sql");
 
         // Functions 
         ExecuteScript(@"Scripts\Functions\GetFirstPersonPhoneNumber.sql");

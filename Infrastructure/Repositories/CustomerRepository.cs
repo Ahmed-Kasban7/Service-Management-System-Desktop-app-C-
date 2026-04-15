@@ -216,5 +216,15 @@ public class CustomerRepository : ICustomerRepository
         return customerProfileDTO;
     }
 
+    public bool IsCustomerExist(int id)
+    {
+        using var conn = DatabaseInitializer.GetConnection();
+        using var cmd = new SqlCommand("SP_IsCustomerExist", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@customerId", id);
+        conn.Open();
+        var res = cmd.ExecuteScalar();
+        return res != null;
+    }
 
 }

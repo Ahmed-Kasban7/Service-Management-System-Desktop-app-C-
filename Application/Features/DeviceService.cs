@@ -12,9 +12,9 @@ namespace Application.Services;
 public class DeviceService 
 {
     private readonly ICustomerRepository _customerRepository;
-    private readonly IDevcieRepository _deviceRepository;
+    private readonly IDeviceRepository _deviceRepository;
 
-    public DeviceService(ICustomerRepository customerRepository, IDevcieRepository deviceRepository)
+    public DeviceService(ICustomerRepository customerRepository, IDeviceRepository deviceRepository)
     {
         _customerRepository = customerRepository;
         _deviceRepository = deviceRepository;

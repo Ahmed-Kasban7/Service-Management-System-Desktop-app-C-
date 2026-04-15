@@ -6,4 +6,4 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.DeviceDTOs;
 
-public record DeviceCreateDto (int BrandID , string BrandName , int TypeID , string TypeName , int SpecID , string SpecName , string? Model  , string? SerialNumber);
+public record DeviceCreateDto (int BrandID  , int TypeID  , int SpecID , string? Model  , string? SerialNumber);

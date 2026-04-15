@@ -11,10 +11,16 @@ namespace Application.Features.CustomerManagment.Commands;
 
 public class CreateCustomerHandler
 {
-    public int CreateCustomer(CustomerCreateDto customerDto)
+    private readonly ICustomerRepository _repository;
+    public CreateCustomerHandler(ICustomerRepository repository)
     {
+        _repository = repository;
+    }
+    public int Handle(CustomerCreateDto customerDto)
+    {
+
         if (customerDto == null)
-            throw new ArgumentNullException(nameof(customerDto), "بيانات العميل غير موجودة.");
+            throw new ArgumentNullException("بيانات العميل غير موجودة.");
 
         if (customerDto.Phones == null || customerDto.Phones.Count == 0)
             throw new ArgumentException("يجب إدخال رقم هاتف واحد على الأقل للعميل.");
