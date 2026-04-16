@@ -28,20 +28,22 @@ public class DeviceRepository : IDeviceRepository
         while (reader.Read())
         {
             customerDevices.Add(new DeviceInfoDTO
-            {
-                DeviceId = Convert.ToInt32(reader["DeviceID"]),
+            (
+               Convert.ToInt32(reader["DeviceID"]),
+                reader["Brand"].ToString() ?? string.Empty,
 
-                BrandID = Convert.ToInt32(reader["BrandID"]),
-                TypeID = Convert.ToInt32(reader["TypeID"]),
-                SpecID = Convert.ToInt32(reader["SpecID"]),
+                Convert.ToInt32(reader["BrandID"]),
+                                 reader["Type"]?.ToString() ?? string.Empty,
 
-                BrandName = reader["Brand"].ToString() ?? string.Empty,
-                TypeName = reader["Type"]?.ToString() ?? string.Empty,
-                SpecName = reader["Spec"]?.ToString() ?? string.Empty,
+                 Convert.ToInt32(reader["TypeID"]),
+                                  reader["Spec"]?.ToString() ?? string.Empty,
 
-                Model = reader["ModelName"] == DBNull.Value ? null : reader["ModelName"].ToString(),
-                SerialNumber = reader["SerialNumber"] == DBNull.Value ? null : reader["SerialNumber"].ToString(),
-            });
+                Convert.ToInt32(reader["SpecID"]),
+
+
+                reader["ModelName"] == DBNull.Value ? null : reader["ModelName"].ToString(),
+               reader["SerialNumber"] == DBNull.Value ? null : reader["SerialNumber"].ToString()
+            ));
         }
 
         return customerDevices;
@@ -108,15 +110,31 @@ public class DeviceRepository : IDeviceRepository
     {
         using var conn = DatabaseInitializer.GetConnection();
 
-        using var cmd = new SqlCommand("SP_CreateDevice", conn);
+        using var cmd = new SqlCommand("SP_IsDeviceExist", conn);
         cmd.CommandType = CommandType.StoredProcedure;
 
         cmd.Parameters.AddWithValue("@deviceId", deviceId);
         conn.Open();
 
-        var res = cmd.ExecuteScalar();
+        var res = (int)cmd.ExecuteScalar();
 
-        return res != null;
+        return res == 1;
+    }
+
+    public bool IsDeviceAssignedToCustomer(int deviceId , int customerId )
+    {
+        using var conn = DatabaseInitializer.GetConnection();
+
+        using var cmd = new SqlCommand("SP_IsDeviceAssignedToCustomer", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+
+        cmd.Parameters.AddWithValue("@deviceId", deviceId);
+        cmd.Parameters.AddWithValue("@customerId", customerId);
+        conn.Open();
+
+        var res = (int)cmd.ExecuteScalar();
+
+        return res == 1;
     }
 
 }

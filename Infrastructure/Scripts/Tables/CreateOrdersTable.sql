@@ -3,7 +3,7 @@
             CREATE TABLE Orders(
                 OrderID INT IDENTITY(1,1) PRIMARY KEY,
                 OrderNumber AS ('ORD-' + CAST(OrderID AS VARCHAR)) PERSISTED,
-                StartDate DATETIME NOT NULL ,
+                StartDate DATETIME NOT NULL DEFAULT GETDATE() ,
                 EndedDate DATETIME NULL ,
                 Problem nvarchar(max) NOT null ,
                 Notes nvarchar(Max) NULL,

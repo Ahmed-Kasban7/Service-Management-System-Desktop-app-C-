@@ -56,7 +56,7 @@ namespace Presentation.View.Customer_View
             _deviceSpecService = specService;
             _deviceService = deviceService;
             _deviceTypeService = deviceTypeService;
-            _customerService.CustomerAdded += UpdatePageInfo;
+          //  _customerService.CustomerAdded += UpdatePageInfo;
 
            UpdatePageInfo();
 

@@ -110,6 +110,7 @@ public static class DatabaseInitializer
         ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_CreateDevice.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_UpdateDevice.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_IsDeviceExist.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_IsDeviceAssignedToCustomer.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Brands\SP_GetAllBrands.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Brands\SP_AddBrand.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Specs\SP_GetAllSpecs.sql");
@@ -119,15 +120,16 @@ public static class DatabaseInitializer
         ExecuteScript(@"Scripts\StoredProcedures\Types\SP_AddDeviceType.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_CreateOrder.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_UpdateOrder.sql");
-        ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetOrder.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetOrderById.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetPagedOrderSummaries.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetOrderCount.sql");
+       ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetOrderFullDetailsById.sql");
 
         // Functions 
         ExecuteScript(@"Scripts\Functions\GetFirstPersonPhoneNumber.sql");
 
         // Triggers 
-        ExecuteScript(@"Scripts\Triggers\trg_InsteadOfDeletePerson.sql");
+        //ExecuteScript(@"Scripts\Triggers\trg_InsteadOfDeletePerson.sql");
 
 
     }

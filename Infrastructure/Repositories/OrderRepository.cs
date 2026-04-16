@@ -1,4 +1,5 @@
 ﻿using Application.Common;
+using Application.DTOs.DeviceDTOs;
 using Application.DTOs.OrderDTOs;
 using Application.Repositories;
 using Domain.Entities;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using static Azure.Core.HttpHeader;
@@ -71,7 +73,7 @@ public class OrderRepository:IOrderRepository
 
         using var conn = DatabaseInitializer.GetConnection();
 
-        using var cmd = new SqlCommand("SP_GetOrder", conn);
+        using var cmd = new SqlCommand("SP_GetOrderById", conn);
         cmd.CommandType = CommandType.StoredProcedure;
 
         cmd.Parameters.AddWithValue("@OrderId", id);
@@ -141,6 +143,46 @@ public class OrderRepository:IOrderRepository
         int reader =(int)cmd.ExecuteScalar();
 
         return reader;
+    }
+
+    public OrderDetailsDto GetOrderFullDetailsById( int orderId)
+    {
+        using var conn = DatabaseInitializer.GetConnection();
+
+        using var cmd = new SqlCommand("SP_GetOrderFullDetailsById", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+
+        cmd.Parameters.AddWithValue("@OrderId", orderId);
+
+        conn.Open();
+        using var reader  = cmd.ExecuteReader();
+        if (reader.Read())
+        {
+            DeviceSummaryDto device = new DeviceSummaryDto(
+                    BrandName: reader["Brand"]?.ToString(),
+                    TypeName: reader["Type"]?.ToString(),
+                SpecName: reader["Spec"]?.ToString(),
+                Model: reader["Model"]?.ToString(),
+                SerialNumber: reader["SerialNumber"]?.ToString());
+
+            return new OrderDetailsDto
+            (
+                OrderId : reader["OrderID"] != DBNull.Value ? (int)reader["OrderID"] : 0,
+                OrderNumber: reader["OrderNumber"]?.ToString(),
+                Problem: reader["Problem"]?.ToString(),
+                Notes: reader["Notes"]?.ToString(),
+                StartDate: (DateTime)reader["StartDate"],
+                EndDate: reader["EndDate"] != DBNull.Value ? (DateTime?)reader["EndDate"] : null,
+                State: (EOrderState)Convert.ToByte(reader["OrderState"]),
+
+                CustomerName: reader["Name"]?.ToString(),
+                Address: reader["Address"]?.ToString(),
+                CustomerPhones: reader["PhoneNumbers"].ToString(),
+                device
+            );
+        }
+
+        return null;
     }
 
 }

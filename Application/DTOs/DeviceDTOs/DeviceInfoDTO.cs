@@ -8,6 +8,19 @@ namespace Application.DTOs.DeviceDTOs;
 
 public record  DeviceInfoDTO
 {
+    public DeviceInfoDTO(int deviceId, string brandName, int brandID, string typeName, int typeID, string specName, int specID, string model, string serialNumber)
+    {
+        DeviceId = deviceId;
+        BrandName = brandName;
+        BrandID = brandID;
+        TypeName = typeName;
+        TypeID = typeID;
+        SpecName = specName;
+        SpecID = specID;
+        Model = model;
+        SerialNumber = serialNumber;
+    }
+
     public int  DeviceId { get; set; }
     public string BrandName { get; set; }
 

@@ -26,11 +26,13 @@ public class Customer : Person
         }
 
     } // create new customer constructor
-    public Customer(int id ,string name , int ?age , ESex sex , string address , int discount ): base( id ,name , age , sex )
+    public Customer(int id ,string name , int ?age , ESex sex , string address , int discount , HashSet<Device> devices, HashSet<Phone> phones) : this(name , age , sex  ,address , discount, devices ,phones)
     {
-        UpdateAddress(address);
-        UpdateDiscount(discount);
-        _customerDevice = new();
+        Id = id ;
+    } // when retrive data from data base 
+    public Customer(string name , int ?age , ESex sex , string address , int discount) : base(name , age , sex)
+    {
+        Discount = discount ;
     } // when retrive data from data base 
 
     public void UpdateAddress(string address)

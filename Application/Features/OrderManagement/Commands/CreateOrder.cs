@@ -36,7 +36,11 @@ public class CreateOrderHandler
         if (!_deviceRepository.IsDeviceExist(orderDto.DeviceId))
             return Result<int>.Failure("الجهاز غير موجود");
 
+        if (!_deviceRepository.IsDeviceAssignedToCustomer(orderDto.DeviceId , orderDto.CustomerId))
+            return Result<int>.Failure("لا يملك العميل هذا الجهاز");
+
         Order order = new Order(orderDto.Problem , orderDto.Notes , orderDto.CustomerId , orderDto.DeviceId);
+        
 
         int orderId = _orderRepository.Create(order);
 

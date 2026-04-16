@@ -71,6 +71,7 @@ namespace Presentation.View.Customer_View
             if (phone != null) PhonesList.Remove(phone);
         }
 
+
         private void BtnAddDeviceToList_Click(object sender, RoutedEventArgs e)
         {
             if (CbType.SelectedItem is not TypeDto selectedType ||

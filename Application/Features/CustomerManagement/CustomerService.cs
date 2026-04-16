@@ -16,7 +16,7 @@ public class CustomerService
 {
     private readonly ICustomerRepository _customerRepository;
 
-    public event Action CustomerAdded;
+   // public event Action CustomerAdded;
     public CustomerService(ICustomerRepository customerRepository)
     {
         _customerRepository = customerRepository;
@@ -56,7 +56,7 @@ public class CustomerService
     public bool UpdateCustomerInfo(CustomerUpdateDto customerInfo)
     {
         
-        Customer ? customer = _customerRepository.GetCustomerById(customerInfo.Id);
+        Customer ? customer = _customerRepository.Get(customerInfo.Id);
 
         if (customer == null)
         {
@@ -73,6 +73,39 @@ public class CustomerService
         return _customerRepository.GetCustomerFullProfile(id);
     }
 
+    public void CreateCustomer(CustomerCreateDto customerDto)
+    {
+        if (customerDto == null)
+            throw new ArgumentNullException("بيانات العميل غير موجودة.");
+
+        if (customerDto.Phones == null || customerDto.Phones.Count == 0)
+            throw new ArgumentException("يجب إدخال رقم هاتف واحد على الأقل للعميل.");
+
+        if (customerDto.Devices == null || customerDto.Devices.Count == 0)
+            throw new ArgumentException("يجب إضافة جهاز واحد على الأقل للعميل.");
+
+        var CustomerPhones = new HashSet<Phone>();
+
+        foreach (var p in customerDto.Phones)
+        {
+            var phone = new Phone(p);
+
+            CustomerPhones.Add(phone);
+        }
+        var CustomerDevices = new HashSet<Device>();
+        foreach (var device in customerDto.Devices)
+        {
+            CustomerDevices.Add(new Device(device.SerialNumber, device.Model, device.BrandID, device.TypeID, device.SpecID));
+        }
+
+        Customer newCustomer = new Customer(customerDto.Name, customerDto.Age, customerDto.Sex, customerDto.Address, customerDto.Discount , CustomerDevices, CustomerPhones);
+
+        
+
+        _customerRepository.Create(newCustomer);
+        ////CustomerAdded?.Invoke();
+        //return id;
+    }
 
 
 }

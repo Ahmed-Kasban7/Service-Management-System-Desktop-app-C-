@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Application.Repositories;
 
-public interface ICustomerRepository  : ICommandRepository<Customer> , IQueryRepository<Customer>
+public interface ICustomerRepository  : IQueryRepository<Customer>
 {
     IEnumerable<CustomerSummaryDto> GetPagedCustomerSummaries(int pageNumber , int rowPerPage);
 
@@ -22,4 +22,6 @@ public interface ICustomerRepository  : ICommandRepository<Customer> , IQueryRep
     public bool UpdateCustomerInfo(Customer customerInfo);
 
     public bool IsCustomerExist(int id);
+    public bool Delete(int id);
+    public void Create(Customer customer);
 }

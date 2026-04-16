@@ -12,11 +12,17 @@ public class Person : BaseEntity
 
     private readonly HashSet<Phone> _phones = new();
     public IReadOnlySet<Phone> Phones => _phones;
-    public Person(string name , int? age , ESex sex , HashSet<Phone> phones )
+    public Person(string name, int? age, ESex sex)
     {
         UpdateName(name);
         UpdateAge(age);
         UpdateSex(sex);
+        CreatedDate = DateTime.Now;
+    } // when create a new person 
+
+  
+    public Person(string name , int? age , ESex sex , HashSet<Phone> phones ) : this(name , age , sex)
+    {
 
         if (phones == null || phones.Count == 0)
             throw new ArgumentException("يجب إضافة رقم هاتف واحد على الأقل");
@@ -26,8 +32,9 @@ public class Person : BaseEntity
             AddPhone(p);
         }
 
-        CreatedDate = DateTime.Now ;
     } // when create a new person 
+
+   
 
     public Person(int id ,string name , int? age , ESex sex , HashSet<Phone> phones , DateTime createdDate) :this(name , age , sex , phones) 
     {

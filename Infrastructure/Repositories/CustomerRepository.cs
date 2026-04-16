@@ -169,7 +169,7 @@ public class CustomerRepository : ICustomerRepository
 
         return  (int) command.ExecuteScalar();
     }
-    public Customer GetCustomerById(int customerId)
+    public Customer Get(int customerId)
     {
         using var conn = DatabaseInitializer.GetConnection();
        using var command = new SqlCommand("SP_GetCustomerByID", conn);
@@ -182,7 +182,7 @@ public class CustomerRepository : ICustomerRepository
 
         if (reader.Read())
         {
-             customer = new Customer(customerId, reader["Name"].ToString(),
+             customer = new Customer(reader["Name"].ToString(),
                 reader["Age"] != DBNull.Value ? Convert.ToInt32(reader["Age"]) : null,
                 (ESex)Convert.ToInt32(reader["Sex"])
                 , reader["Address"].ToString(), Convert.ToInt32(reader["Discount"]) );

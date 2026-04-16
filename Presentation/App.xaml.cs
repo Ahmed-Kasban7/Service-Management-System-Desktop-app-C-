@@ -5,7 +5,14 @@ using Infrastructure;
 using Infrastructure.Data;
 using Presentation.View.Customer_View;
 using System.Windows;
-using Application.Services;
+using Application.Features.PhoneManagement;
+using Application.Features.BrandManagement;
+using Application.Features.CustomerManagment;
+using Application.Features.DeviceManagement;
+using Application.Features.TypeManagement;
+using Application.Features.SpecManagement;
+using Application.Repositories;
+
 
 namespace Presentation;
 
@@ -18,12 +25,12 @@ public partial class App : System.Windows.Application
         try
         {
             DatabaseInitializer.InitializeDatabase();
-            var customerRepo = new CustomerRepository();
             var phoneRepo = new PhoneRepository();
+            var deviceRepo = new DeviceRepository();
+            var customerRepo = new CustomerRepository(deviceRepo, phoneRepo);
             var brandRepo = new DeviceBrandRepository();
             var typeRepo = new DeviceTypeRepository();
             var specRepo = new DeviceSpecRepository();
-            var deviceRepo = new DeviceRepository();
 
             var customerService = new CustomerService(customerRepo);
             var phoneService = new PhoneService(phoneRepo);

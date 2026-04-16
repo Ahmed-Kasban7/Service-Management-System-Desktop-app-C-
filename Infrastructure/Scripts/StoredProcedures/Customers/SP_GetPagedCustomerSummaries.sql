@@ -6,7 +6,6 @@ begin
 
 select p.PersonID , p.Name , c.Address ,dbo.GetFirstPersonPhoneNumber(p.PersonID) as PhoneNumber
 from Persons  p join Customers c on p.PersonID = c.PersonID
-where p.isDeleted =0
 order by p.DateCreated
 
 OFFSET (@PageNumber - 1) * @RowsPerPage ROWS

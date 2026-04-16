@@ -13,6 +13,7 @@ namespace Application.Repositories;
 public interface IOrderRepository:ICommandRepository<Order> , IQueryRepository<Order>
 {
     PagedResult<OrderSummaryDto> GetPagedOrderSummaries(int pageNumber, int rowPerPage);
+    OrderDetailsDto GetOrderFullDetailsById(int orderId);
     int GetOrderCount();
 
 }
