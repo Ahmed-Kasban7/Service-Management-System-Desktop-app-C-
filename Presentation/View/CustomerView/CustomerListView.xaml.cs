@@ -3,8 +3,11 @@ using Application.DTOs;
 using Application.DTOs.CustomerDTOs;
 using Application.DTOs.DeviceDTOs;
 using Application.Features.BrandManagement;
+using Application.Features.CustomerManagement.Queries;
 using Application.Features.CustomerManagment;
 using Application.Features.DeviceManagement;
+using Application.Features.DeviceManagement.Queries;
+using Application.Features.OrderManagement.Commands;
 using Application.Features.PhoneManagement;
 using Application.Features.SpecManagement;
 using Application.Features.TypeManagement;
@@ -12,6 +15,7 @@ using Application.Repositories;
 using Domain.Entities;
 using Domain.Enums;
 using Microsoft.Extensions.Configuration;
+using Presentation.View.OrderView;
 using Presentation.View.Settings_View;
 using System.Configuration;
 using System.Globalization;
@@ -42,9 +46,15 @@ namespace Presentation.View.Customer_View
         private readonly DeviceService _deviceService;
         private readonly PhoneService _phoneService;
         private CustomerProfileDto? _currentCustomer;
+        private readonly GetCustomersLookupHandler _getCustomerLookupHandler;
+        private readonly GetCustomerDevicesHandler _getCustomerDevicesHandler;
+        private readonly CreateOrderHandler _createOrderHandler;
 
         public CustomerListView(CustomerService customerService, PhoneService phoneService
-            , DeviceBrandService deviceBrandService, DeviceTypeService deviceTypeService, DeviceSpecService specService, DeviceService deviceService)
+            , DeviceBrandService deviceBrandService, DeviceTypeService deviceTypeService, DeviceSpecService specService, DeviceService deviceService 
+            , GetCustomersLookupHandler CustomerLookup
+            , GetCustomerDevicesHandler CustomerDevices,
+            CreateOrderHandler createOrder)
         {
             InitializeComponent();
             LoadSavedLogo();
@@ -56,6 +66,10 @@ namespace Presentation.View.Customer_View
             _deviceSpecService = specService;
             _deviceService = deviceService;
             _deviceTypeService = deviceTypeService;
+            _getCustomerLookupHandler = CustomerLookup;
+            _getCustomerDevicesHandler = CustomerDevices;
+            _createOrderHandler = createOrder;
+
           //  _customerService.CustomerAdded += UpdatePageInfo;
 
            UpdatePageInfo();
@@ -644,6 +658,14 @@ namespace Presentation.View.Customer_View
             BtnSettingsTab.Foreground = (Brush)new BrushConverter().ConvertFromString("#6B7280");
             BtnSettingsTab.BorderBrush = Brushes.Transparent;
             BtnSettingsTab.FontWeight = FontWeights.Normal;
+        }
+
+        private void BtnCreateOrder_Click(object sender, RoutedEventArgs e)
+        {
+            var createOrderWin = new CreateOrderWindow(_getCustomerLookupHandler , _getCustomerDevicesHandler ,_createOrderHandler);
+
+            createOrderWin.Owner = Window.GetWindow(this);
+            createOrderWin.ShowDialog();
         }
     }
 

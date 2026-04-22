@@ -3,7 +3,7 @@
             CREATE TABLE Customers(
                 CustomerID INT IDENTITY(1,1) PRIMARY KEY, 
 
-                PersonID INT NOT NULL ,
+                PersonID INT NOT NULL unique ,
 
                 CustomerNumber AS ('C-' + CAST(CustomerID AS VARCHAR)) PERSISTED, 
 

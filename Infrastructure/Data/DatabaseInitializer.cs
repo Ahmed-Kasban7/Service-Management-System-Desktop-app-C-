@@ -100,6 +100,7 @@ public static class DatabaseInitializer
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_CreateCustomer.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetCustomerProfile.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_IsCustomerExist.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetCustomersLookup.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Persons\SP_DeletePerson.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_DeletePhone.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_GetCustomerPhones.sql");
@@ -111,6 +112,7 @@ public static class DatabaseInitializer
         ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_UpdateDevice.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_IsDeviceExist.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_IsDeviceAssignedToCustomer.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_CustomerDeviceLookup.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Brands\SP_GetAllBrands.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Brands\SP_AddBrand.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Specs\SP_GetAllSpecs.sql");

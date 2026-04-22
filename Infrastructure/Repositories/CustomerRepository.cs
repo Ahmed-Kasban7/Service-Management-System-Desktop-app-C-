@@ -211,9 +211,27 @@ public class CustomerRepository : ICustomerRepository
             reader["Address"].ToString(),
             reader["Discount"] != DBNull.Value ? Convert.ToInt32(reader["Discount"]) : 0,
             reader["Age"] != DBNull.Value ? Convert.ToInt32(reader["Age"]) : null,
-            (ESex)Convert.ToInt32(reader["Sex"]) , _deviceRepository.GetCustomerDevicesBy(id) , _phoneRepository.GetCustomerPhonesBy(id)
+            (ESex)Convert.ToInt32(reader["Sex"]) , _deviceRepository.GetCustomerDevicesBy(id).ToList() , _phoneRepository.GetCustomerPhonesBy(id)
         );
         return customerProfileDTO;
+    }
+    public IEnumerable<CustomerLookupDto> GetCustomersLookup()
+    {
+        using var conn = DatabaseInitializer.GetConnection();
+        using var command = new SqlCommand("SP_GetCustomersLookup", conn);
+
+        var customerLookup = new List<CustomerLookupDto>();
+        command.CommandType = CommandType.StoredProcedure;
+        conn.Open();
+
+        using var reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            customerLookup.Add(new CustomerLookupDto(Convert.ToInt32(reader["Id"]), reader["Name"].ToString()));
+           
+        }
+        return customerLookup;
     }
 
     public bool IsCustomerExist(int id)

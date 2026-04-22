@@ -12,6 +12,10 @@ using Application.Features.DeviceManagement;
 using Application.Features.TypeManagement;
 using Application.Features.SpecManagement;
 using Application.Repositories;
+using Application.Features.OrderManagement.Commands;
+using Infrastructure.Repositories;
+using Application.Features.DeviceManagement.Queries;
+using Application.Features.CustomerManagement.Queries;
 
 
 namespace Presentation;
@@ -31,6 +35,7 @@ public partial class App : System.Windows.Application
             var brandRepo = new DeviceBrandRepository();
             var typeRepo = new DeviceTypeRepository();
             var specRepo = new DeviceSpecRepository();
+            var orderRepo = new OrderRepository();
 
             var customerService = new CustomerService(customerRepo);
             var phoneService = new PhoneService(phoneRepo);
@@ -38,8 +43,11 @@ public partial class App : System.Windows.Application
             var TypeService = new DeviceTypeService(typeRepo);
             var SpecService = new DeviceSpecService(specRepo);
             var deviceServie = new DeviceService(customerRepo, deviceRepo);
+            var createOrderHandler = new CreateOrderHandler(orderRepo, customerRepo, deviceRepo);
+            var  getCustomerDeviceHandler= new GetCustomerDevicesHandler(deviceRepo);
+            var  getCustomerLookupHandler= new GetCustomersLookupHandler(customerRepo);
         
-            var customerWindow = new CustomerListView(customerService , phoneService, BrandService , TypeService , SpecService , deviceServie);
+            var customerWindow = new CustomerListView(customerService , phoneService, BrandService , TypeService , SpecService , deviceServie , getCustomerLookupHandler, getCustomerDeviceHandler, createOrderHandler);
 
             customerWindow.Show();
         }

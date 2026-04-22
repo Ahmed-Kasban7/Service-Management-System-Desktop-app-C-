@@ -2,21 +2,16 @@
 using Application.Repositories;
 using Domain.Entities;
 using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Infrastructure.Data;
 
 public class DeviceRepository : IDeviceRepository
 {
-    public List<DeviceInfoDTO> GetCustomerDevicesBy(int customerId)
+    public IEnumerable<DeviceInfoDTO> GetCustomerDevicesBy(int customerId)
     {
         var customerDevices = new List<DeviceInfoDTO>();
-
 
         using var conn = DatabaseInitializer.GetConnection();
         conn.Open();
@@ -33,7 +28,7 @@ public class DeviceRepository : IDeviceRepository
                 reader["Brand"].ToString() ?? string.Empty,
 
                 Convert.ToInt32(reader["BrandID"]),
-                                 reader["Type"]?.ToString() ?? string.Empty,
+                reader["Type"]?.ToString() ?? string.Empty,
 
                  Convert.ToInt32(reader["TypeID"]),
                                   reader["Spec"]?.ToString() ?? string.Empty,
@@ -43,6 +38,28 @@ public class DeviceRepository : IDeviceRepository
 
                 reader["ModelName"] == DBNull.Value ? null : reader["ModelName"].ToString(),
                reader["SerialNumber"] == DBNull.Value ? null : reader["SerialNumber"].ToString()
+            ));
+        }
+
+        return customerDevices;
+    }
+    public IEnumerable<CustomerDeviceLookupDto> GetCustomerDevicesLookup(int customerId)
+    {
+        var customerDevices = new List<CustomerDeviceLookupDto>();
+
+        using var conn = DatabaseInitializer.GetConnection();
+        conn.Open();
+        using var command = new SqlCommand("SP_CustomerDeviceLookup", conn);
+        command.CommandType = CommandType.StoredProcedure;
+        command.Parameters.AddWithValue("@customerId", customerId);
+        using var reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            customerDevices.Add(new CustomerDeviceLookupDto
+            (
+               Convert.ToInt32(reader["DeviceID"]),
+                reader["DeviceFullName"]?.ToString() ?? string.Empty
             ));
         }
 
