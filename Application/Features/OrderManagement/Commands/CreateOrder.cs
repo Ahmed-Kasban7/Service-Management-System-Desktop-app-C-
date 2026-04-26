@@ -15,6 +15,8 @@ public class CreateOrderHandler
     private readonly IOrderRepository _orderRepository;
     private readonly ICustomerRepository _customerRepository;
     private readonly IDeviceRepository _deviceRepository;
+    public event Action AddOrderToList;
+
     public CreateOrderHandler(
           IOrderRepository orderRepository,
           ICustomerRepository customerRepository,
@@ -43,6 +45,8 @@ public class CreateOrderHandler
         
 
         int orderId = _orderRepository.Create(order);
+
+        AddOrderToList?.Invoke();
 
         return Result<int>.Success(orderId);
     }

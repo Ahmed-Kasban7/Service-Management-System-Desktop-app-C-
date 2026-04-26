@@ -1,0 +1,206 @@
+﻿<Window x:Class="Presentation.View.MainView.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        xmlns:customer="clr-namespace:Presentation.View.CustomerView"
+        
+        xmlns:order="clr-namespace:Presentation.View.OrderView"
+        
+        xmlns:settings="clr-namespace:Presentation.View.Settings_View"   
+        Title="نظام إدارة الخدمات - Main Console"
+        Height="850" Width="1450"
+        WindowStartupLocation="CenterScreen"
+        Background="#EEF2F7"
+        FlowDirection="RightToLeft">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="White" Padding="16,0" Height="72"
+                BorderThickness="0,0,0,1" BorderBrush="#E2E8F0" Grid.ColumnSpan="2">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="6" Color="#000" Opacity="0.04" ShadowDepth="1"/>
+            </Border.Effect>
+
+            <Grid VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- يمين: شعار + اسم -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+
+                    <Grid x:Name="LogoContainer" Cursor="Hand" Width="44" Height="44" Margin="0,0,10,0">
+                        <Border Width="44" Height="44"
+                Background="White"
+                CornerRadius="12"
+                BorderBrush="#E2E8F0"
+                BorderThickness="1.2">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="8" Color="#000" Opacity="0.06" ShadowDepth="1"/>
+                            </Border.Effect>
+                            <Border CornerRadius="10" ClipToBounds="True">
+                                <Image x:Name="CompanyLogo" Stretch="UniformToFill"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </Border>
+
+                        <Button x:Name="BtnChangeLogo"
+                Click="BtnChangeLogo_Click"
+                Width="18" Height="18"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Right"
+                Margin="0,0,-3,-3"
+                Background="#3B82F6"
+                Foreground="White"
+                BorderThickness="1.5"
+                BorderBrush="White">
+                            <Button.Template>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Grid>
+                                        <Ellipse Fill="{TemplateBinding Background}"
+                                 Stroke="{TemplateBinding BorderBrush}"
+                                 StrokeThickness="1.5"/>
+                                        <TextBlock Text="✎" FontSize="9" FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsMouseOver, ElementName=LogoContainer}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </Grid>
+
+                    <!-- الاسم -->
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Pro Fix"
+                   FontSize="15"
+                   FontWeight="Bold"
+                   Foreground="#0F172A"/>
+                    </StackPanel>
+
+                </StackPanel>
+                <!-- وسط: بحث -->
+                <Border Grid.Column="1"
+                        Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1"
+                        CornerRadius="8" Padding="12,8" MaxWidth="380" HorizontalAlignment="Center">
+                    <Grid>
+                        <TextBox x:Name="HeaderSearchBox"
+                                 Background="Transparent" BorderThickness="0"
+                                 FontSize="13" Foreground="#1E293B"
+                                 VerticalContentAlignment="Center"/>
+                        <TextBlock Text="🔍  بحث سريع (عميل / رقم طلب...)"
+                                   Foreground="#94A3B8" FontSize="13"
+                                   IsHitTestVisible="False" VerticalAlignment="Center">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=HeaderSearchBox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                </Border>
+
+                <!-- يسار: تاريخ + badge + أزرار -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+
+                    <Border Background="#F1F5F9" CornerRadius="7" Padding="10,5" Margin="0,0,8,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📅" FontSize="13" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="TxtTodayDate" Text="29 يناير 2026"
+                                       FontSize="12" Foreground="#475569" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- تصدير -->
+
+                    <!-- إعدادات -->
+                    <Button Width="36" Height="36" Background="#F8FAFC" BorderBrush="#E2E8F0"
+                            BorderThickness="1" Cursor="Hand" Margin="0,0,10,0">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <TextBlock Text="⚙️" FontSize="15" Foreground="#64748B"/>
+                    </Button>
+
+                    <!-- إنشاء طلب -->
+                    <Button Content="➕ إنشاء طلب"
+                            Padding="14,8" Background="{StaticResource PrimaryBlue}" Foreground="White"
+                            FontSize="13" FontWeight="SemiBold" BorderThickness="0"
+                            Cursor="Hand" Click="BtnCreateOrder_Click" Width="120" Height="47">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="9" Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="25">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition x:Name="SidePanelColumn" Width="0"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Background="White" CornerRadius="16">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" BorderThickness="0,0,0,1" BorderBrush="#F1F5F9" Padding="20,10">
+                        <StackPanel Orientation="Horizontal">
+
+                            <RadioButton x:Name="TabDashboard" Content="📊 لوحة التحكم" Style="{StaticResource NavTabStyle}"  IsChecked="True" Click="Navigate_Click" Tag="dashboard"/>
+                            <RadioButton x:Name="TabCustomers" Content="👥 إدارة العملاء" Style="{StaticResource NavTabStyle}" Click="Navigate_Click" Tag="Customers"/>
+                            <RadioButton x:Name="TabOrders" Content="📦 الطلبات" Style="{StaticResource NavTabStyle}" Click="Navigate_Click" Tag="Orders"/>
+                            <RadioButton x:Name="TabTechnicians" Content="🔧 الفنيين" Style="{StaticResource NavTabStyle}" Click="Navigate_Click" Tag="Techs"/>
+                            <RadioButton x:Name="TabSettings" Content="⚙️ الإعدادات" Style="{StaticResource NavTabStyle}" Click="Navigate_Click" Tag="Settings"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Grid Grid.Row="1" Margin="10">
+                        <customer:CustomersUC x:Name="CustomersControl" Visibility="Collapsed"/>
+
+                        <order:OrdersUC x:Name="OrdersControl" Visibility="Collapsed"/>
+
+                        <settings:SettingsUC x:Name="SettingsControl" Visibility="Collapsed"/>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!--<uc:CustomerProfileUC x:Name="SideProfileControl" Grid.Column="1" Margin="15,0,0,0"/>-->
+        </Grid>
+    </Grid>
+</Window>

@@ -16,6 +16,8 @@ using Application.Features.OrderManagement.Commands;
 using Infrastructure.Repositories;
 using Application.Features.DeviceManagement.Queries;
 using Application.Features.CustomerManagement.Queries;
+using Application.Features.OrderManagement.Queries;
+using Presentation.View.MainView;
 
 
 namespace Presentation;
@@ -46,10 +48,13 @@ public partial class App : System.Windows.Application
             var createOrderHandler = new CreateOrderHandler(orderRepo, customerRepo, deviceRepo);
             var  getCustomerDeviceHandler= new GetCustomerDevicesHandler(deviceRepo);
             var  getCustomerLookupHandler= new GetCustomersLookupHandler(customerRepo);
-        
-            var customerWindow = new CustomerListView(customerService , phoneService, BrandService , TypeService , SpecService , deviceServie , getCustomerLookupHandler, getCustomerDeviceHandler, createOrderHandler);
+            var getoderPaged =new GetPagedOrderSummariesHandler(orderRepo);
+            var  getorderPaged= new GetPagedOrderSummariesHandler(orderRepo);
+            var getOrderDetails = new GetOrderFullDetailsHandler(orderRepo);
+            var updateOrder = new UpdateOrderHandler(orderRepo);
 
-            customerWindow.Show();
+            var mainWindow = new MainWindow(getOrderDetails , getorderPaged  , getCustomerLookupHandler , getCustomerDeviceHandler , createOrderHandler , updateOrder);
+            mainWindow.Show();
         }
         catch (Exception ex)
         {

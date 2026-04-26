@@ -1,8 +1,7 @@
 ﻿CREATE OR ALTER PROCEDURE SP_UpdateOrder 
     @OrderId INT,
     @Problem NVARCHAR(MAX),
-    @Notes NVARCHAR(MAX),
-    @OrderState TINYINT
+    @Notes NVARCHAR(MAX)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -10,7 +9,6 @@ BEGIN
     UPDATE Orders 
     SET 
         Problem = @Problem,
-        Notes = @Notes,
-        OrderState = @OrderState
+        Notes = @Notes
     WHERE OrderId = @OrderId; 
 END

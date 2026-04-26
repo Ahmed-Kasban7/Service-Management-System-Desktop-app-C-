@@ -6,4 +6,4 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Application.DTOs.OrderDTOs;
-public record UpdateOrderDto(int OrderId , string Problem, string? Notes, EOrderState OrderState);
+public record UpdateOrderDto(int OrderId , string Problem, string? Notes);

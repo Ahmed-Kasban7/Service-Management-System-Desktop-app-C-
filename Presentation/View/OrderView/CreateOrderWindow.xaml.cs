@@ -42,48 +42,6 @@ namespace Presentation.View.OrderView
             if (customers == null) return;
 
             customerID.ItemsSource = customers;
-            var view = CollectionViewSource.GetDefaultView(customerID.ItemsSource);
-
-            customerID.AddHandler(System.Windows.Controls.Primitives.TextBoxBase.TextChangedEvent,
-                new TextChangedEventHandler((s, e) =>
-                {
-                    string searchText = customerID.Text;
-
-                    if (customerID.SelectedItem != null && ((dynamic)customerID.SelectedItem).Name == searchText)
-                    {
-                        return;
-                    }
-
-                    if (string.IsNullOrWhiteSpace(searchText))
-                    {
-                        view.Filter = null;
-                    }
-                    else
-                    {
-                        view.Filter = obj =>
-                        {
-                            var customer = obj as dynamic;
-                            return customer.Name.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
-                        };
-
-                        view.Refresh();
-
-                        System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                        {
-                            if (view.Cast<object>().Any())
-                            {
-                                customerID.IsDropDownOpen = true;
-
-                                var textBox = e.OriginalSource as TextBox;
-                                if (textBox != null)
-                                {
-                                    textBox.SelectionStart = searchText.Length;
-                                    textBox.SelectionLength = 0;
-                                }
-                            }
-                        }), System.Windows.Threading.DispatcherPriority.Input); 
-                    }
-                }));
         }
 
         private void BtnCreateOrder_Click(object sender, RoutedEventArgs e)
@@ -148,6 +106,8 @@ namespace Presentation.View.OrderView
             }
         }
 
+        private bool _isUpdatingText = false;
+
         private void customerID_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
@@ -159,7 +119,6 @@ namespace Presentation.View.OrderView
                 }
 
                 int customerId = Convert.ToInt32(customerID.SelectedValue);
-
                 var result = _getCustomerDevicesHandler.Handle(customerId);
 
                 if (result?.IsSuccess == true)
@@ -172,13 +131,57 @@ namespace Presentation.View.OrderView
                     DeviceID.ItemsSource = null;
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                MessageBox.Show($"حدثت مشكله اثناء تحميل بيانات الاجهزه");
+                MessageBox.Show("حدثت مشكله اثناء تحميل بيانات الاجهزه");
                 DeviceID.ItemsSource = null;
             }
         }
 
-        
+        private void customerID_TextChanged(object sender, RoutedEventArgs e)
+        {
+            if (_isUpdatingText) return;
+
+            string searchText = customerID.Text;
+
+            if (customerID.SelectedItem != null)
+            {
+                var selected = customerID.SelectedItem as dynamic;
+                if (selected?.Name == searchText) return;
+            }
+
+            var view = CollectionViewSource.GetDefaultView(customerID.ItemsSource);
+            if (view == null) return;
+
+            if (string.IsNullOrWhiteSpace(searchText))
+            {
+                view.Filter = null;
+            }
+            else
+            {
+                view.Filter = obj =>
+                {
+                    var customer = obj as dynamic;
+                    return customer?.Name?.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
+                };
+            }
+
+            view.Refresh();
+
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (view.Cast<object>().Any())
+                    customerID.IsDropDownOpen = true;
+
+                var textBox = customerID.Template?.FindName("PART_EditableTextBox", customerID) as TextBox;
+                if (textBox != null)
+                {
+                    textBox.SelectionStart = searchText.Length;
+                    textBox.SelectionLength = 0;
+                }
+            }), System.Windows.Threading.DispatcherPriority.Input);
+        }
+
+
     }
 }

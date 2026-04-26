@@ -78,19 +78,15 @@ public class Order : BaseEntity
         if (!Enum.IsDefined(typeof(EOrderState), newState))
             throw new ArgumentException("حالة الطلب غير صالحة");
 
-        if (OrderState == EOrderState.Completed || OrderState == EOrderState.Cancelled)
-            throw new InvalidOperationException("لا يمكن تغيير حالة طلب منتهي");
-
         OrderState = newState;
 
         if (newState == EOrderState.Completed || newState == EOrderState.Cancelled)
             EndDate = DateTime.Now;
     }
-    public void UpdateOrder(string problem , string? notes , EOrderState newState)
+    public void UpdateOrder(string problem , string? notes)
     {
         UpdateProblem(problem);
         UpdateNotes(notes);
-        UpdateState(newState);
     }
 
 }

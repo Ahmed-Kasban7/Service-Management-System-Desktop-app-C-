@@ -60,14 +60,14 @@
           DisplayMemberPath="Name"
           SelectedValuePath="Id"
           HorizontalAlignment="Stretch"
-          IsEditable="True" 
-          StaysOpenOnEdit="True" 
-                              IsTextSearchEnabled="False"
+          IsEditable="True"
+          StaysOpenOnEdit="True"
+          IsTextSearchEnabled="False"
           SelectionChanged="customerID_SelectionChanged"
+          KeyUp="customerID_TextChanged"
           HorizontalContentAlignment="Left"
-          FocusVisualStyle="{x:Null}" 
+          FocusVisualStyle="{x:Null}"
           ToolTip="{Binding SelectedItem.Name, RelativeSource={RelativeSource Self}}">
-
                         <ComboBox.Resources>
                             <Style TargetType="{x:Type TextBox}">
                                 <Setter Property="FocusVisualStyle" Value="{x:Null}"/>

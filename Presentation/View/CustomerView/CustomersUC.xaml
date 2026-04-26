@@ -1,24 +1,21 @@
-﻿<UserControl x:Class="Presentation.View.SettingsView.OrderListWindow"
+﻿<UserControl x:Class="Presentation.View.CustomerView.CustomersUC"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Presentation.View.SettingsView"
+             xmlns:local="clr-namespace:Presentation.View.CustomerView"
              mc:Ignorable="d" 
-        Height="800"
-        Width="1400"
-        Background="White"
-        FlowDirection="RightToLeft">
-
-    <Grid Grid.Row="1">
-        <Grid x:Name="CustomersContainer" Visibility="Visible">
+             d:DesignHeight="450" d:DesignWidth="800"
+             FlowDirection="RightToLeft">
+    <Grid>
+        <!--<Grid x:Name="CustomersContainer" Visibility="Visible">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Customer Header -->
+            --><!-- Customer Header --><!--
             <Border x:Name="customerheader" Grid.Row="0" Padding="25,15">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -27,27 +24,25 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,20,0">
-                        <TextBlock FontSize="16" FontWeight="Bold" Foreground="#1E293B" RenderTransformOrigin="0.5,0.5" Width="102">
-                            <TextBlock.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform/>
-                                    <SkewTransform/>
-                                    <RotateTransform Angle="-0.062"/>
-                                    <TranslateTransform/>
-                                </TransformGroup>
-                            </TextBlock.RenderTransform><Run Text="قائمة ا"/><Run FlowDirection="RightToLeft" Language="ar-eg" Text="لطلبات"/></TextBlock>
-                        <TextBlock FontSize="12" Foreground="#64748B" Margin="0,4,0,0"><Run Text="عدد ا"/><Run Language="ar-eg" Text="لطلبات"/><Run Text=": "/><Run Text=" "/><Run x:Name="TxtCustomerCountNumber" Text="0"/></TextBlock>
+                        <TextBlock Text="قائمة العملاء" FontSize="16" FontWeight="Bold" Foreground="#1E293B"/>
+                        <TextBlock FontSize="12" Foreground="#64748B" Margin="0,4,0,0">
+                                      <Run Text="عدد العملاء: "/>
+<TextBlock x:Name="TxtCustomerCountNumber"
+             Text="0"
+             FontSize="12" FontWeight="Bold"
+             Foreground="#2563EB"
+             FlowDirection="LeftToRight"/>                                        </TextBlock>
                     </StackPanel>
                     <Border Grid.Column="1" Background="White" BorderBrush="{StaticResource BorderGray}"
-                          BorderThickness="1" CornerRadius="8" Padding="12,8"
-                          MaxWidth="400" HorizontalAlignment="Center" Width="350">
+                                      BorderThickness="1" CornerRadius="8" Padding="12,8"
+                                      MaxWidth="400" HorizontalAlignment="Center" Width="350">
                         <Grid>
                             <TextBox x:Name="SearchBox" Background="Transparent" BorderThickness="0"
-                                   FontSize="14" Foreground="Black"
-                                   VerticalContentAlignment="Center" KeyDown="SearchBox_KeyDown"/>
+                                               FontSize="14" Foreground="Black"
+                                               VerticalContentAlignment="Center" KeyDown="SearchBox_KeyDown"/>
                             <TextBlock Text="🔍 بحث بالاسم أو كود العميل"
-                                     Foreground="{StaticResource GrayText}"
-                                     IsHitTestVisible="False" VerticalAlignment="Center">
+                                                 Foreground="{StaticResource GrayText}"
+                                                 IsHitTestVisible="False" VerticalAlignment="Center">
                                 <TextBlock.Style>
                                     <Style TargetType="{x:Type TextBlock}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -61,33 +56,42 @@
                             </TextBlock>
                         </Grid>
                     </Border>
+                    <Button x:Name="BtnAddCustomer" Grid.Column="2" Content="➕ إنشاء عميل"
+                                      Height="38" Padding="18,8"
+                                      Background="{StaticResource PrimaryBlue}" Foreground="White"
+                                      BorderThickness="0" Cursor="Hand" FontWeight="SemiBold" FontSize="14"
+                                      Click="BtnCreateCustomer_Click" HorizontalAlignment="Left">
+                        <Button.Template>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
                 </Grid>
             </Border>
 
-            <!-- DataGrid -->
+            --><!-- DataGrid --><!--
             <Grid Grid.Row="1">
                 <DataGrid x:Name="DgCustomers"
-                        AutoGenerateColumns="False" GridLinesVisibility="None"
-                        Background="Transparent" BorderThickness="0"
-                        SelectionMode="Single" CanUserAddRows="False"
-                        IsReadOnly="True" RowHeaderWidth="0"
-                        SelectionChanged="DgCustomers_SelectionChanged">
+                                    AutoGenerateColumns="False" GridLinesVisibility="None"
+                                    Background="Transparent" BorderThickness="0"
+                                    SelectionMode="Single" CanUserAddRows="False"
+                                    IsReadOnly="True" RowHeaderWidth="0"
+                                    SelectionChanged="DgCustomers_SelectionChanged">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="كود الطلب" Binding="{Binding OrderNumber}" Width="150"/>
-                        <DataGridTextColumn Header="اسم العميل" Binding="{Binding CustomerName}" Width="1.5*"/>
-                        <DataGridTextColumn Header="الهاتف" Binding="{Binding CustomerPhone}" Width="150"/>
+                        <DataGridTextColumn Header="كود العميل" Binding="{Binding ID}" Width="150"/>
+                        <DataGridTextColumn Header="الاسم" Binding="{Binding Name}" Width="1.5*"/>
+                        <DataGridTextColumn Header="الهاتف" Binding="{Binding Phone}" Width="150"/>
                         <DataGridTextColumn Header="العنوان" Binding="{Binding Address}" Width="*"/>
-                        <DataGridTextColumn Header="تاريخ البدء"
-    Binding="{Binding Date, StringFormat={}{0:dd MMMM yyyy}}"
-    Width="*"/>
-                        <DataGridTextColumn Header="حالة الطلب" Binding="{Binding State}" Width="*"/>
                         <DataGridTemplateColumn Width="60">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button Background="Transparent" BorderThickness="0"
-                                          Cursor="Hand" Click="BtnDeleteCustomer_Click">
+                                                      Cursor="Hand" Click="BtnDeleteCustomer_Click">
                                         <Path Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
-                                            Fill="#EF4444" Width="16" Height="16" Stretch="Uniform"/>
+                                                        Fill="#EF4444" Width="16" Height="16" Stretch="Uniform"/>
                                     </Button>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -95,16 +99,16 @@
                     </DataGrid.Columns>
                 </DataGrid>
                 <Border x:Name="EmptyStateOverlay" Background="#AAFFFFFF"
-                      Visibility="Collapsed" CornerRadius="12">
+                                  Visibility="Collapsed" CornerRadius="12">
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                         <TextBlock Text="👥" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,15" Opacity="0.2"/>
                         <TextBlock x:Name="TxtEmptyMessage" Text="لا توجد بيانات لعرضها"
-                                 FontSize="15" FontWeight="Bold" Foreground="#475569" HorizontalAlignment="Center"/>
+                                             FontSize="15" FontWeight="Bold" Foreground="#475569" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Border>
             </Grid>
 
-            <!-- Pagination -->
+            --><!-- Pagination --><!--
             <Border Grid.Row="2" Padding="15" Background="White" BorderBrush="#F1F5F9" BorderThickness="0">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button x:Name="BtnNextPage" Click="BtnNextPage_Click" Width="42" Height="42" Cursor="Hand">
@@ -115,12 +119,12 @@
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type Button}">
                                             <Border x:Name="btnBorder" Background="{TemplateBinding Background}"
-                                                  CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1.5">
+                                                              CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1.5">
                                                 <Path x:Name="arrowPath" Data="M6.5 1L1.5 6L6.5 11"
-                                                    Stroke="#64748B" StrokeThickness="2"
-                                                    StrokeStartLineCap="Round" StrokeEndLineCap="Round"
-                                                    StrokeLineJoin="Round" HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center" Stretch="Uniform" Width="10" Height="14"/>
+                                                                Stroke="#64748B" StrokeThickness="2"
+                                                                StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                                                StrokeLineJoin="Round" HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center" Stretch="Uniform" Width="10" Height="14"/>
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
@@ -142,9 +146,9 @@
                     </Button>
                     <StackPanel VerticalAlignment="Center" Margin="20,0">
                         <TextBlock x:Name="TxtPageInfo" Text="1" Foreground="#1E293B"
-                                 FontSize="15" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                             FontSize="15" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                         <TextBlock Text="الصفحة" Foreground="#94A3B8" FontSize="10"
-                                 HorizontalAlignment="Center" Margin="0,-2,0,0"/>
+                                             HorizontalAlignment="Center" Margin="0,-2,0,0"/>
                     </StackPanel>
                     <Button x:Name="BtnPrevPage" Click="BtnPrevPage_Click" Width="42" Height="42" Cursor="Hand">
                         <Button.Style>
@@ -154,12 +158,12 @@
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type Button}">
                                             <Border x:Name="btnBorder" Background="{TemplateBinding Background}"
-                                                  CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1.5">
+                                                              CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1.5">
                                                 <Path x:Name="arrowPath" Data="M1.5 1L6.5 6L1.5 11"
-                                                    Stroke="#64748B" StrokeThickness="2"
-                                                    StrokeStartLineCap="Round" StrokeEndLineCap="Round"
-                                                    StrokeLineJoin="Round" HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center" Stretch="Uniform" Width="10" Height="14"/>
+                                                                Stroke="#64748B" StrokeThickness="2"
+                                                                StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                                                StrokeLineJoin="Round" HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center" Stretch="Uniform" Width="10" Height="14"/>
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
@@ -182,7 +186,6 @@
                 </StackPanel>
             </Border>
 
-        </Grid>
-
+        </Grid>-->
     </Grid>
 </UserControl>

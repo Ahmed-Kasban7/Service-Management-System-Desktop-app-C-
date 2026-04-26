@@ -59,8 +59,6 @@ public class OrderRepository:IOrderRepository
         cmd.Parameters.AddWithValue("@OrderId", order.Id);
         cmd.Parameters.AddWithValue("@Problem", order.Problem);
         cmd.Parameters.AddWithValue("@Notes", order.Notes ?? (object)DBNull.Value);
-        cmd.Parameters.AddWithValue("@OrderState", (int)order.OrderState);
-
         conn.Open();
 
         cmd.ExecuteNonQuery();
@@ -87,7 +85,7 @@ public class OrderRepository:IOrderRepository
                 (int)reader["OrderId"],
                 reader["OrderNumber"].ToString() ?? string.Empty,
                 (DateTime)reader["StartDate"],
-                reader["EndDate"] as DateTime?, 
+                reader["EndedDate"] as DateTime?, 
                 reader["Problem"].ToString() ?? string.Empty,
                 reader["Notes"]?.ToString(),
                 (int)reader["CustomerId"],
@@ -103,7 +101,6 @@ public class OrderRepository:IOrderRepository
     {
         var orders = new List<OrderSummaryDto>();
         using var conn = DatabaseInitializer.GetConnection();
-
         using var cmd = new SqlCommand("SP_GetPagedOrderSummaries", conn);
         cmd.CommandType = CommandType.StoredProcedure;
 
@@ -118,20 +115,27 @@ public class OrderRepository:IOrderRepository
 
         conn.Open();
 
-        using var reader = cmd.ExecuteReader();
+        using (var reader = cmd.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                orders.Add(new OrderSummaryDto(
+                   Convert.ToInt32( reader["OrderID"]),
+                    reader["OrderNumber"].ToString(),
+                    reader["CustomerName"].ToString(),
+                    reader["CustomerPhone"].ToString(),
+                    reader["Address"].ToString(),
+                    (DateTime)reader["StartDate"],
+                    reader["state"].ToString())
+                );
+            }
+        } 
 
-        while (reader.Read()) {
+        int totalCount = totalParam.Value != DBNull.Value ? (int)totalParam.Value : 0;
 
-            orders.Add(new OrderSummaryDto(reader["OrderNumber"].ToString(), reader["CustomerName"].ToString(), reader["CustomerPhone"].ToString()
-                , reader["Address"].ToString(), reader["Problem"].ToString(), (DateTime) reader["StartDate"],(EOrderState)Convert.ToByte( reader["state"])));
-        
-        }
-        int totalCount = (int)totalParam.Value;
-
-        return new PagedResult<OrderSummaryDto> (orders , totalCount, pageNumber , pageSize);
+        return new PagedResult<OrderSummaryDto>(orders, totalCount, pageNumber, pageSize);
     }
 
-    
     public int GetOrderCount()
     {
         using var conn = DatabaseInitializer.GetConnection();
@@ -145,40 +149,49 @@ public class OrderRepository:IOrderRepository
         return reader;
     }
 
-    public OrderDetailsDto GetOrderFullDetailsById( int orderId)
+    public OrderDetailsDto GetOrderFullDetailsById(int orderId)
     {
         using var conn = DatabaseInitializer.GetConnection();
-
         using var cmd = new SqlCommand("SP_GetOrderFullDetailsById", conn);
-        cmd.CommandType = CommandType.StoredProcedure;
 
-        cmd.Parameters.AddWithValue("@OrderId", orderId);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@OrderID", orderId);
 
         conn.Open();
-        using var reader  = cmd.ExecuteReader();
+
+        using var reader = cmd.ExecuteReader();
+
         if (reader.Read())
         {
-            DeviceSummaryDto device = new DeviceSummaryDto(
-                    BrandName: reader["Brand"]?.ToString(),
-                    TypeName: reader["Type"]?.ToString(),
+            var device = new DeviceSummaryDto(
+                BrandName: reader["Brand"]?.ToString(),
+                TypeName: reader["Type"]?.ToString(),
                 SpecName: reader["Spec"]?.ToString(),
-                Model: reader["Model"]?.ToString(),
-                SerialNumber: reader["SerialNumber"]?.ToString());
+                Model: reader["ModelName"]?.ToString(),
+                SerialNumber: reader["SerialNumber"]?.ToString()
+            );
 
-            return new OrderDetailsDto
-            (
-                OrderId : reader["OrderID"] != DBNull.Value ? (int)reader["OrderID"] : 0,
+            return new OrderDetailsDto(
+                OrderId: reader["OrderID"] != DBNull.Value ? (int)reader["OrderID"] : 0,
                 OrderNumber: reader["OrderNumber"]?.ToString(),
                 Problem: reader["Problem"]?.ToString(),
-                Notes: reader["Notes"]?.ToString(),
-                StartDate: (DateTime)reader["StartDate"],
-                EndDate: reader["EndDate"] != DBNull.Value ? (DateTime?)reader["EndDate"] : null,
-                State: (EOrderState)Convert.ToByte(reader["OrderState"]),
+                Notes: reader["Notes"] == DBNull.Value ? null : reader["Notes"]?.ToString(),
+
+                StartDate: reader["StartDate"] != DBNull.Value
+                    ? (DateTime)reader["StartDate"]
+                    : DateTime.MinValue,
+
+                EndDate: reader["EndedDate"] == DBNull.Value
+                    ? null
+                    : (DateTime?)reader["EndedDate"],
+
+                State: (reader["OrderState"].ToString()),
 
                 CustomerName: reader["Name"]?.ToString(),
                 Address: reader["Address"]?.ToString(),
-                CustomerPhones: reader["PhoneNumbers"].ToString(),
-                device
+                CustomerPhones: reader["PhoneNumbers"]?.ToString() ?? "",
+
+                CustomerDevice: device
             );
         }
 

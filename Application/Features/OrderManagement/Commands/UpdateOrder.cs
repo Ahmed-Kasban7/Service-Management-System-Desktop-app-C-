@@ -28,7 +28,7 @@ public class UpdateOrderHandler
         if (order is null)
             return Result<int>.Failure($"لم يتم العثور على الطلب رقم {orderDto.OrderId}");
 
-        order.UpdateOrder(orderDto.Problem , orderDto.Notes , orderDto.OrderState);
+        order.UpdateOrder(orderDto.Problem , orderDto.Notes);
 
         int orderId = _orderRepository.Update(order);
 

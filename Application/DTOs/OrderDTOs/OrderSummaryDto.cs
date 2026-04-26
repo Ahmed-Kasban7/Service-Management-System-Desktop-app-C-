@@ -7,4 +7,4 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.OrderDTOs;
 
-public record class OrderSummaryDto(string OrderNumber , string CustomerName , string CustomerPhone ,string Address, string Problem , DateTime Date ,EOrderState State);
+public record class OrderSummaryDto(int OrderId,string OrderNumber , string CustomerName , string CustomerPhone ,string Address, DateTime Date ,string State);
