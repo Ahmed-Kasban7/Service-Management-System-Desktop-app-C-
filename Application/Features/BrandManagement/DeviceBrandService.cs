@@ -18,7 +18,7 @@ public class DeviceBrandService
         _brandRepository = brandRepository;
     }
 
-    public List<BrandDto> GetAllBrands()
+    public IEnumerable<BrandDto> GetAllBrands()
     {
         return _brandRepository.GetAllBrands();
     }

@@ -102,7 +102,7 @@ namespace Presentation.View.OrderView
             }
             catch (Exception ex) {
 
-                MessageBox.Show("حدث خطأ غير متوقع، حاول مرة أخرى");
+                MessageBox.Show($"حدث خطأ غير متوقع، حاول مرة أخرى{ex}");
             }
         }
 

@@ -1,9 +1,13 @@
 ﻿using Application.DTOs;
 using Application.DTOs.DeviceDTOs;
 using Application.Features.BrandManagement;
+using Application.Features.BrandManagement.Queries;
 using Application.Features.CustomerManagment;
+using Application.Features.CustomerManagment.Commands;
 using Application.Features.SpecManagement;
+using Application.Features.SpecManagement.Queries;
 using Application.Features.TypeManagement;
+using Application.Features.TypeManagement.Queries;
 using Domain.Enums;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,25 +22,116 @@ namespace Presentation.View.Customer_View
     {
         public ObservableCollection<string> PhonesList { get; set; } = new ObservableCollection<string>();
         public ObservableCollection<DeviceCreateDto> DevicesList { get; set; } = new ObservableCollection<DeviceCreateDto>();
-        private readonly CustomerService _customerService;
-        private readonly DeviceBrandService _deviceBrandService;
-        private readonly DeviceTypeService _deviceTypeService;
-        private readonly DeviceSpecService _deviceSpecService;
+        private readonly CreateCustomerHandler _createCustomerHandler;
 
-        public CreateCustomerWindow(CustomerService customerService, DeviceBrandService deviceBrandService , DeviceTypeService deviceTypeService , DeviceSpecService deviceSpecService )
+        private readonly GetAllBrandsHandler _getAllBrandsHandler;
+        private readonly GetAllTypesHandler _getAllTypesHandler;
+        private readonly GetSpecsByTypeIdHandler _getSpecsByTypeIdHandler;
+
+        public CreateCustomerWindow(CreateCustomerHandler createCustomer, GetAllBrandsHandler getAllBrands , GetAllTypesHandler getAllTypes , GetSpecsByTypeIdHandler getSpecsByTypeId )
         {
             InitializeComponent();
 
-            _customerService = customerService;
-            _deviceBrandService = deviceBrandService;
-            _deviceTypeService = deviceTypeService;
-            _deviceSpecService = deviceSpecService;
+            _createCustomerHandler = createCustomer;
+            _getAllBrandsHandler = getAllBrands;
+            _getAllTypesHandler = getAllTypes;
+            _getSpecsByTypeIdHandler = getSpecsByTypeId;
             
             LstPhones.ItemsSource = PhonesList;
             DgTempDevices.ItemsSource = DevicesList;
 
-            CbBrand.ItemsSource = _deviceBrandService.GetAllBrands(); 
-            CbType.ItemsSource = _deviceTypeService.GetAllTypes();
+            CbBrand.ItemsSource = _getAllBrandsHandler.Handle(); 
+            CbType.ItemsSource = _getAllTypesHandler.Handle();
+        }
+        private void BtnSaveAll_Click(object sender, RoutedEventArgs e)
+        {
+            if (!Validate())
+                return;
+
+            try
+            {
+                var customerDto = new CustomerCreateDto(
+                    TxtName.Text.Trim(),
+                    TxtAddress.Text.Trim(),
+                    string.IsNullOrWhiteSpace(TxtDiscount.Text) ? 0 :Convert.ToInt32( TxtDiscount.Text),
+                    string.IsNullOrWhiteSpace(TxtAge.Text) ? null : Convert.ToInt32(TxtAge.Text),
+                    CbSex.SelectedIndex == 0 ? ESex.MALE : ESex.FEMALE,
+                    DevicesList.ToList(),
+                    PhonesList.ToList());
+
+                var res = _createCustomerHandler.Handle(customerDto);
+
+                MessageBox.Show(res.IsSuccess
+                    ? "تم حفظ بيانات العميل بنجاح"
+                    : res.Error);
+
+                if (res.IsSuccess)
+                {
+                    this.DialogResult = true;
+                    this.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"حدث خطأ أثناء الحفظ برجاء إعادة المحاولة {ex}" );
+            }
+        }
+        private bool Validate()
+        {
+            bool hasError = false;
+
+            TxtNameError.Text = "";
+            TxtAgeError.Text = "";
+            TxtDiscountError.Text = "";
+            TxtAddressError.Text = "";
+            txtPhoneError.Text = "";
+            txtDeviceError.Text = "";
+
+            if (string.IsNullOrWhiteSpace(TxtName.Text))
+            {
+                TxtNameError.Text = "برجاء إدخال اسم العميل";
+                hasError = true;
+            }
+
+            if (!string.IsNullOrWhiteSpace(TxtAge.Text))
+            {
+                if (!int.TryParse(TxtAge.Text, out int age) || age <= 0)
+                {
+                    TxtAgeError.Text = "العمر غير صالح";
+                    hasError = true;
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(TxtDiscount.Text))
+            {
+
+                if (!int.TryParse(TxtDiscount.Text, out int discount) || discount < 0 || discount > 100)
+                {
+                    TxtDiscountError.Text = "الخصم يجب أن يكون من 0 إلى 100";
+                    hasError = true;
+                }
+            }
+        
+            if (string.IsNullOrWhiteSpace(TxtAddress.Text))
+            {
+                TxtAddressError.Text = "برجاء إدخال العنوان";
+                hasError = true;
+            }
+
+            if (PhonesList == null || PhonesList.Count == 0)
+            {
+                txtPhoneError.Text = "يجب إضافة هاتف واحد على الاقل";
+                hasError = true;
+            }
+
+            if (DevicesList == null || DevicesList.Count == 0)
+            {
+               txtDeviceError.Text = "يجب إضافة جهاز واحد على الاقل";
+
+                hasError = true;
+            }
+
+            return !hasError;
         }
         private void BtnAddPhoneToList_Click(object sender, RoutedEventArgs e)
         {
@@ -53,7 +148,7 @@ namespace Presentation.View.Customer_View
                 int selectedTypeId = (int)CbType.SelectedValue;
 
 
-                var specs = _deviceSpecService.GetSpecsByTypeId(selectedTypeId);
+                var specs = _getSpecsByTypeIdHandler.Handle(selectedTypeId);
 
                 CbSpec.ItemsSource = specs;
 
@@ -92,66 +187,7 @@ namespace Presentation.View.Customer_View
             CbSpec.SelectedIndex = -1;
         }
 
-        private void BtnSaveAll_Click(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(TxtName.Text) &&
-                 string.IsNullOrWhiteSpace(TxtAddress.Text) &&
-                 string.IsNullOrWhiteSpace(TxtDiscount.Text) &&
-                 string.IsNullOrWhiteSpace(TxtAge.Text) &&
-                 PhonesList.Count == 0 &&
-                 DevicesList.Count == 0)
-            {
-                MessageBox.Show("برجاء إدخال بيانات العميل ");
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(TxtName.Text))
-            {
-                MessageBox.Show("برجاء إدخال اسم العميل");
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(TxtAddress.Text))
-            {
-                MessageBox.Show("برجاء إدخال العنوان");
-                return;
-            }
-
-            if(PhonesList is null ||PhonesList.Count==0)
-            {
-                MessageBox.Show("يجب إدخال رقم هاتف واحد على الأقل للعميل");
-                return;
-            }
-
-            if(DevicesList is null || DevicesList.Count==0)
-            {
-                MessageBox.Show("يجب إدخال جهاز واحد على الأقل للعميل");
-                return;
-            }
-
-            try
-            {
-                var customerDto = new CustomerCreateDto(
-                     TxtName.Text.Trim(),
-                     TxtAddress.Text?.Trim() ?? "",
-                     int.TryParse(TxtDiscount.Text, out int d) ? d : 0,
-                     int.TryParse(TxtAge.Text, out int a) ? a : (int?)null,
-                     CbSex.SelectedIndex == 0 ? ESex.MALE : ESex.FEMALE ,
-                     DevicesList.ToList(),
-                     PhonesList.ToList());
-
-                _customerService.CreateCustomer(customerDto);
-
-                MessageBox.Show("تم حفظ بيانات العميل بنجاح");
-
-                this.DialogResult = true;
-                this.Close();
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show($"حدث خطأ أثناء الحفظ: {ex.Message}");
-            }
-        }
+        
         private void BtnDeleteDevice_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as System.Windows.Controls.Button;

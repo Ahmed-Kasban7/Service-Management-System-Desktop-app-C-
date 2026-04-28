@@ -17,7 +17,7 @@ public class DeviceTypeService
         _typeRepository = typeRepository;
     }
 
-    public List<TypeDto> GetAllTypes()
+    public IEnumerable<TypeDto> GetAllTypes()
     {
         return _typeRepository.GetAllTypes();
     }

@@ -24,7 +24,7 @@ public class CustomerRepository : ICustomerRepository
         _deviceRepository = deviceRepository;
         _phoneRepository = phoneRepository;
     }
-    public void Create(Customer customer)
+    public int Create(Customer customer)
     {
         using var conn = DatabaseInitializer.GetConnection();
         conn.Open();
@@ -37,6 +37,12 @@ public class CustomerRepository : ICustomerRepository
         cmd.Parameters.AddWithValue("@Sex", (int)customer.Sex);
         cmd.Parameters.AddWithValue("@Discount", customer.Discount);
         cmd.Parameters.AddWithValue("@Address", customer.Address);
+        var outputParam = new SqlParameter("@CustomerId", SqlDbType.Int)
+        {
+            Direction = ParameterDirection.Output
+        };
+
+        cmd.Parameters.Add(outputParam);
 
         var phoneParam = cmd.Parameters.AddWithValue("@Phones", BuildPhoneTable(customer.Phones));
         phoneParam.SqlDbType = SqlDbType.Structured;
@@ -46,11 +52,14 @@ public class CustomerRepository : ICustomerRepository
         deviceParam.SqlDbType = SqlDbType.Structured;
         deviceParam.TypeName = "DeviceList";
 
-
         cmd.ExecuteNonQuery();
 
+        return (int)outputParam.Value;
     }
-
+    public Customer Get(int id)
+    {
+        return null;
+    }
     private DataTable BuildPhoneTable(IReadOnlySet<Phone> phones)
     {
         var table = new DataTable();
@@ -169,27 +178,27 @@ public class CustomerRepository : ICustomerRepository
 
         return  (int) command.ExecuteScalar();
     }
-    public Customer Get(int customerId)
-    {
-        using var conn = DatabaseInitializer.GetConnection();
-       using var command = new SqlCommand("SP_GetCustomerByID", conn);
+    //public Customer Get(int customerId)
+    //{
+    //   // using var conn = DatabaseInitializer.GetConnection();
+    //   //using var command = new SqlCommand("SP_GetCustomerByID", conn);
 
-       command.Parameters.AddWithValue("@customerId", customerId);
-        command.CommandType= CommandType.StoredProcedure;
-        conn.Open();
-        using var reader = command.ExecuteReader();
-        Customer customer = null;
+    //   //command.Parameters.AddWithValue("@customerId", customerId);
+    //   // command.CommandType= CommandType.StoredProcedure;
+    //   // conn.Open();
+    //   // using var reader = command.ExecuteReader();
+    //   // Customer customer = null;
 
-        if (reader.Read())
-        {
-             customer = new Customer(reader["Name"].ToString(),
-                reader["Age"] != DBNull.Value ? Convert.ToInt32(reader["Age"]) : null,
-                (ESex)Convert.ToInt32(reader["Sex"])
-                , reader["Address"].ToString(), Convert.ToInt32(reader["Discount"]) );
-        }
+    //   // if (reader.Read())
+    //   // {
+    //   //      customer = new Customer(reader["Name"].ToString(),
+    //   //         reader["Age"] != DBNull.Value ? Convert.ToInt32(reader["Age"]) : null,
+    //   //         (ESex)Convert.ToInt32(reader["Sex"])
+    //   //         , reader["Address"].ToString(), Convert.ToInt32(reader["Discount"]) );
+    //   // }
 
-        return customer;
-    }
+    //   // return customer;
+    //}
     public CustomerProfileDto GetCustomerFullProfile(int id)
     {
         using var conn = DatabaseInitializer.GetConnection();

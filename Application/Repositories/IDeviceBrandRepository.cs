@@ -9,7 +9,7 @@ namespace Application.Repositories;
 
 public interface IDeviceBrandRepository
 {
-    List<BrandDto> GetAllBrands();
+    IEnumerable<BrandDto> GetAllBrands();
     BrandDto GetBrandBy(int id);
     public bool AddBrand(string brandName);
 }

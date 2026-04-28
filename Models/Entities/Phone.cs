@@ -12,10 +12,10 @@ public record Phone
     public string PhoneNumber { get; private set; }
     public Phone(string phoneNumber)
     {
-        UpdatePhone(phoneNumber);
+        PhoneValidation(phoneNumber);
     }
 
-    public void UpdatePhone(string newPhone)
+    public void PhoneValidation(string newPhone)
     {
         if (string.IsNullOrWhiteSpace(newPhone))
             throw new ArgumentException("رقم الهاتف مطلوب.");

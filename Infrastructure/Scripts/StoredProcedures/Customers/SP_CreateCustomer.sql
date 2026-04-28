@@ -5,7 +5,8 @@
     @Discount INT,
     @Address NVARCHAR(500),
     @Phones PhoneList READONLY,
-    @Devices DeviceList READONLY
+    @Devices DeviceList READONLY,
+    @CustomerId int output 
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -13,7 +14,6 @@ BEGIN
         BEGIN TRANSACTION;
 
         DECLARE @personId INT;
-        DECLARE @customerId INT;
 
         -- 1. Create Person
         INSERT INTO Persons (Name, Age, Sex)
@@ -25,7 +25,7 @@ BEGIN
         INSERT INTO Customers (PersonID, Address, Discount)
         VALUES (@personId, @Address, @Discount);
 
-        SET @customerId = SCOPE_IDENTITY();
+        SET @CustomerId = SCOPE_IDENTITY();
 
         -- 3. Add Phones
         INSERT INTO Phones (PersonID, PhoneNumber)
@@ -34,7 +34,7 @@ BEGIN
 
         -- 4. Add Devices
         INSERT INTO Devices (CustomerID, BrandID, TypeID, SpecID, SerialNumber, ModelName)
-        SELECT @customerId, BrandId, TypeId, SpecId, SerialNumber, Model
+        SELECT @CustomerId, BrandId, TypeId, SpecId, SerialNumber, Model
         FROM @Devices;
 
         COMMIT TRANSACTION;

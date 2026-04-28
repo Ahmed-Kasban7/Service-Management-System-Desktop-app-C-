@@ -24,8 +24,10 @@ public class GetPagedOrderSummariesHandler
         if (PageSize <= 0)
             return Result<PagedResult<OrderSummaryDto>>.Failure("عدد الصفوف غير صحيح");
 
+        var orders =_orderRepository.GetPagedOrderSummaries(pageNumber, PageSize);
 
-        return Result<PagedResult<OrderSummaryDto>>.Success(_orderRepository.GetPagedOrderSummaries(pageNumber, PageSize));
+
+        return Result<PagedResult<OrderSummaryDto>>.Success(orders);
             
     }
 }

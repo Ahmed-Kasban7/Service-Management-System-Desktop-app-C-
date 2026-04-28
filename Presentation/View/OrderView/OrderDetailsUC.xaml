@@ -66,74 +66,14 @@
          FontWeight="Bold" 
          FlowDirection="LeftToRight"/>
                         </TextBlock>
-
-                        <!-- Badge الحالة -->
-                        <!-- Badge الحالة - Clickable -->
                         <Border x:Name="StatusBadge"
-        Background="#FEF9C3" CornerRadius="20"
-        Padding="12,4" Margin="12,0,0,0" VerticalAlignment="Center"
-        Cursor="Hand" MouseLeftButtonUp="StatusBadge_Click">
-                            <Border.Style>
-                                <Style TargetType="Border">
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Opacity" Value="0.8"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Border.Style>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock x:Name="TxtStatus" Text="قيد الانتظار"
-                   FontSize="12" FontWeight="SemiBold" Foreground="#CA8A04"/>
-                                <TextBlock Text=" ▾" FontSize="10" Foreground="#CA8A04"
-                   x:Name="TxtStatusArrow" VerticalAlignment="Center"/>
-                            </StackPanel>
-
-                            <!-- Popup القائمة -->
-                            <Border.ContextMenu>
-                                <ContextMenu x:Name="StateMenu" FlowDirection="RightToLeft">
-                                    <MenuItem Tag="قيد الانتظار" Click="StateMenuItem_Click">
-                                        <MenuItem.Header>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="⏳" Margin="0,0,8,0"/>
-                                                <TextBlock Text="قيد الانتظار" Foreground="#CA8A04" FontWeight="SemiBold"/>
-                                            </StackPanel>
-                                        </MenuItem.Header>
-                                    </MenuItem>
-                                    <MenuItem Tag="مجدول" Click="StateMenuItem_Click">
-                                        <MenuItem.Header>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="📅" Margin="0,0,8,0"/>
-                                                <TextBlock Text="مجدول" Foreground="#2563EB" FontWeight="SemiBold"/>
-                                            </StackPanel>
-                                        </MenuItem.Header>
-                                    </MenuItem>
-                                    <MenuItem Tag="جارى التنفيذ" Click="StateMenuItem_Click">
-                                        <MenuItem.Header>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="🔧" Margin="0,0,8,0"/>
-                                                <TextBlock Text="جارى التنفيذ" Foreground="#EA580C" FontWeight="SemiBold"/>
-                                            </StackPanel>
-                                        </MenuItem.Header>
-                                    </MenuItem>
-                                    <MenuItem Tag="مكتمل" Click="StateMenuItem_Click">
-                                        <MenuItem.Header>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="✅" Margin="0,0,8,0"/>
-                                                <TextBlock Text="مكتمل" Foreground="#16A34A" FontWeight="SemiBold"/>
-                                            </StackPanel>
-                                        </MenuItem.Header>
-                                    </MenuItem>
-                                    <MenuItem Tag="ملغى" Click="StateMenuItem_Click">
-                                        <MenuItem.Header>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="❌" Margin="0,0,8,0"/>
-                                                <TextBlock Text="ملغى" Foreground="#DC2626" FontWeight="SemiBold"/>
-                                            </StackPanel>
-                                        </MenuItem.Header>
-                                    </MenuItem>
-                                </ContextMenu>
-                            </Border.ContextMenu>
+                                Background="#FEF9C3"
+                                CornerRadius="20" Padding="12,4"
+                                Margin="12,0,0,0" VerticalAlignment="Center">
+                            <TextBlock x:Name="TxtStatus"
+                                       Text="قيد الانتظار"
+                                       FontSize="12" FontWeight="SemiBold"
+                                       Foreground="#CA8A04"/>
                         </Border>
                     </StackPanel>
 
@@ -144,7 +84,33 @@
                                Margin="44,4,0,0"/>
                 </StackPanel>
 
-                <!-- زر تعديل -->
+                <Button Grid.Column="2" x:Name="BtnEditOrder"
+                        Content="✏️ تعديل الطلب"
+                        Click="BtnEditOrder_Click"
+                        Padding="16,8"
+                        Background="White"
+                        Foreground="#1E293B"
+                        FontSize="13" FontWeight="SemiBold"
+                        BorderBrush="#E2E8F0" BorderThickness="1.5"
+                        Cursor="Hand" VerticalAlignment="Center">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="9" Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#F8FAFC"/>
+                                    <Setter Property="BorderBrush" Value="#2563EB"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                
             </Grid>
         </Border>
 
@@ -245,66 +211,49 @@
 
                     <!-- بطاقة تفاصيل العطل -->
                     <Border Grid.Column="2" Grid.Row="0"
-        Background="White" CornerRadius="14"
-        BorderBrush="#E2E8F0" BorderThickness="1" Padding="20">
+                            Background="White" CornerRadius="14"
+                            BorderBrush="#E2E8F0" BorderThickness="1"
+                            Padding="20">
                         <Border.Effect>
                             <DropShadowEffect BlurRadius="8" Color="#000" Opacity="0.03" ShadowDepth="1"/>
                         </Border.Effect>
+                        <StackPanel>
+                            <TextBlock Text="🔧 تفاصيل العطل"
+                                       FontSize="15" FontWeight="Bold"
+                                       Foreground="#1E293B" Margin="0,0,0,16"/>
 
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="40"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <TextBlock Grid.Row="0" Text="🔧 تفاصيل العطل"
-                   FontSize="15" FontWeight="Bold"
-                   Foreground="#1E293B" Margin="0,0,0,16"/>
-
-                            <StackPanel Grid.Row="1" Margin="0,0,0,14">
-                                <TextBlock Text="وصف العطل" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,6"/>
-                                <Border Background="#F8FAFC" CornerRadius="8" BorderBrush="#E2E8F0" BorderThickness="1">
-                                    <TextBox x:Name="EditProblem" Text="{Binding Problem, Mode=TwoWay}"
-                         FontSize="14" Foreground="#374151" BorderThickness="0" 
-                         Background="Transparent" Padding="12" AcceptsReturn="True" 
-                         TextWrapping="Wrap" MinHeight="50" VerticalContentAlignment="Top" Height="50"/>
+                            <!-- الوصف -->
+                            <StackPanel Margin="0,0,0,14">
+                                <TextBlock Text="وصف العطل"
+                                           FontSize="11" Foreground="#94A3B8"
+                                           Margin="0,0,0,6"/>
+                                <Border Background="#F8FAFC" CornerRadius="8"
+                                        BorderBrush="#E2E8F0" BorderThickness="1"
+                                        Padding="12">
+                                    <TextBlock x:Name="TxtIssueDescription"
+                                               Text="{Binding Problem}"
+                                               FontSize="14" Foreground="#374151"
+                                               TextWrapping="Wrap" LineHeight="22"/>
                                 </Border>
                             </StackPanel>
 
-                            <StackPanel Grid.Row="2">
-                                <TextBlock Text="ملاحظات" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,6"/>
-                                <Border Background="#F8FAFC" CornerRadius="8" BorderBrush="#E2E8F0" BorderThickness="1">
-                                    <TextBox x:Name="EditNotes" Text="{Binding Notes, Mode=TwoWay}"
-                         FontSize="14" Foreground="#374151" BorderThickness="0" 
-                         Background="Transparent" Padding="12" AcceptsReturn="True" 
-                         TextWrapping="Wrap" MinHeight="50" FontStyle="Italic" VerticalContentAlignment="Top"/>
+                            <Border Height="1" Background="#F1F5F9" Margin="0,0,0,14"/>
+
+                            <!-- الملاحظات -->
+                            <StackPanel>
+                                <TextBlock Text="ملاحظات"
+                                           FontSize="11" Foreground="#94A3B8"
+                                           Margin="0,0,0,6"/>
+                                <Border Background="#F8FAFC" CornerRadius="8"
+                                        BorderBrush="#E2E8F0" BorderThickness="1"
+                                        Padding="12">
+                                    <TextBlock x:Name="TxtNotes"
+                                               Text="{Binding Notes}"
+                                               FontSize="14" Foreground="#374151"
+                                               TextWrapping="Wrap"/>
                                 </Border>
                             </StackPanel>
-
-                            <Button Grid.Row="3" x:Name="BtnSaveOrder"
-                Content="💾 حفظ التغييرات"
-                Click="BtnSaveOrder_Click"
-                HorizontalAlignment="Center"
-                Padding="24,10" Background="#2563EB" 
-                Foreground="White" FontSize="13" FontWeight="SemiBold"
-                Cursor="Hand" Margin="0,20,0,0" Grid.RowSpan="2">
-                                <Button.Template>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="9">
-                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Background" Value="#1D4ED8"/>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Button.Template>
-                            </Button>
-                        </Grid>
+                        </StackPanel>
                     </Border>
                     <!-- بطاقة بيانات الجهاز -->
                     <Border Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3"

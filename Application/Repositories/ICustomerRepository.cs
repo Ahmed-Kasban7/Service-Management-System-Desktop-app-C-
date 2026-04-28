@@ -23,7 +23,7 @@ public interface ICustomerRepository  : IQueryRepository<Customer>
 
     public bool IsCustomerExist(int id);
     public bool Delete(int id);
-    public void Create(Customer customer);
+    public int Create(Customer customer);
 
     public IEnumerable<CustomerLookupDto>  GetCustomersLookup();
 }

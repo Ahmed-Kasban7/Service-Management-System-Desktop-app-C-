@@ -11,7 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\BrandManagement\Commands\" />
     <Folder Include="Features\DeviceManagement\Commands\" />
+    <Folder Include="Features\PhoneManagement\Commands\" />
+    <Folder Include="Features\PhoneManagement\Queries\" />
+    <Folder Include="Features\SpecManagement\Commands\" />
+    <Folder Include="Features\TypeManagement\Commands\" />
   </ItemGroup>
 
 </Project>

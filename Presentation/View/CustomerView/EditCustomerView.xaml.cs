@@ -36,77 +36,77 @@ namespace Presentation.View.Customer_View
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            string name = TxtName.Text.Trim();
-            if (string.IsNullOrEmpty(name))
-            {
-                MessageBox.Show("الرجاء إدخال الاسم", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+            //string name = TxtName.Text.Trim();
+            //if (string.IsNullOrEmpty(name))
+            //{
+            //    MessageBox.Show("الرجاء إدخال الاسم", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
+            //    return;
+            //}
 
-            int? age = null;
+            //int? age = null;
 
-            if (!string.IsNullOrWhiteSpace(TxtAge.Text))
-            {
-                if (!int.TryParse(TxtAge.Text, out int parsedAge) || parsedAge <= 0)
-                {
-                    MessageBox.Show("الرجاء إدخال عمر صالح أكبر من صفر", "خطأ",
-                        MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
+            //if (!string.IsNullOrWhiteSpace(TxtAge.Text))
+            //{
+            //    if (!int.TryParse(TxtAge.Text, out int parsedAge) || parsedAge <= 0)
+            //    {
+            //        MessageBox.Show("الرجاء إدخال عمر صالح أكبر من صفر", "خطأ",
+            //            MessageBoxButton.OK, MessageBoxImage.Warning);
+            //        return;
+            //    }
 
-                age = parsedAge;
-            }
+            //    age = parsedAge;
+            //}
 
-            if (TxtSex.SelectedItem == null)
-            {
-                MessageBox.Show("الرجاء اختيار الجنس", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            ESex sex = TxtSex.SelectedIndex ==0 ?ESex.MALE : ESex.FEMALE;
+            //if (TxtSex.SelectedItem == null)
+            //{
+            //    MessageBox.Show("الرجاء اختيار الجنس", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
+            //    return;
+            //}
+            //ESex sex = TxtSex.SelectedIndex ==0 ?ESex.MALE : ESex.FEMALE;
 
-            string address = TxtAddress.Text.Trim();
+            //string address = TxtAddress.Text.Trim();
 
-            if (string.IsNullOrEmpty(address))
-            {
-                MessageBox.Show("الرجاء إدخال العنوان", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+            //if (string.IsNullOrEmpty(address))
+            //{
+            //    MessageBox.Show("الرجاء إدخال العنوان", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
+            //    return;
+            //}
 
-            int discount;
+            //int discount;
 
-            if (string.IsNullOrWhiteSpace(TxtDiscount.Text))
-            {
-                discount = 0;
-            }
-            else if (!int.TryParse(TxtDiscount.Text, out discount) || discount < 0 || discount > 100)
-            {
-                MessageBox.Show(
-                    "الرجاء إدخال نسبة خصم صحيحة بين 0 و 100",
-                    "خطأ",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning
-                );
-                return;
-            }
-            var updatedCustomer = new CustomerUpdateDto(_customerId, name, age, sex, address, discount);
+            //if (string.IsNullOrWhiteSpace(TxtDiscount.Text))
+            //{
+            //    discount = 0;
+            //}
+            //else if (!int.TryParse(TxtDiscount.Text, out discount) || discount < 0 || discount > 100)
+            //{
+            //    MessageBox.Show(
+            //        "الرجاء إدخال نسبة خصم صحيحة بين 0 و 100",
+            //        "خطأ",
+            //        MessageBoxButton.OK,
+            //        MessageBoxImage.Warning
+            //    );
+            //    return;
+            //}
+            //var updatedCustomer = new CustomerUpdateDto(_customerId, name, age, sex, address, discount);
 
-            try
-            {
-                bool updated = _customerService.UpdateCustomerInfo(updatedCustomer);
-                if (updated)
-                {
-                    MessageBox.Show("تم تعديل بيانات العميل بنجاح", "نجاح", MessageBoxButton.OK, MessageBoxImage.Information);
-                    DialogResult = true;
-                }
-                else
-                {
-                    MessageBox.Show("فشل في تعديل البيانات", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
+            //try
+            //{
+            //   // bool updated = _customerService.UpdateCustomerInfo(updatedCustomer);
+            //    if (updated)
+            //    {
+            //        MessageBox.Show("تم تعديل بيانات العميل بنجاح", "نجاح", MessageBoxButton.OK, MessageBoxImage.Information);
+            //        DialogResult = true;
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show("فشل في تعديل البيانات", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message, "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
+            //}
         }
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)

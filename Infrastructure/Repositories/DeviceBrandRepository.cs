@@ -12,7 +12,7 @@ namespace Infrastructure.Data;
 
 public class DeviceBrandRepository:IDeviceBrandRepository
 {
-    public List<BrandDto> GetAllBrands()
+    public IEnumerable<BrandDto> GetAllBrands()
     {
         List<BrandDto> brands = new List<BrandDto>();
         using var conn = DatabaseInitializer.GetConnection();

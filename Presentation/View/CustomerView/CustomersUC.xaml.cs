@@ -1,7 +1,16 @@
 ﻿using Application.DTOs;
 using Application.DTOs.CustomerDTOs;
+using Application.Features.BrandManagement.Queries;
+using Application.Features.CustomerManagement.Queries;
 using Application.Features.CustomerManagment;
+using Application.Features.CustomerManagment.Commands;
+using Application.Features.DeviceManagement.Queries;
+using Application.Features.OrderManagement.Commands;
+using Application.Features.SpecManagement.Queries;
+using Application.Features.TypeManagement.Queries;
 using Domain.Enums;
+using Presentation.View.Customer_View;
+using Presentation.View.OrderView;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,19 +40,41 @@ namespace Presentation.View.CustomerView
         private int TotalCustomers;
         private string? _searchWord = null;
 
-        private CustomerService _customerService;
+        private  CreateCustomerHandler _createCustomerHandler;
+
+        private  GetAllBrandsHandler _getAllBrandsHandler;
+        private  GetAllTypesHandler _getAllTypesHandler;
+        private  GetSpecsByTypeIdHandler _getSpecsByTypeIdHandler;
         public CustomersUC()
         {
             InitializeComponent();
         }
-        public void Initialize(CustomerService customerService)
+        public void InitializeServices(CreateCustomerHandler createCustomer, GetAllBrandsHandler getAllBrands, GetAllTypesHandler getAllTypes, GetSpecsByTypeIdHandler getSpecsByTypeId)
         {
-            _customerService = customerService;
+
+            _createCustomerHandler = createCustomer;
+            _getAllBrandsHandler = getAllBrands;
+            _getAllTypesHandler = getAllTypes;
+            _getSpecsByTypeIdHandler = getSpecsByTypeId;
 
             CurrentPage = 1;
             _searchWord = null;
 
             //UpdatePageInfo();
+        }
+
+        private void BtnCreateCustomer_Click(object sender, RoutedEventArgs e)
+        {
+            var createOrderWin = new CreateCustomerWindow(
+                _createCustomerHandler,
+                _getAllBrandsHandler,
+                _getAllTypesHandler,
+                _getSpecsByTypeIdHandler)
+            {
+                Owner = Window.GetWindow(this)
+            };
+
+            createOrderWin.ShowDialog();
         }
 
         //    private void LoadCustomers()
@@ -77,159 +108,164 @@ namespace Presentation.View.CustomerView
         //        }
         //    }
 
-        //    private void BtnPrevPage_Click(object sender, RoutedEventArgs e)
-        //    {
-        //        CurrentPage--;
-        //        ChangePage();
-        //    }
+        private void BtnPrevPage_Click(object sender, RoutedEventArgs e)
+        {
+            //CurrentPage--;
+            //ChangePage();
+        }
 
-        //    private void BtnNextPage_Click(object sender, RoutedEventArgs e)
-        //    {
-        //        CurrentPage++;
-        //        ChangePage();
-        //    }
+        private void BtnNextPage_Click(object sender, RoutedEventArgs e)
+        {
+            //CurrentPage++;
+            //ChangePage();
+        }
 
-        //    private void ChangePage()
-        //    {
-        //        LoadCustomers();
-        //        TxtPageInfo.Text = CurrentPage.ToString();
+        private void ChangePage()
+        {
+            //LoadCustomers();
+            //TxtPageInfo.Text = CurrentPage.ToString();
 
-        //        UpdateButtonPage();
-        //    }
+            //UpdateButtonPage();
+        }
 
 
-        //    private void UpdateButtonPage()
-        //    {
+        private void UpdateButtonPage()
+        {
 
-        //        BtnPrevPage.IsEnabled = CurrentPage > 1;
+            //BtnPrevPage.IsEnabled = CurrentPage > 1;
 
-        //        BtnNextPage.IsEnabled = (CurrentPage < TotalPages);
-        //    }
+            //BtnNextPage.IsEnabled = (CurrentPage < TotalPages);
+        }
 
-        //    private void UpdatePageInfo()
-        //    {
-        //        //if (_searchWord == null)
-        //        //    TotalCustomers = _customerService.GetCustomerCount();
-        //        //else
-        //        //    TotalCustomers = _customerService.GetSearchCustomerCount(_searchWord);
+        private void UpdatePageInfo()
+        {
+            //if (_searchWord == null)
+            //    TotalCustomers = _customerService.GetCustomerCount();
+            //else
+            //    TotalCustomers = _customerService.GetSearchCustomerCount(_searchWord);
 
-        //        //TxtCustomerCountNumber.Text = TotalCustomers.ToString();
+            //TxtCustomerCountNumber.Text = TotalCustomers.ToString();
 
-        //        //TotalPages = (int)Math.Ceiling((double)TotalCustomers / ROWPERPAGE);
+            //TotalPages = (int)Math.Ceiling((double)TotalCustomers / ROWPERPAGE);
 
-        //        //if (CurrentPage > TotalPages)
-        //        //    CurrentPage = TotalPages;
+            //if (CurrentPage > TotalPages)
+            //    CurrentPage = TotalPages;
 
-        //        //if (TotalPages == 0)
-        //        //    CurrentPage = 1;
+            //if (TotalPages == 0)
+            //    CurrentPage = 1;
 
-        //        //TxtPageInfo.Text = CurrentPage.ToString();
+            //TxtPageInfo.Text = CurrentPage.ToString();
 
-        //        //LoadCustomers();
+            //LoadCustomers();
 
-        //        //UpdateButtonPage();
-        //    }
+            //UpdateButtonPage();
+        }
 
-        //    private void SearchBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        //    {
+        private void SearchBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
 
-        //        if (e.Key == Key.Enter)
-        //        {
-        //            try
-        //            {
-        //                if (string.IsNullOrWhiteSpace(SearchBox.Text))
-        //                {
-        //                    _searchWord = null;
-        //                    CurrentPage = 1;
-        //                    UpdatePageInfo();
-        //                    return;
-        //                }
+            //if (e.Key == Key.Enter)
+            //{
+            //    try
+            //    {
+            //        if (string.IsNullOrWhiteSpace(SearchBox.Text))
+            //        {
+            //            _searchWord = null;
+            //            CurrentPage = 1;
+            //            UpdatePageInfo();
+            //            return;
+            //        }
 
-        //                var search = SearchBox.Text;
+            //        var search = SearchBox.Text;
 
-        //                if (SearchBox.Text.ToLower().StartsWith("c-"))
-        //                {
-        //                    search = SearchBox.Text.ToLower().Replace("c-", "");
-        //                }
+            //        if (SearchBox.Text.ToLower().StartsWith("c-"))
+            //        {
+            //            search = SearchBox.Text.ToLower().Replace("c-", "");
+            //        }
 
-        //                _searchWord = search;
-        //                CurrentPage = 1;
+            //        _searchWord = search;
+            //        CurrentPage = 1;
 
-        //                UpdatePageInfo();
-        //                DgCustomers.SelectedItem = null;
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                MessageBox.Show($"خطأ في تحميل العملاء: {ex.Message}");
-        //            }
-        //        }
+            //        UpdatePageInfo();
+            //        DgCustomers.SelectedItem = null;
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        MessageBox.Show($"خطأ في تحميل العملاء: {ex.Message}");
+            //    }
+            //}
 
-        //    }
-        //    private void DgCustomers_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //    {
-        //        //if (DgCustomers.SelectedItem is CustomerSummaryDto selectedSummary)
-        //        //{
-        //        //    ProfileSection.Visibility = Visibility.Visible;
-        //        //    ProfileColumn.Width = new GridLength(450);
-        //        //    ProfileSection.Opacity = 1.0;
-        //        //    try
-        //        //    {
-        //        //        int customerId = int.Parse(selectedSummary.ID.Replace("C-", ""));
-        //        //        var fullProfile = _customerService.GetCustomerFullProfile(customerId);
+        }
+        private void DgCustomers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //if (dgcustomers.selecteditem is customersummarydto selectedsummary)
+            //{
+            //    profilesection.visibility = visibility.visible;
+            //    profilecolumn.width = new gridlength(450);
+            //    profilesection.opacity = 1.0;
+            //    try
+            //    {
+            //        int customerid = int.parse(selectedsummary.id.replace("c-", ""));
+            //        var fullprofile = _customerservice.getcustomerfullprofile(customerid);
 
-        //        //        if (fullProfile != null)
-        //        //        {
-        //        //            SetButtonsEnabled(true);
-        //        //            LoadCustomerProfile(fullProfile);
-        //        //        }
-        //        //    }
-        //        //    catch (Exception ex)
-        //        //    {
-        //        //        MessageBox.Show($"خطأ: {ex.Message}");
-        //        //    }
-        //        //}
-        //        //else
-        //        //{
-        //        //    ProfileColumn.Width = new GridLength(0);
-        //        //    ProfileSection.Visibility = Visibility.Collapsed;
-        //        //}
-        //    }
-        //    private void ReloadCustomerProfile(int customerId)
-        //    {
+            //        if (fullprofile != null)
+            //        {
+            //            setbuttonsenabled(true);
+            //            loadcustomerprofile(fullprofile);
+            //        }
+            //    }
+            //    catch (exception ex)
+            //    {
+            //        messagebox.show($"خطأ: {ex.message}");
+            //    }
+            //}
+            //else
+            //{
+            //    profilecolumn.width = new gridlength(0);
+            //    profilesection.visibility = visibility.collapsed;
+            //}
+        }
+        private void ReloadCustomerProfile(int customerId)
+        {
 
-        //        //_currentCustomer = _customerService.GetCustomerFullProfile(customerId);
-        //        //LoadCustomerProfile(_currentCustomer);
+            //_currentCustomer = _customerService.GetCustomerFullProfile(customerId);
+            //LoadCustomerProfile(_currentCustomer);
 
-        //        //LoadCustomers();
+            //LoadCustomers();
 
-        //        //var customers = DgCustomers.ItemsSource as IEnumerable<CustomerSummaryDto>;
-        //        //var updatedCustomer = customers.FirstOrDefault(c => c.ID == $"C-{customerId}");
+            //var customers = DgCustomers.ItemsSource as IEnumerable<CustomerSummaryDto>;
+            //var updatedCustomer = customers.FirstOrDefault(c => c.ID == $"C-{customerId}");
 
-        //        //if (updatedCustomer != null)
-        //        //{
-        //        //    DgCustomers.SelectedItem = updatedCustomer;
-        //        //    DgCustomers.ScrollIntoView(updatedCustomer);
-        //        //}
-        //    }
-        //    private void LoadCustomerProfile(CustomerProfileDto customer)
-        //    {
-        //        //_currentCustomer = customer;
+            //if (updatedCustomer != null)
+            //{
+            //    DgCustomers.SelectedItem = updatedCustomer;
+            //    DgCustomers.ScrollIntoView(updatedCustomer);
+            //}
+        }
+        private void LoadCustomerProfile(CustomerProfileDto customer)
+        {
+            //_currentCustomer = customer;
 
-        //        //TxtProfileID.Text = customer.ID;
-        //        //TxtProfileName.Text = customer.Name;
-        //        //TxtProfileAge.Text = customer.Age?.ToString() ?? "---";
-        //        //TxtProfileSex.Text = customer.Sex == ESex.MALE ? "ذكر" : "أنثى";
-        //        //TxtProfileAddress.Text = customer.Address;
-        //        //TxtProfileDiscount.Text = $"{customer.Discount}%";
+            //TxtProfileID.Text = customer.ID;
+            //TxtProfileName.Text = customer.Name;
+            //TxtProfileAge.Text = customer.Age?.ToString() ?? "---";
+            //TxtProfileSex.Text = customer.Sex == ESex.MALE ? "ذكر" : "أنثى";
+            //TxtProfileAddress.Text = customer.Address;
+            //TxtProfileDiscount.Text = $"{customer.Discount}%";
 
-        //        //PhonesList.ItemsSource = customer.Phones;
-        //        //TxtNoPhonesMessage.Visibility = (customer.Phones == null || customer.Phones.Count == 0)
-        //        //    ? Visibility.Visible : Visibility.Collapsed;
+            //PhonesList.ItemsSource = customer.Phones;
+            //TxtNoPhonesMessage.Visibility = (customer.Phones == null || customer.Phones.Count == 0)
+            //    ? Visibility.Visible : Visibility.Collapsed;
 
-        //        //DevicesList.ItemsSource = customer.Devices;
-        //        //TxtNoDevicesMessage.Visibility = (customer.Devices == null || customer.Devices.Count == 0)
-        //        //    ? Visibility.Visible : Visibility.Collapsed;
-        //    }
-        //}
+            //DevicesList.ItemsSource = customer.Devices;
+            //TxtNoDevicesMessage.Visibility = (customer.Devices == null || customer.Devices.Count == 0)
+            //    ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void BtnDeleteCustomer_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
+
 }

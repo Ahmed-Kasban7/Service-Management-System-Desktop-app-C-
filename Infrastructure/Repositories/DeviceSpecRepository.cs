@@ -12,7 +12,7 @@ namespace Infrastructure.Data;
 
 public class DeviceSpecRepository:IDeviceSpecRepository
 {
-    public List<SpecDto> GetSpecsByTypeId(int typeId)
+    public IEnumerable<SpecDto> GetSpecsByTypeId(int typeId)
     {
         List<SpecDto> specDTOs = new List<SpecDto>();
         using var conn = DatabaseInitializer.GetConnection();

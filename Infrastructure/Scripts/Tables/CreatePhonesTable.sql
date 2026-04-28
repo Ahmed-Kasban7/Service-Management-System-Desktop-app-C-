@@ -7,9 +7,12 @@
                    CHECK (
     LEN(PhoneNumber) = 11 AND 
     PhoneNumber NOT LIKE '%[^0-9]%' AND
-    LEFT(PhoneNumber, 3) IN ('010','011','012','015')
-),
-                PersonID INT
-                    FOREIGN KEY REFERENCES Persons(PersonID) ON DELETE CASCADE
+    LEFT(PhoneNumber, 3) IN ('010','011','012','015')),
+
+                PersonID INT NOT NULL
+
+                CONSTRAINT FK_Phones_Persons
+                FOREIGN KEY (PersonID) REFERENCES Persons(PersonID)
+                ON DELETE CASCADE
             )
         END

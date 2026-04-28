@@ -59,19 +59,39 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="📝 تسجيل عميل جديد" FontSize="18" FontWeight="Bold" Foreground="{StaticResource PrimaryBlue}" Margin="0,0,0,10" TextAlignment="Center"/>
+        <TextBlock Text=" تسجيل عميل جديد" FontSize="18" FontWeight="Bold" Foreground="{StaticResource PrimaryBlue}" Margin="0,0,0,10" TextAlignment="Center"/>
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="0,0,5,0">
             <StackPanel>
-                <Border Background="White" CornerRadius="12" Padding="15" Margin="0,0,0,12" BorderBrush="#E2E8F0" BorderThickness="1">
+                <Border Background="White" CornerRadius="12" Padding="15" Margin="0,0,0,12"
+        BorderBrush="#E2E8F0" BorderThickness="1">
+
                     <StackPanel>
-                        <TextBlock Text="👤 البيانات الأساسية" FontWeight="Bold" FontSize="14" Foreground="{StaticResource PrimaryBlue}" Margin="0,0,0,10"/>
 
+                        <TextBlock Text="👤 البيانات الأساسية"
+                   FontWeight="Bold"
+                   FontSize="14"
+                   Foreground="{StaticResource PrimaryBlue}"
+                   Margin="0,0,0,10"/>
+
+                        <!-- الاسم -->
                         <TextBlock Style="{StaticResource FieldHeader}">
-                            <Run Text="الاسم الكامل"/> <Run Text="*" Foreground="Red"/>
+            <Run Text="الاسم الكامل"/> <Run Text="*" Foreground="Red"/>
                         </TextBlock>
-                        <TextBox x:Name="TxtName" Style="{StaticResource ModernTextBox}" Margin="0,0,0,10" Height="32"/>
 
+                        <TextBox x:Name="TxtName"
+                 Style="{StaticResource ModernTextBox}"
+                 Margin="0,0,0,5"
+                 Height="32"/>
+
+                        <TextBlock x:Name="TxtNameError"
+                   Text=""
+                   Foreground="Red"
+                   FontSize="11"
+                   Visibility="Visible"
+                   Margin="0,0,0,10"/>
+
+                        <!-- Grid -->
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -79,31 +99,72 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
+                            <!-- العمر -->
                             <StackPanel Grid.Column="0" Margin="0,0,8,0">
+
                                 <TextBlock Text="العمر" Style="{StaticResource FieldHeader}"/>
-                                <TextBox x:Name="TxtAge" Style="{StaticResource ModernTextBox}" Height="32"/>
+
+                                <TextBox x:Name="TxtAge"
+                         Style="{StaticResource ModernTextBox}"
+                         Height="32"/>
+
+                                <TextBlock x:Name="TxtAgeError"
+                           Text=""
+                           Foreground="Red"
+                           FontSize="11"
+                           Visibility="Visible"/>
                             </StackPanel>
 
+                            <!-- الجنس -->
                             <StackPanel Grid.Column="1" Margin="0,0,8,0">
+
                                 <TextBlock Style="{StaticResource FieldHeader}">
-                                    <Run Text="الجنس"/> <Run Text="*" Foreground="Red"/>
+                    <Run Text="الجنس"/> <Run Text="*" Foreground="Red"/>
                                 </TextBlock>
-                                <ComboBox x:Name="CbSex" Style="{StaticResource ModernComboBox}" Height="32">
+
+                                <ComboBox x:Name="CbSex"
+                          Style="{StaticResource ModernComboBox}"
+                          Height="32">
                                     <ComboBoxItem Content="ذكر" IsSelected="True"/>
                                     <ComboBoxItem Content="أنثى"/>
                                 </ComboBox>
+
+                                
                             </StackPanel>
 
+                            <!-- الخصم -->
                             <StackPanel Grid.Column="2">
+
                                 <TextBlock Text="الخصم %" Style="{StaticResource FieldHeader}"/>
-                                <TextBox x:Name="TxtDiscount" Text="0" Style="{StaticResource ModernTextBox}" Height="32"/>
+
+                                <TextBox x:Name="TxtDiscount"
+                         Text="0"
+                         Style="{StaticResource ModernTextBox}"
+                         Height="32"/>
+
+                                <TextBlock x:Name="TxtDiscountError"
+                           Text=""
+                           Foreground="Red"
+                           FontSize="11"
+                           Visibility="Visible"/>
                             </StackPanel>
                         </Grid>
 
+                        <!-- العنوان -->
                         <TextBlock Style="{StaticResource FieldHeader}" Margin="0,10,0,3">
-                            <Run Text="العنوان"/> <Run Text="*" Foreground="Red"/>
+            <Run Text="العنوان"/> <Run Text="*" Foreground="Red"/>
                         </TextBlock>
-                        <TextBox x:Name="TxtAddress" Style="{StaticResource ModernTextBox}" Height="32"/>
+
+                        <TextBox x:Name="TxtAddress"
+                 Style="{StaticResource ModernTextBox}"
+                 Height="32"/>
+
+                        <TextBlock x:Name="TxtAddressError"
+                   Text=""
+                   Foreground="Red"
+                   FontSize="11"
+                   Visibility="Visible"/>
+
                     </StackPanel>
                 </Border>
 
@@ -115,9 +176,36 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="80"/>
                             </Grid.ColumnDefinitions>
-                            <TextBox x:Name="TxtNewPhone" Style="{StaticResource ModernTextBox}" Margin="0,0,8,0" Height="32"/>
-                            <Button Grid.Column="1" Content="إضافة" Background="{StaticResource PrimaryBlue}" 
-                                    Style="{StaticResource ActionButtonStyle}" Height="32" Click="BtnAddPhoneToList_Click" FontSize="12"/>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBox x:Name="TxtNewPhone"
+             Style="{StaticResource ModernTextBox}"
+             Margin="0,0,8,0"
+             Height="32"
+             Grid.Row="0"
+             Grid.Column="0"/>
+
+                            <Button Grid.Row="0"
+            Grid.Column="1"
+            Content="إضافة"
+            Background="{StaticResource PrimaryBlue}"
+            Style="{StaticResource ActionButtonStyle}"
+            Height="32"
+            FontSize="12"
+            Click="BtnAddPhoneToList_Click"/>
+
+                            <TextBlock x:Name="txtPhoneError"
+               Grid.Row="1"
+               Grid.Column="0"
+               Text=""
+               Foreground="Red"
+               FontSize="11"
+               Visibility="Visible"
+               Margin="2,2,0,0"/>
                         </Grid>
 
                         <ListBox x:Name="LstPhones" Height="70" Background="#F8FAFC" BorderBrush="#E2E8F0">
@@ -145,52 +233,78 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <!-- ERROR ROW -->
                                 </Grid.RowDefinitions>
+
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="205.1"/>
-                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
+                                <!-- Type -->
                                 <StackPanel Grid.Column="0" Margin="0,0,8,8">
                                     <TextBlock Style="{StaticResource FieldHeader}">
-                        <Run Text="نوع الجهاز"/> <Run Text="*" Foreground="Red"/>
+                <Run Text="نوع الجهاز"/> <Run Text="*" Foreground="Red"/>
                                     </TextBlock>
-                                    <ComboBox x:Name="CbType" Style="{StaticResource ModernComboBox}"  Height="32"
-                              DisplayMemberPath="TypeName" SelectedValuePath="TypeID" SelectionChanged="CbType_SelectionChanged"/>
+                                    <ComboBox x:Name="CbType" Style="{StaticResource ModernComboBox}" Height="32"
+                      DisplayMemberPath="TypeName"
+                      SelectedValuePath="TypeID"
+                      SelectionChanged="CbType_SelectionChanged"/>
                                 </StackPanel>
 
+                                <!-- Brand -->
                                 <StackPanel Grid.Column="1" Margin="0,0,0,8">
                                     <TextBlock Style="{StaticResource FieldHeader}">
-                        <Run Text="الماركة"/> <Run Text="*" Foreground="Red"/>
+                <Run Text="الماركة"/> <Run Text="*" Foreground="Red"/>
                                     </TextBlock>
-                                    <ComboBox x:Name="CbBrand" Style="{StaticResource ModernComboBox}" Height="32" 
-                              DisplayMemberPath="BrandName" SelectedValuePath="BrandID"/>
+                                    <ComboBox x:Name="CbBrand" Style="{StaticResource ModernComboBox}" Height="32"
+                      DisplayMemberPath="BrandName"
+                      SelectedValuePath="BrandID"/>
                                 </StackPanel>
 
+                                <!-- Spec -->
                                 <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,8,8">
                                     <TextBlock Style="{StaticResource FieldHeader}">
-                        <Run Text="المواصفات"/> <Run Text="*" Foreground="Red"/>
+                <Run Text="المواصفات"/> <Run Text="*" Foreground="Red"/>
                                     </TextBlock>
                                     <ComboBox x:Name="CbSpec" Style="{StaticResource ModernComboBox}" Height="32"
-                              DisplayMemberPath="SpecName" SelectedValuePath="SpecID"/>
+                      DisplayMemberPath="SpecName"
+                      SelectedValuePath="SpecID"/>
                                 </StackPanel>
 
+                                <!-- Model -->
                                 <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,0,8">
                                     <TextBlock Text="الموديل" Style="{StaticResource FieldHeader}"/>
                                     <TextBox x:Name="TxtDeviceModel" Style="{StaticResource ModernTextBox}" Height="32"/>
                                 </StackPanel>
 
+                                <!-- Serial -->
                                 <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,0,0,10">
                                     <TextBlock Text="الرقم التسلسلي" Style="{StaticResource FieldHeader}"/>
                                     <TextBox x:Name="TxtSerial" Style="{StaticResource ModernTextBox}" Height="32"/>
                                 </StackPanel>
 
-                                <Button Grid.Row="3" Grid.ColumnSpan="2" Content="➕ إضافة الجهاز للقائمة" 
-                        Background="{StaticResource PrimaryBlue}" Style="{StaticResource ActionButtonStyle}" 
-                        Height="35" Click="BtnAddDeviceToList_Click" FontSize="12"/>
+                                <!-- ERROR TEXT -->
+                                <TextBlock Grid.Row="3"
+                   Grid.ColumnSpan="2"
+                   x:Name="txtDeviceError"
+                   Text=""
+                   Foreground="Red"
+                   FontSize="12"
+                   Visibility="Visible"
+                   Margin="2,0,0,6"/>
+                                <!-- BUTTON -->
+                                <Button Grid.Row="4" Grid.ColumnSpan="2"
+                Content="➕ إضافة الجهاز للقائمة"
+                Background="{StaticResource PrimaryBlue}"
+                Style="{StaticResource ActionButtonStyle}"
+                Height="35"
+                Click="BtnAddDeviceToList_Click"
+                FontSize="12"/>
+
                             </Grid>
                         </Border>
-
                         <DataGrid x:Name="DgTempDevices" 
           Style="{StaticResource ModernDataGrid}"
           Height="150" 

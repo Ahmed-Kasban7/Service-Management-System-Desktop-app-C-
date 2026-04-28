@@ -9,13 +9,15 @@ public class Customer : Person
     public int Discount { get; private set; }
     public string CustomerNumber { get; private set; }
 
-    private readonly HashSet<Device> _customerDevice;
+    private readonly HashSet<Device> _customerDevice = new();
 
     public IReadOnlySet<Device> Devices => _customerDevice;
+
+    public Customer() { }
     public Customer(string name , int ?age , ESex sex , string address , int discount , HashSet<Device> devices , HashSet<Phone> phones): base(name , age , sex , phones)
     {
-        UpdateAddress(address);
-        UpdateDiscount(discount);
+        SetAddress(address);
+        SetDiscount(discount);
 
         if (devices == null || devices.Count == 0)
             throw new InvalidOperationException("يجب اضافه جهاز واحد على الاقل ");
@@ -26,16 +28,8 @@ public class Customer : Person
         }
 
     } // create new customer constructor
-    public Customer(int id ,string name , int ?age , ESex sex , string address , int discount , HashSet<Device> devices, HashSet<Phone> phones) : this(name , age , sex  ,address , discount, devices ,phones)
-    {
-        Id = id ;
-    } // when retrive data from data base 
-    public Customer(string name , int ?age , ESex sex , string address , int discount) : base(name , age , sex)
-    {
-        Discount = discount ;
-    } // when retrive data from data base 
 
-    public void UpdateAddress(string address)
+    public void SetAddress(string address)
     {
         if (string.IsNullOrWhiteSpace(address))
             throw new ArgumentException("الرجاء إدخال العنوان", nameof(address));
@@ -45,7 +39,7 @@ public class Customer : Person
 
         this.Address = address.Trim();
     }
-    public void UpdateDiscount(int discount)
+    public void SetDiscount(int discount)
     {
         if ( discount < 0)
             throw new ArgumentException("الخصم لا يمكن أن يكون بالسالب", nameof(discount));
@@ -55,16 +49,14 @@ public class Customer : Person
 
         Discount = discount;
     }
-    public void UpdateDetails(string name, int? age, ESex sex, string address, int discount)
-    {
-        base.UpdateDetails(name, age, sex);
-        UpdateAddress(address);
-        UpdateDiscount(discount);
-    }
+
     public void AddDevice(Device device)
     {
         if (device == null)
             throw new ArgumentNullException("بيانات الجهاز غير صالحه");
+
+        if (Devices.Contains(device))
+            throw new InvalidOperationException("الجهاز موجود بالفعل");
 
         _customerDevice.Add(device);
     }

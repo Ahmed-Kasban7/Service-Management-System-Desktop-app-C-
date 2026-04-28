@@ -66,7 +66,7 @@ namespace Presentation.View.OrderView
             catch (Exception ex) 
             {
                 MessageBox.Show("خطاء فى تحميل الطلبات" );
-                    return null;
+                 return null;
             }
         }
         public void LoadAndBindOrders()
@@ -127,5 +127,13 @@ namespace Presentation.View.OrderView
                 OrderDetailsHolder.Visibility = Visibility.Visible;
             }
         }
+        public void RefreshIfVisible()
+        {
+            if (this.Visibility == Visibility.Visible)
+            {
+                LoadAndBindOrders();
+            }
+        }
     }
+
 }

@@ -16,12 +16,3 @@
             )
         END
 
-        IF NOT EXISTS (
-    SELECT 1 FROM sys.indexes 
-    WHERE name = 'IX_Customers_CustomerNumber' 
-      AND object_id = OBJECT_ID('Customers')
-      )
-      BEGIN 
-      CREATE UNIQUE INDEX IX_Customers_CustomerNumber
-      ON Customers(CustomerNumber)
-      END

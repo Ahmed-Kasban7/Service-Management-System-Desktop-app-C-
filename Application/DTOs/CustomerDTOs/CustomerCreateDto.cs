@@ -9,4 +9,4 @@ using System.Threading.Tasks;
 namespace Application.DTOs;
 
  public record CustomerCreateDto(string Name,string Address, int Discount, int? Age,
-                                    ESex Sex, List<DeviceCreateDto> Devices, List<string> Phones);
+                                    ESex Sex, IEnumerable<DeviceCreateDto> Devices, IEnumerable<string> Phones);

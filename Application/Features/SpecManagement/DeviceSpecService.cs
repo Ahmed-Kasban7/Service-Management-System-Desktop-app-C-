@@ -17,7 +17,7 @@ public class DeviceSpecService
         _deviceSpecRepository = deviceSpecRepository;
     }
 
-    public List<SpecDto> GetSpecsByTypeId(int typeId)
+    public IEnumerable<SpecDto> GetSpecsByTypeId(int typeId)
     {
         return _deviceSpecRepository.GetSpecsByTypeId(typeId);
     }

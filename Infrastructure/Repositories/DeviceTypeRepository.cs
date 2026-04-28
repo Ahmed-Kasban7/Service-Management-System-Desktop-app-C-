@@ -13,7 +13,7 @@ namespace Infrastructure.Data;
 
 public class DeviceTypeRepository:IDeviceTypeRepository
 {
-    public List<TypeDto> GetAllTypes()
+    public IEnumerable<TypeDto> GetAllTypes()
     {
         List<TypeDto> types = new List<TypeDto>();
         using var conn = DatabaseInitializer.GetConnection();

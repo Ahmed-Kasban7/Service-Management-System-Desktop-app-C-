@@ -3,15 +3,19 @@ using Application.DTOs;
 using Application.DTOs.CustomerDTOs;
 using Application.DTOs.DeviceDTOs;
 using Application.Features.BrandManagement;
+using Application.Features.BrandManagement.Queries;
 using Application.Features.CustomerManagement.Queries;
 using Application.Features.CustomerManagment;
+using Application.Features.CustomerManagment.Commands;
 using Application.Features.DeviceManagement;
 using Application.Features.DeviceManagement.Queries;
 using Application.Features.OrderManagement.Commands;
 using Application.Features.OrderManagement.Queries;
 using Application.Features.PhoneManagement;
 using Application.Features.SpecManagement;
+using Application.Features.SpecManagement.Queries;
 using Application.Features.TypeManagement;
+using Application.Features.TypeManagement.Queries;
 using Application.Repositories;
 using Domain.Entities;
 using Domain.Enums;
@@ -39,10 +43,14 @@ namespace Presentation.View.MainView
         private readonly GetCustomerDevicesHandler _getCustomerDevicesHandler;
         private readonly CreateOrderHandler _createOrderHandler;
         private readonly UpdateOrderHandler _updateOrderHandler;
+        private CreateCustomerHandler _createCustomerHandler;
+        private GetAllBrandsHandler _getAllBrandsHandler;
+        private GetAllTypesHandler _getAllTypesHandler;
+        private GetSpecsByTypeIdHandler _getSpecsByTypeIdHandler;
         public MainWindow(GetOrderFullDetailsHandler getOrderFullDetails ,
             GetPagedOrderSummariesHandler getPagedOrderSummaries, GetCustomersLookupHandler getCustomersLookup,
             GetCustomerDevicesHandler getCustomerDevicesHandler, CreateOrderHandler createOrderHandler
-, UpdateOrderHandler updateOrderHandler)
+, UpdateOrderHandler updateOrderHandler , CreateCustomerHandler createCustomer, GetAllBrandsHandler getAllBrands, GetAllTypesHandler getAllTypes, GetSpecsByTypeIdHandler getSpecsByTypeId)
         {
             InitializeComponent();
             LoadSavedLogo();
@@ -54,9 +62,14 @@ namespace Presentation.View.MainView
             _getCustomerDevicesHandler = getCustomerDevicesHandler;
             _getCustomersLookupHandler = getCustomersLookup;
             _createOrderHandler = createOrderHandler;
-
-            _createOrderHandler.AddOrderToList += OrdersControl.LoadAndBindOrders;
             _updateOrderHandler = updateOrderHandler;
+            _createCustomerHandler = createCustomer;
+            _getAllBrandsHandler = getAllBrands;
+            _getAllTypesHandler = getAllTypes;
+            _getSpecsByTypeIdHandler = getSpecsByTypeId;
+            _updateOrderHandler = updateOrderHandler;
+
+            _createOrderHandler.AddOrderToList += OrdersControl.RefreshIfVisible;
         }
         private void SwitchToTab(UserControl selectedContent, RadioButton selectedTab)
         {
@@ -76,6 +89,9 @@ namespace Presentation.View.MainView
 
              if (content == OrdersControl)
                 OrdersControl.InitializeServices(_getPagedOrderSummariesHandler, _getOrderFullDetailsHandler , _updateOrderHandler);
+
+             if(content == CustomersControl)
+                CustomersControl.InitializeServices(_createCustomerHandler , _getAllBrandsHandler , _getAllTypesHandler , _getSpecsByTypeIdHandler );
         }
         private void Navigate_Click(object sender, RoutedEventArgs e)
         {

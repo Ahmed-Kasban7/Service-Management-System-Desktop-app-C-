@@ -9,7 +9,7 @@ namespace Application.Repositories;
 public interface  IPhoneRepository
 {
     bool DeletePhone(string phoneNumber);
-    bool PhoneExists(string phoneNumber);
+    List<string> GetExistingPhones(IEnumerable<string> Phones);
     bool UpdatePhone(string newPhone, string oldPhone);
 
     bool AddPhone(string phoneNumber , int customerId);

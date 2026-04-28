@@ -89,6 +89,9 @@ public static class DatabaseInitializer
        ExecuteScript(@"Scripts\Tables\CreateOrdersTable.sql");
        ExecuteScript(@"Scripts\Tables\CreatePhoneListType.sql");
        ExecuteScript(@"Scripts\Tables\CreateDeviceListType.sql");
+       ExecuteScript(@"Scripts\Tables\CreateJobTitlesTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateEmployeesTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateAppointmentsTable.sql");
 
         // Stored Procedure 
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetPagedCustomerSummaries.sql");
@@ -106,6 +109,7 @@ public static class DatabaseInitializer
         ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_GetCustomerPhones.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_AddCustomerPhone.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_UpdateCustomerPhone.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_GetExistingPhones.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_GetCustomerDevices.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_DeleteCustomerDevice.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_CreateDevice.sql");

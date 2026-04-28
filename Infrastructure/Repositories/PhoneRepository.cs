@@ -62,19 +62,35 @@ public class PhoneRepository :IPhoneRepository
         return result > 0;
     }
 
-    public bool PhoneExists(string phoneNumber)
+    public List<string> GetExistingPhones(IEnumerable<string> phones)
     {
-        var script = @"SELECT 1 FROM Phones WHERE PhoneNumber = @phoneNumber";
+        var table = new DataTable();
+        table.Columns.Add("PhoneNumber", typeof(string));
+
+        foreach (var phone in phones)
+            table.Rows.Add(phone);
 
         using var conn = DatabaseInitializer.GetConnection();
-        using var command = new SqlCommand(script, conn);
-        command.Parameters.AddWithValue("@phoneNumber", phoneNumber);
+        using var cmd = new SqlCommand("SP_GetExistingPhones", conn);
+
+        cmd.CommandType = CommandType.StoredProcedure;
+
+        var param = cmd.Parameters.AddWithValue("@Phones", table);
+        param.SqlDbType = SqlDbType.Structured;
+        param.TypeName = "PhoneList";
 
         conn.Open();
 
-        var result = command.ExecuteScalar();
+        var result = new List<string>();
 
-        return result != null;
+        using var reader = cmd.ExecuteReader();
+
+        while (reader.Read())
+        {
+            result.Add(reader.GetString(0));
+        }
+
+        return result;
     }
 
     public int GetPersonPhoneCount(int personId)

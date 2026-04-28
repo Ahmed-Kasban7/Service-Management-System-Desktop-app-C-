@@ -8,14 +8,13 @@
              d:DesignHeight="450" d:DesignWidth="800"
              FlowDirection="RightToLeft">
     <Grid>
-        <!--<Grid x:Name="CustomersContainer" Visibility="Visible">
+        <Grid x:Name="CustomersContainer" Visibility="Visible">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            --><!-- Customer Header --><!--
             <Border x:Name="customerheader" Grid.Row="0" Padding="25,15">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -72,7 +71,6 @@
                 </Grid>
             </Border>
 
-            --><!-- DataGrid --><!--
             <Grid Grid.Row="1">
                 <DataGrid x:Name="DgCustomers"
                                     AutoGenerateColumns="False" GridLinesVisibility="None"
@@ -108,7 +106,6 @@
                 </Border>
             </Grid>
 
-            --><!-- Pagination --><!--
             <Border Grid.Row="2" Padding="15" Background="White" BorderBrush="#F1F5F9" BorderThickness="0">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button x:Name="BtnNextPage" Click="BtnNextPage_Click" Width="42" Height="42" Cursor="Hand">
@@ -186,6 +183,6 @@
                 </StackPanel>
             </Border>
 
-        </Grid>-->
+        </Grid>
     </Grid>
 </UserControl>

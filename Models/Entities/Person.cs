@@ -9,20 +9,16 @@ public class Person : BaseEntity
     public ESex Sex { get;private  set; }
     public DateTime CreatedDate { get;private set; }
 
-
     private readonly HashSet<Phone> _phones = new();
     public IReadOnlySet<Phone> Phones => _phones;
-    public Person(string name, int? age, ESex sex)
-    {
-        UpdateName(name);
-        UpdateAge(age);
-        UpdateSex(sex);
-        CreatedDate = DateTime.Now;
-    } // when create a new person 
 
-  
-    public Person(string name , int? age , ESex sex , HashSet<Phone> phones ) : this(name , age , sex)
+    public Person() { }
+    public Person(string name , int? age , ESex sex , HashSet<Phone> phones ) 
     {
+
+        SetName(name);
+        SetAge(age);
+        SetSex(sex);
 
         if (phones == null || phones.Count == 0)
             throw new ArgumentException("يجب إضافة رقم هاتف واحد على الأقل");
@@ -34,18 +30,10 @@ public class Person : BaseEntity
 
     } // when create a new person 
 
-   
-
-    public Person(int id ,string name , int? age , ESex sex , HashSet<Phone> phones , DateTime createdDate) :this(name , age , sex , phones) 
-    {
-        base.Id = id;
-        CreatedDate = createdDate;
-    } // when retrive data from data base 
-
-    public void UpdateName(string Name)
+    public void SetName(string Name)
     {
         if (string.IsNullOrWhiteSpace(Name))
-            throw new ArgumentNullException( "الرجاء إدخال الاسم");
+            throw new ArgumentNullException("الرجاء إدخال الاسم");
 
         if (Name.Length > 200)
             throw new ArgumentException("الاسم لا يمكن أن يزيد عن 200 حرف");
@@ -53,10 +41,10 @@ public class Person : BaseEntity
         if (!System.Text.RegularExpressions.Regex.IsMatch(Name, @"^[\p{L} ]+$"))
             throw new ArgumentException("الاسم يجب أن يحتوي على حروف فقط");
 
-        this.Name=Name.Trim();
+        this.Name = Name.Trim();
 
     }
-    public void UpdateAge(int? age)
+    public void SetAge(int? age)
     {
         if (age.HasValue && age <= 0)
             throw new ArgumentException("العمر يجب أن يكون رقمًا أكبر من صفر");
@@ -64,7 +52,7 @@ public class Person : BaseEntity
         Age = age;
     }
 
-    public void UpdateSex(ESex sex)
+    public void SetSex(ESex sex)
     {
         if (!Enum.IsDefined(typeof(ESex), sex))
             throw new ArgumentException("قيمة الجنس غير صالحة");
@@ -83,45 +71,48 @@ public class Person : BaseEntity
     }
     public void AddPhone(Phone newphone)
     {
+        if (newphone == null)
+            throw new ArgumentNullException("الرقم غير صالح");
+
         if (!_phones.Add(newphone))
         {
             throw new InvalidOperationException("لا يمكن إدخال نفس رقم الهاتف أكثر من مرة.");
         }
     }
 
-    protected  void UpdateDetails(string name, int? age, ESex sex)
-    {
-        UpdateName(name);
-        UpdateAge(age);
-        UpdateSex(sex);
-    }
-    public void DeletePhone(string phone)
-    {
+    //protected  void UpdateDetails(string name, int? age, ESex sex)
+    //{
+    //    UpdateName(name);
+    //    UpdateAge(age);
+    //    UpdateSex(sex);
+    //}
+    //public void DeletePhone(string phone)
+    //{
 
-        Phone p = new Phone(phone);
+    //    Phone p = new Phone(phone);
 
-        if(!_phones.Contains(p))
-            throw new InvalidOperationException("رقم الهاتف غير موجود.");
+    //    if(!_phones.Contains(p))
+    //        throw new InvalidOperationException("رقم الهاتف غير موجود.");
 
-        if (_phones.Count <= 1)
-            throw new InvalidOperationException("لا يمكن حذف الهاتف يجب ان يكون هنا رقم واحد مسجل على الاقل.");
+    //    if (_phones.Count <= 1)
+    //        throw new InvalidOperationException("لا يمكن حذف الهاتف يجب ان يكون هنا رقم واحد مسجل على الاقل.");
 
-        _phones.Remove(p);
+    //    _phones.Remove(p);
 
-    }
-    public void UpdatePhone(string curPhone, string newPhone)
-    {
-        Phone curP = new Phone(curPhone);
-        Phone newP = new Phone(newPhone);
+    //}
+    //public void UpdatePhone(string curPhone, string newPhone)
+    //{
+    //    Phone curP = new Phone(curPhone);
+    //    Phone newP = new Phone(newPhone);
 
-        if (!_phones.Contains(curP))
-            throw new InvalidOperationException("رقم الهاتف القديم غير موجود.");
+    //    if (!_phones.Contains(curP))
+    //        throw new InvalidOperationException("رقم الهاتف القديم غير موجود.");
 
-        if (_phones.Contains(newP))
-            throw new InvalidOperationException("رقم الهاتف الجديد موجود بالفعل.");
+    //    if (_phones.Contains(newP))
+    //        throw new InvalidOperationException("رقم الهاتف الجديد موجود بالفعل.");
 
-        _phones.Remove(curP);
-        _phones.Add(newP);
-    }
+    //    _phones.Remove(curP);
+    //    _phones.Add(newP);
+    //}
 
 }

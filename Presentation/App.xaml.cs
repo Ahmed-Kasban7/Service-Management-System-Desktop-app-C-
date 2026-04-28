@@ -1,23 +1,27 @@
 ﻿using Application.Common;
-using Application.Repositories;
 using Application.DTOs;
+using Application.Features.BrandManagement;
+using Application.Features.BrandManagement.Queries;
+using Application.Features.CustomerManagement.Queries;
+using Application.Features.CustomerManagment;
+using Application.Features.CustomerManagment.Commands;
+using Application.Features.DeviceManagement;
+using Application.Features.DeviceManagement.Queries;
+using Application.Features.OrderManagement.Commands;
+using Application.Features.OrderManagement.Queries;
+using Application.Features.PhoneManagement;
+using Application.Features.SpecManagement;
+using Application.Features.SpecManagement.Queries;
+using Application.Features.TypeManagement;
+using Application.Features.TypeManagement.Queries;
+using Application.Repositories;
+using Application.Repositories;
 using Infrastructure;
 using Infrastructure.Data;
-using Presentation.View.Customer_View;
-using System.Windows;
-using Application.Features.PhoneManagement;
-using Application.Features.BrandManagement;
-using Application.Features.CustomerManagment;
-using Application.Features.DeviceManagement;
-using Application.Features.TypeManagement;
-using Application.Features.SpecManagement;
-using Application.Repositories;
-using Application.Features.OrderManagement.Commands;
 using Infrastructure.Repositories;
-using Application.Features.DeviceManagement.Queries;
-using Application.Features.CustomerManagement.Queries;
-using Application.Features.OrderManagement.Queries;
+using Presentation.View.Customer_View;
 using Presentation.View.MainView;
+using System.Windows;
 
 
 namespace Presentation;
@@ -52,8 +56,14 @@ public partial class App : System.Windows.Application
             var  getorderPaged= new GetPagedOrderSummariesHandler(orderRepo);
             var getOrderDetails = new GetOrderFullDetailsHandler(orderRepo);
             var updateOrder = new UpdateOrderHandler(orderRepo);
+            var createCustomerHandler = new CreateCustomerHandler(customerRepo , phoneRepo);
+            var getAllBrandsHandler = new GetAllBrandsHandler(brandRepo);
+            var getAllTypesHandler = new GetAllTypesHandler(typeRepo);
+            var getSpecsByTypeIdHandler = new GetSpecsByTypeIdHandler(specRepo);
 
-            var mainWindow = new MainWindow(getOrderDetails , getorderPaged  , getCustomerLookupHandler , getCustomerDeviceHandler , createOrderHandler , updateOrder);
+            var mainWindow = new MainWindow(getOrderDetails , getorderPaged  , getCustomerLookupHandler ,
+                getCustomerDeviceHandler , createOrderHandler , updateOrder
+                ,createCustomerHandler , getAllBrandsHandler , getAllTypesHandler ,getSpecsByTypeIdHandler);
             mainWindow.Show();
         }
         catch (Exception ex)

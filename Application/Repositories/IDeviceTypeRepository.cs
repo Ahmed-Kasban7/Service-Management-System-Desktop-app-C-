@@ -10,7 +10,7 @@ namespace Application.Repositories;
 
 public interface IDeviceTypeRepository
 {
-    List<TypeDto> GetAllTypes();
+    IEnumerable<TypeDto> GetAllTypes();
 
     bool AddType(string type);
 
