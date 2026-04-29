@@ -12,7 +12,7 @@ namespace Application.Repositories;
 
 public interface ICustomerRepository  : IQueryRepository<Customer>
 {
-    IEnumerable<CustomerSummaryDto> GetPagedCustomerSummaries(int pageNumber , int rowPerPage);
+    PagedResult<CustomerSummaryDto> GetPagedCustomerSummaries(int pageNumber , int pageSize);
 
     int GetCustomerCount();
     CustomerProfileDto GetCustomerFullProfile(int id );

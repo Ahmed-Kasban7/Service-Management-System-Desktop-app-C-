@@ -1,6 +1,7 @@
 ﻿using Application.Common;
 using Application.DTOs;
 using Application.DTOs.CustomerDTOs;
+using Application.DTOs.OrderDTOs;
 using Application.Repositories;
 using Domain.Entities;
 using Domain.Enums;
@@ -86,25 +87,41 @@ public class CustomerRepository : ICustomerRepository
         return table;
     }
 
-    public IEnumerable<CustomerSummaryDto> GetPagedCustomerSummaries( int pageNumber , int rowsPerPage)
+    public  PagedResult<CustomerSummaryDto> GetPagedCustomerSummaries( int pageNumber , int pageSize)
     {
         using var conn = DatabaseInitializer.GetConnection();
 
         using SqlCommand command = new SqlCommand("SP_GetPagedCustomerSummaries", conn);
+        command.CommandType = CommandType.StoredProcedure;
 
         command.Parameters.AddWithValue("@PageNumber", pageNumber);
-        command.Parameters.AddWithValue("@RowsPerPage", rowsPerPage);
+        command.Parameters.AddWithValue("@RowsPerPage", pageSize);
 
-        command.CommandType = CommandType.StoredProcedure;
-        conn.Open();
-        using var reader = command.ExecuteReader();
-
-        while (reader.Read())
+        var totalParam = new SqlParameter("@TotalOrderCount", SqlDbType.Int)
         {
+            Direction = ParameterDirection.Output
+        };
+        command.Parameters.Add(totalParam);
 
-             yield return  new CustomerSummaryDto("C-" + reader["PersonID"].ToString()
-                , reader["Name"].ToString(), reader["Address"].ToString(), reader["PhoneNumber"].ToString());
+        conn.Open();
+
+        var customers = new List<CustomerSummaryDto>();
+
+        using (var reader = command.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+
+                 customers.Add(new CustomerSummaryDto(reader["CustomerNumber"].ToString()
+                    , reader["Name"].ToString(), reader["Address"].ToString(), reader["PhoneNumber"].ToString()));
+            }
+
         }
+
+        int totalCount = totalParam.Value != DBNull.Value ? (int)totalParam.Value : 0;
+
+        return new PagedResult<CustomerSummaryDto>(customers, totalCount, pageNumber, pageSize);
+
     }
 
     public int GetCustomerCount()

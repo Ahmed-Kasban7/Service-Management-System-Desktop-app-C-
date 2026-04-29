@@ -47,10 +47,13 @@ namespace Presentation.View.MainView
         private GetAllBrandsHandler _getAllBrandsHandler;
         private GetAllTypesHandler _getAllTypesHandler;
         private GetSpecsByTypeIdHandler _getSpecsByTypeIdHandler;
+        private GetPagedCustomerSummariesHandler GetPagedCustomerSummariesHandler;
         public MainWindow(GetOrderFullDetailsHandler getOrderFullDetails ,
             GetPagedOrderSummariesHandler getPagedOrderSummaries, GetCustomersLookupHandler getCustomersLookup,
             GetCustomerDevicesHandler getCustomerDevicesHandler, CreateOrderHandler createOrderHandler
-, UpdateOrderHandler updateOrderHandler , CreateCustomerHandler createCustomer, GetAllBrandsHandler getAllBrands, GetAllTypesHandler getAllTypes, GetSpecsByTypeIdHandler getSpecsByTypeId)
+            , UpdateOrderHandler updateOrderHandler , CreateCustomerHandler createCustomer,
+            GetAllBrandsHandler getAllBrands, GetAllTypesHandler getAllTypes, GetSpecsByTypeIdHandler getSpecsByTypeId,
+            GetPagedCustomerSummariesHandler getPagedCustomer)
         {
             InitializeComponent();
             LoadSavedLogo();
@@ -68,6 +71,7 @@ namespace Presentation.View.MainView
             _getAllTypesHandler = getAllTypes;
             _getSpecsByTypeIdHandler = getSpecsByTypeId;
             _updateOrderHandler = updateOrderHandler;
+            GetPagedCustomerSummariesHandler = getPagedCustomer;
 
             _createOrderHandler.AddOrderToList += OrdersControl.RefreshIfVisible;
         }
@@ -91,7 +95,7 @@ namespace Presentation.View.MainView
                 OrdersControl.InitializeServices(_getPagedOrderSummariesHandler, _getOrderFullDetailsHandler , _updateOrderHandler);
 
              if(content == CustomersControl)
-                CustomersControl.InitializeServices(_createCustomerHandler , _getAllBrandsHandler , _getAllTypesHandler , _getSpecsByTypeIdHandler );
+                CustomersControl.InitializeServices(_createCustomerHandler , _getAllBrandsHandler , _getAllTypesHandler , _getSpecsByTypeIdHandler , GetPagedCustomerSummariesHandler);
         }
         private void Navigate_Click(object sender, RoutedEventArgs e)
         {

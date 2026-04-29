@@ -27,6 +27,7 @@ namespace Presentation.View.Customer_View
         private readonly GetAllBrandsHandler _getAllBrandsHandler;
         private readonly GetAllTypesHandler _getAllTypesHandler;
         private readonly GetSpecsByTypeIdHandler _getSpecsByTypeIdHandler;
+        
 
         public CreateCustomerWindow(CreateCustomerHandler createCustomer, GetAllBrandsHandler getAllBrands , GetAllTypesHandler getAllTypes , GetSpecsByTypeIdHandler getSpecsByTypeId )
         {

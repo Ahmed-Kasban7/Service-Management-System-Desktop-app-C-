@@ -14,6 +14,8 @@ public class CreateCustomerHandler
 {
     private readonly ICustomerRepository _customerRepository;
     private readonly IPhoneRepository _phoneRepository;
+    public event Action CustomerCreated;
+
 
     public CreateCustomerHandler(ICustomerRepository customerRepository , IPhoneRepository phoneRepository)
     {
@@ -82,6 +84,8 @@ public class CreateCustomerHandler
         );
 
         var customerId = _customerRepository.Create(customer);
+
+        CustomerCreated?.Invoke();
 
         return Result<int>.Success(customerId);
     }

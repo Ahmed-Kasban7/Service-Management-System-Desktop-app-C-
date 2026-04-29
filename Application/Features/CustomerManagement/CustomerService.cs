@@ -22,14 +22,7 @@ public class CustomerService
         _customerRepository = customerRepository;
     }
 
-    public IEnumerable<CustomerSummaryDto> GetPagedCustomerSummaries(int pageNumber , int rowPerPage)
-    {
-        if (pageNumber <= 0) throw new ArgumentOutOfRangeException("Page number must be greater than 0.");
-        if (rowPerPage <= 0) throw new ArgumentOutOfRangeException("Rows per page must be greater than 0.");
-
-        return _customerRepository.GetPagedCustomerSummaries(pageNumber, rowPerPage);
-    }
-
+    
     public int GetCustomerCount()
     {
         return _customerRepository.GetCustomerCount();

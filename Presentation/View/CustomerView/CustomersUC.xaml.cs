@@ -1,30 +1,15 @@
-﻿using Application.DTOs;
+﻿using Application.Common;
+using Application.DTOs;
 using Application.DTOs.CustomerDTOs;
 using Application.Features.BrandManagement.Queries;
 using Application.Features.CustomerManagement.Queries;
-using Application.Features.CustomerManagment;
 using Application.Features.CustomerManagment.Commands;
-using Application.Features.DeviceManagement.Queries;
-using Application.Features.OrderManagement.Commands;
 using Application.Features.SpecManagement.Queries;
 using Application.Features.TypeManagement.Queries;
-using Domain.Enums;
 using Presentation.View.Customer_View;
-using Presentation.View.OrderView;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 
 namespace Presentation.View.CustomerView
 {
@@ -45,21 +30,25 @@ namespace Presentation.View.CustomerView
         private  GetAllBrandsHandler _getAllBrandsHandler;
         private  GetAllTypesHandler _getAllTypesHandler;
         private  GetSpecsByTypeIdHandler _getSpecsByTypeIdHandler;
+        private  GetPagedCustomerSummariesHandler _getPagedCustomerSummariesHandler;
         public CustomersUC()
         {
             InitializeComponent();
         }
-        public void InitializeServices(CreateCustomerHandler createCustomer, GetAllBrandsHandler getAllBrands, GetAllTypesHandler getAllTypes, GetSpecsByTypeIdHandler getSpecsByTypeId)
+        public void InitializeServices(CreateCustomerHandler createCustomer, GetAllBrandsHandler getAllBrands, 
+            GetAllTypesHandler getAllTypes, GetSpecsByTypeIdHandler getSpecsByTypeId,
+            GetPagedCustomerSummariesHandler getPagedCustomer)
         {
 
             _createCustomerHandler = createCustomer;
             _getAllBrandsHandler = getAllBrands;
             _getAllTypesHandler = getAllTypes;
             _getSpecsByTypeIdHandler = getSpecsByTypeId;
+            _getPagedCustomerSummariesHandler = getPagedCustomer;
 
-            CurrentPage = 1;
-            _searchWord = null;
+            createCustomer.CustomerCreated += LoadAndBindOrders;
 
+            LoadAndBindOrders();
             //UpdatePageInfo();
         }
 
@@ -75,6 +64,59 @@ namespace Presentation.View.CustomerView
             };
 
             createOrderWin.ShowDialog();
+        }
+
+        private PagedResult<CustomerSummaryDto> LoadOrders()
+        {
+
+            try
+            {
+                var res = _getPagedCustomerSummariesHandler.Handle(CurrentPage, ROWPERPAGE);
+
+                if (res.IsSuccess)
+                {
+                    return res.Value;
+                }
+                else
+                {
+                    MessageBox.Show(res.Error);
+                    return null;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("خطاء فى تحميل العملاء");
+                return null;
+            }
+        }
+        public void LoadAndBindOrders()
+        {
+            var result = LoadOrders();
+            if (result != null)
+            {
+                DgCustomers.ItemsSource = result.Items;
+                TxtPageInfo.Text = CurrentPage.ToString();
+                TxtCustomerCountNumber.Text = result.TotalCount.ToString();
+
+
+                BtnNextPage.IsEnabled = result.HasNextPage;
+                BtnPrevPage.IsEnabled = result.HasPreviousPage;
+            }
+        }
+        private void BtnNextPage_Click(object sender, RoutedEventArgs e)
+        {
+            CurrentPage++;
+            LoadAndBindOrders();
+        }
+
+        private void BtnPrevPage_Click(object sender, RoutedEventArgs e)
+        {
+            if (CurrentPage > 1)
+            {
+                CurrentPage--;
+                LoadAndBindOrders();
+            }
         }
 
         //    private void LoadCustomers()
@@ -108,58 +150,58 @@ namespace Presentation.View.CustomerView
         //        }
         //    }
 
-        private void BtnPrevPage_Click(object sender, RoutedEventArgs e)
-        {
-            //CurrentPage--;
-            //ChangePage();
-        }
+        //private void BtnPrevPage_Click(object sender, RoutedEventArgs e)
+        //{
+        //    //CurrentPage--;
+        //    //ChangePage();
+        //}
 
-        private void BtnNextPage_Click(object sender, RoutedEventArgs e)
-        {
-            //CurrentPage++;
-            //ChangePage();
-        }
+        //private void BtnNextPage_Click(object sender, RoutedEventArgs e)
+        //{
+        //    //CurrentPage++;
+        //    //ChangePage();
+        //}
 
-        private void ChangePage()
-        {
-            //LoadCustomers();
-            //TxtPageInfo.Text = CurrentPage.ToString();
+        //private void ChangePage()
+        //{
+        //    //LoadCustomers();
+        //    //TxtPageInfo.Text = CurrentPage.ToString();
 
-            //UpdateButtonPage();
-        }
+        //    //UpdateButtonPage();
+        //}
 
 
-        private void UpdateButtonPage()
-        {
+        //private void UpdateButtonPage()
+        //{
 
-            //BtnPrevPage.IsEnabled = CurrentPage > 1;
+        //    //BtnPrevPage.IsEnabled = CurrentPage > 1;
 
-            //BtnNextPage.IsEnabled = (CurrentPage < TotalPages);
-        }
+        //    //BtnNextPage.IsEnabled = (CurrentPage < TotalPages);
+        //}
 
-        private void UpdatePageInfo()
-        {
-            //if (_searchWord == null)
-            //    TotalCustomers = _customerService.GetCustomerCount();
-            //else
-            //    TotalCustomers = _customerService.GetSearchCustomerCount(_searchWord);
+        //private void UpdatePageInfo()
+        //{
+        //    //if (_searchWord == null)
+        //    //    TotalCustomers = _customerService.GetCustomerCount();
+        //    //else
+        //    //    TotalCustomers = _customerService.GetSearchCustomerCount(_searchWord);
 
-            //TxtCustomerCountNumber.Text = TotalCustomers.ToString();
+        //    //TxtCustomerCountNumber.Text = TotalCustomers.ToString();
 
-            //TotalPages = (int)Math.Ceiling((double)TotalCustomers / ROWPERPAGE);
+        //    //TotalPages = (int)Math.Ceiling((double)TotalCustomers / ROWPERPAGE);
 
-            //if (CurrentPage > TotalPages)
-            //    CurrentPage = TotalPages;
+        //    //if (CurrentPage > TotalPages)
+        //    //    CurrentPage = TotalPages;
 
-            //if (TotalPages == 0)
-            //    CurrentPage = 1;
+        //    //if (TotalPages == 0)
+        //    //    CurrentPage = 1;
 
-            //TxtPageInfo.Text = CurrentPage.ToString();
+        //    //TxtPageInfo.Text = CurrentPage.ToString();
 
-            //LoadCustomers();
+        //    //LoadCustomers();
 
-            //UpdateButtonPage();
-        }
+        //    //UpdateButtonPage();
+        //}
 
         private void SearchBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
