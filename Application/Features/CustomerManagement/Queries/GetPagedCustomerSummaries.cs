@@ -20,18 +20,19 @@ public class GetPagedCustomerSummariesHandler
         _customerRepository = customerRepository;
     }
 
-    public Result<PagedResult<CustomerSummaryDto>> Handle(int pageNumber, int PageSize)
+    public PagedResult<CustomerSummaryDto> Handle(int pageNumber, int PageSize)
     {
         if (pageNumber <= 0)
-            return Result<PagedResult<CustomerSummaryDto>>.Failure("رقم الصفحه غير صحيح");
+            pageNumber = 1;
 
-        if (PageSize <= 0)
-            return Result<PagedResult<CustomerSummaryDto>>.Failure("عدد الصفوف غير صحيح");
+        if (PageSize <= 0 || PageSize > 100)
+            PageSize = 8;
+
 
         var customers = _customerRepository.GetPagedCustomerSummaries(pageNumber, PageSize);
 
 
-        return Result<PagedResult<CustomerSummaryDto>>.Success(customers);
+        return customers;
 
     }
 }

@@ -37,14 +37,7 @@ public class CustomerService
         return deleted ? Result.Success() : Result.Failure("العميل غير موجود");
     }
 
-    public List<CustomerSummaryDto> SearchCustomerPagedBy(string searchWord , int pageNumber, int rowPerPage)
-    {
-        return _customerRepository.SearchCustomerPagedBy(searchWord, pageNumber, rowPerPage);
-    }
-    public int GetSearchCustomerCount(string word)
-    {
-        return _customerRepository.GetSearchCustomerCount(word);
-    }
+
 
     //public bool UpdateCustomerInfo(CustomerUpdateDto customerInfo)
     //{

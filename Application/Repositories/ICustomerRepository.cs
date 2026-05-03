@@ -16,8 +16,7 @@ public interface ICustomerRepository  : IQueryRepository<Customer>
 
     int GetCustomerCount();
     CustomerProfileDto GetCustomerFullProfile(int id );
-    List<CustomerSummaryDto> SearchCustomerPagedBy(string word , int pageNumber, int rowPerPage);
-    public int GetSearchCustomerCount(string word);
+    PagedResult<CustomerSummaryDto> SearchCustomerPaged(string word , int pageNumber, int rowPerPage);
 
     public bool UpdateCustomerInfo(Customer customerInfo);
 

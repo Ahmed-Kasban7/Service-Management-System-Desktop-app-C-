@@ -1,12 +1,36 @@
-﻿create or alter procedure SP_SearchCustomerPaged @word nvarchar(max) , @PageNumber int , @RowPerPage int 
-as 
-begin 
-select p.PersonID ,name ,c.Address , 
-dbo.GetFirstPersonPhoneNumber(p.PersonID) as PhoneNumber 
-from  Persons p  join Customers c on p.PersonID = c.PersonID 
-where p.Name like '%' + @word + '%' or  p.PersonID = TRY_CAST(@word as int) 
-order by p.PersonID
+﻿CREATE OR ALTER PROCEDURE SP_SearchCustomerPaged
+    @SearchWord NVARCHAR(100),
+    @PageNumber INT,
+    @RowPerPage INT
+AS
+BEGIN
 
-OFFSET (@PageNumber-1) * @RowPerPage ROWS 
-fetch Next @RowPerPage ROWS ONLY
-end 
+    SET NOCOUNT ON;
+
+    ;WITH SearchCTE AS
+    (
+        SELECT 
+            c.CustomerID,
+            c.CustomerNumber,
+            p.Name,
+            c.Address,
+            dbo.GetFirstPersonPhoneNumber(p.PersonID) AS PhoneNumber,
+            COUNT(*) OVER() AS TotalCount
+
+        FROM Persons p
+        INNER JOIN Customers c ON p.PersonID = c.PersonID
+
+        WHERE 
+            (@SearchWord IS NULL OR @SearchWord = '')
+            OR c.CustomerNumber = @SearchWord
+            OR p.Name LIKE N'%' + @SearchWord + N'%'
+            OR c.CustomerID = TRY_CAST(@SearchWord AS INT)
+    )
+
+    SELECT *
+    FROM SearchCTE
+    ORDER BY CustomerID DESC
+    OFFSET (@PageNumber - 1) * @RowPerPage ROWS
+    FETCH NEXT @RowPerPage ROWS ONLY;
+
+END

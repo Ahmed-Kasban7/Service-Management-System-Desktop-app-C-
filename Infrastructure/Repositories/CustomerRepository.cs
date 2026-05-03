@@ -145,27 +145,43 @@ public class CustomerRepository : ICustomerRepository
 
         return row > 0;
     }
-    public List<CustomerSummaryDto> SearchCustomerPagedBy(string word , int PageNumber , int RowPerPage)
+    public PagedResult<CustomerSummaryDto> SearchCustomerPaged(string word, int pageNumber, int rowPerPage)
     {
-        List<CustomerSummaryDto> customers = new List<CustomerSummaryDto>();
-        var conn = DatabaseInitializer.GetConnection();
+        var customers = new List<CustomerSummaryDto>();
+        int totalCount = 0;
+
+        using var conn = DatabaseInitializer.GetConnection();
+        using var command = new SqlCommand("SP_SearchCustomerPaged", conn);
+
+        command.CommandType = CommandType.StoredProcedure;
+
+        command.Parameters.Add("@SearchWord", SqlDbType.NVarChar, 100).Value = word ?? "";
+        command.Parameters.Add("@PageNumber", SqlDbType.Int).Value = pageNumber;
+        command.Parameters.Add("@RowPerPage", SqlDbType.Int).Value = rowPerPage;
 
         conn.Open();
 
-        using SqlCommand command = new SqlCommand("SP_SearchCustomerPaged", conn);
-        command.Parameters.AddWithValue("@word", word);
-        command.Parameters.AddWithValue("@PageNumber", PageNumber);
-        command.Parameters.AddWithValue("@RowPerPage", RowPerPage);
-        command.CommandType = CommandType.StoredProcedure;
         using var reader = command.ExecuteReader();
 
         while (reader.Read())
         {
-            customers.Add(new CustomerSummaryDto("C-" + reader["PersonID"].ToString()
-                , reader["Name"].ToString(), reader["Address"].ToString(), reader["PhoneNumber"].ToString()));
+            if (totalCount == 0 && reader["TotalCount"] != DBNull.Value)
+                totalCount = Convert.ToInt32(reader["TotalCount"]);
+
+            customers.Add(new CustomerSummaryDto(
+                "C-" + reader["CustomerID"].ToString(),
+                reader["Name"].ToString(),
+                reader["Address"].ToString(),
+                reader["PhoneNumber"].ToString()
+            ));
         }
 
-        return customers;
+        return new PagedResult<CustomerSummaryDto>(
+            customers,
+            totalCount,
+            pageNumber,
+            rowPerPage
+        );
     }
     public bool UpdateCustomerInfo(Customer customerInfo)
     {
@@ -184,38 +200,7 @@ public class CustomerRepository : ICustomerRepository
         return rows > 0;
     }
 
-    public int GetSearchCustomerCount(string word)
-    {
-        var conn = DatabaseInitializer.GetConnection();
 
-        using SqlCommand command = new SqlCommand("SP_SearchCustomerCount", conn);
-        command.Parameters.AddWithValue("@word", word);
-        command.CommandType = CommandType.StoredProcedure;
-        conn.Open();
-
-        return  (int) command.ExecuteScalar();
-    }
-    //public Customer Get(int customerId)
-    //{
-    //   // using var conn = DatabaseInitializer.GetConnection();
-    //   //using var command = new SqlCommand("SP_GetCustomerByID", conn);
-
-    //   //command.Parameters.AddWithValue("@customerId", customerId);
-    //   // command.CommandType= CommandType.StoredProcedure;
-    //   // conn.Open();
-    //   // using var reader = command.ExecuteReader();
-    //   // Customer customer = null;
-
-    //   // if (reader.Read())
-    //   // {
-    //   //      customer = new Customer(reader["Name"].ToString(),
-    //   //         reader["Age"] != DBNull.Value ? Convert.ToInt32(reader["Age"]) : null,
-    //   //         (ESex)Convert.ToInt32(reader["Sex"])
-    //   //         , reader["Address"].ToString(), Convert.ToInt32(reader["Discount"]) );
-    //   // }
-
-    //   // return customer;
-    //}
     public CustomerProfileDto GetCustomerFullProfile(int id)
     {
         using var conn = DatabaseInitializer.GetConnection();
