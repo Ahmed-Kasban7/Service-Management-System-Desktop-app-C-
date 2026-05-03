@@ -48,12 +48,14 @@ namespace Presentation.View.MainView
         private GetAllTypesHandler _getAllTypesHandler;
         private GetSpecsByTypeIdHandler _getSpecsByTypeIdHandler;
         private GetPagedCustomerSummariesHandler GetPagedCustomerSummariesHandler;
+        private SearchOrderPageHandler _SearchOrderPageHandler;
+        private SearchCustomerPageHandler _SearchCustomerPageHandler;
         public MainWindow(GetOrderFullDetailsHandler getOrderFullDetails ,
             GetPagedOrderSummariesHandler getPagedOrderSummaries, GetCustomersLookupHandler getCustomersLookup,
             GetCustomerDevicesHandler getCustomerDevicesHandler, CreateOrderHandler createOrderHandler
             , UpdateOrderHandler updateOrderHandler , CreateCustomerHandler createCustomer,
             GetAllBrandsHandler getAllBrands, GetAllTypesHandler getAllTypes, GetSpecsByTypeIdHandler getSpecsByTypeId,
-            GetPagedCustomerSummariesHandler getPagedCustomer)
+            GetPagedCustomerSummariesHandler getPagedCustomer , SearchOrderPageHandler searchOrder , SearchCustomerPageHandler searchCustomerPage)
         {
             InitializeComponent();
             LoadSavedLogo();
@@ -72,6 +74,8 @@ namespace Presentation.View.MainView
             _getSpecsByTypeIdHandler = getSpecsByTypeId;
             _updateOrderHandler = updateOrderHandler;
             GetPagedCustomerSummariesHandler = getPagedCustomer;
+            _SearchOrderPageHandler = searchOrder;
+            _SearchCustomerPageHandler = searchCustomerPage;
 
             _createOrderHandler.AddOrderToList += OrdersControl.RefreshIfVisible;
         }
@@ -92,10 +96,11 @@ namespace Presentation.View.MainView
         {
 
              if (content == OrdersControl)
-                OrdersControl.InitializeServices(_getPagedOrderSummariesHandler, _getOrderFullDetailsHandler , _updateOrderHandler);
+                OrdersControl.InitializeServices(_getPagedOrderSummariesHandler, _getOrderFullDetailsHandler , _updateOrderHandler ,_SearchOrderPageHandler);
 
              if(content == CustomersControl)
-                CustomersControl.InitializeServices(_createCustomerHandler , _getAllBrandsHandler , _getAllTypesHandler , _getSpecsByTypeIdHandler , GetPagedCustomerSummariesHandler);
+                CustomersControl.InitializeServices(_createCustomerHandler , _getAllBrandsHandler 
+                    , _getAllTypesHandler , _getSpecsByTypeIdHandler , GetPagedCustomerSummariesHandler , _SearchCustomerPageHandler);
         }
         private void Navigate_Click(object sender, RoutedEventArgs e)
         {

@@ -61,10 +61,13 @@ public partial class App : System.Windows.Application
             var getAllTypesHandler = new GetAllTypesHandler(typeRepo);
             var getSpecsByTypeIdHandler = new GetSpecsByTypeIdHandler(specRepo);
             var getPagedCustomerHandler = new GetPagedCustomerSummariesHandler(customerRepo);
+            var SearchOrderPage = new SearchOrderPageHandler(orderRepo);
+            var SearchCustomerPage = new SearchCustomerPageHandler(customerRepo);
 
             var mainWindow = new MainWindow(getOrderDetails , getorderPaged  , getCustomerLookupHandler ,
                 getCustomerDeviceHandler , createOrderHandler , updateOrder
-                ,createCustomerHandler , getAllBrandsHandler , getAllTypesHandler ,getSpecsByTypeIdHandler , getPagedCustomerHandler);
+                ,createCustomerHandler , getAllBrandsHandler , getAllTypesHandler ,getSpecsByTypeIdHandler 
+                , getPagedCustomerHandler , SearchOrderPage , SearchCustomerPage);
             mainWindow.Show();
         }
         catch (Exception ex)

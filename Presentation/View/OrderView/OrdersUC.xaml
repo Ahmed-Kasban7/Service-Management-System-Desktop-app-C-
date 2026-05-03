@@ -36,27 +36,61 @@
                    FlowDirection="LeftToRight"/>
                         </StackPanel>
                     </StackPanel>
-                    <Border Grid.Column="1" Background="White" BorderBrush="{StaticResource BorderGray}"
-                          BorderThickness="1" CornerRadius="8" Padding="12,8"
-                          MaxWidth="400" HorizontalAlignment="Center" Width="350">
+                    <Border Grid.Column="1" 
+        Background="White" 
+        BorderBrush="{StaticResource BorderGray}" 
+        BorderThickness="1" 
+        CornerRadius="8" 
+        Padding="12,8" 
+        MaxWidth="400" 
+        Width="350" 
+        HorizontalAlignment="Center">
+
                         <Grid>
-                            <TextBox x:Name="SearchBox" Background="Transparent" BorderThickness="0"
-                                   FontSize="14" Foreground="Black"
-                                   VerticalContentAlignment="Center" KeyDown="SearchBox_KeyDown"/>
-                            <TextBlock Text="🔍 بحث بالاسم أو كود العميل"
-                                     Foreground="{StaticResource GrayText}"
-                                     IsHitTestVisible="False" VerticalAlignment="Center">
-                                <TextBlock.Style>
-                                    <Style TargetType="{x:Type TextBlock}">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- أيقونة البحث ثابتة -->
+                            <TextBlock Text="🔍"
+                   VerticalAlignment="Center"
+                   Margin="0,0,8,0"
+                   FontSize="14"
+                   Foreground="{StaticResource GrayText}" />
+
+                            <!-- TextBox -->
+                            <Grid Grid.Column="1">
+
+                                <TextBox x:Name="SearchBox"
+                     Foreground="Black"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     FontSize="14"
+                     VerticalContentAlignment="Center"
+                     KeyDown="SearchBox_KeyDown"
+                     Padding="0"/>
+
+                                <!-- Placeholder -->
+                                <TextBlock Text="بحث باسم العميل أو كود الأوردر"
+                       Foreground="{StaticResource GrayText}"
+                       IsHitTestVisible="False"
+                       VerticalAlignment="Center">
+
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+
+                                </TextBlock>
+
+                            </Grid>
                         </Grid>
                     </Border>
                 </Grid>

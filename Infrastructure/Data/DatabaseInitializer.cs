@@ -97,8 +97,6 @@ public static class DatabaseInitializer
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetPagedCustomerSummaries.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_UpdateCustomerInfo.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_SearchCustomerPaged.sql");
-        ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_SearchCustomerCount.sql");
-        ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetCustomerCount.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetCustomerByID.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_CreateCustomer.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetCustomerProfile.sql");
@@ -130,6 +128,7 @@ public static class DatabaseInitializer
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetPagedOrderSummaries.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetOrderCount.sql");
        ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetOrderFullDetailsById.sql");
+       ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_SearchOrderPage.sql");
 
         // Functions 
         ExecuteScript(@"Scripts\Functions\GetFirstPersonPhoneNumber.sql");

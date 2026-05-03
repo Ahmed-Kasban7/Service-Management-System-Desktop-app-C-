@@ -198,4 +198,42 @@ public class OrderRepository:IOrderRepository
         return null;
     }
 
+    public PagedResult<OrderSummaryDto> SearchOrderPage(string searchWord, int pageNumber, int pageSize)
+    {
+        var orders = new List<OrderSummaryDto>();
+        int totalCount = 0;
+
+        using var conn = DatabaseInitializer.GetConnection();
+        using var cmd = new SqlCommand("SP_SearchOrderPage", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+
+        cmd.Parameters.AddWithValue("@SearchWord", searchWord);
+        cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
+        cmd.Parameters.AddWithValue("@PageSize", pageSize);
+
+        conn.Open();
+
+        using (var reader = cmd.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                if (totalCount == 0 && reader["TotalCount"] != DBNull.Value)
+                {
+                    totalCount = Convert.ToInt32(reader["TotalCount"]);
+                }
+
+                orders.Add(new OrderSummaryDto(
+                    Convert.ToInt32(reader["OrderID"]),
+                    reader["OrderNumber"].ToString(),
+                    reader["CustomerName"].ToString(),
+                    reader["CustomerPhone"].ToString(),
+                    reader["Address"].ToString(),
+                    (DateTime)reader["StartDate"],
+                    reader["State"].ToString()
+                ));
+            }
+        }
+
+        return new PagedResult<OrderSummaryDto>(orders, totalCount, pageNumber, pageSize);
+    }
 }
