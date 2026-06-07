@@ -1,4 +1,5 @@
 ﻿using Application.Common;
+using Application.DTOs.CustomerDTOs;
 using Application.DTOs.DeviceDTOs;
 using Application.Repositories;
 using System;
@@ -18,11 +19,12 @@ public class GetCustomerDevicesHandler
         _deviceRepository = deviceRepository;
     }
 
-    public Result<IEnumerable<CustomerDeviceLookupDto>> Handle(int customerId)
+    public Result<IEnumerable<DeviceInfoDTO>> Handle(int customerId)
     {
         if (customerId <= 0)
-            return Result<IEnumerable<CustomerDeviceLookupDto>>.Failure("رقم العميل غير صالح");
+            return Result<IEnumerable<DeviceInfoDTO>>.Failure("رقم العميل غير صالح");
 
-        return Result< IEnumerable <CustomerDeviceLookupDto>>.Success(_deviceRepository.GetCustomerDevicesLookup(customerId));
+        return Result<IEnumerable<DeviceInfoDTO>>.Success(_deviceRepository.GetCustomerDevices(customerId));
     }
+
 }

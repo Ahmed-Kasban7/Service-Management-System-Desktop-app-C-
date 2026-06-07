@@ -1,9 +1,13 @@
 ﻿using Application.DTOs.DeviceDTOs;
 using Application.Features.BrandManagement;
+using Application.Features.BrandManagement.Queries;
 using Application.Features.CustomerManagment;
 using Application.Features.DeviceManagement;
+using Application.Features.DeviceManagement.Commands;
 using Application.Features.SpecManagement;
+using Application.Features.SpecManagement.Queries;
 using Application.Features.TypeManagement;
+using Application.Features.TypeManagement.Queries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,40 +24,33 @@ namespace Presentation.View.Customer_View
     public partial class AddDeviceWindow : Window
     {
         private readonly int _customerId;
-        private readonly DeviceAddDTO deviceAddDTO;
-        private readonly CustomerService _customerService;
-        private readonly DeviceBrandService _deviceBrandService;
-        private readonly DeviceTypeService _deviceTypeService;
-        private readonly DeviceSpecService _deviceSpecService;
-        private readonly DeviceService _deviceService;
+        private readonly AddDeviceToCustomerHandler _addDeviceHandler;
+        private readonly GetAllBrandsHandler _getBrandsHandler;
+        private readonly GetAllTypesHandler _getTypesHandler;
+        private readonly GetSpecsByTypeIdHandler _getSpecsHandler;
 
-        public AddDeviceWindow(int customerId,DeviceService deviceService,CustomerService customerService , DeviceBrandService deviceBrandService, DeviceTypeService deviceTypeService , DeviceSpecService deviceSpecService)
+        public AddDeviceWindow(int customerId, AddDeviceToCustomerHandler addDeviceHandler,
+            GetAllBrandsHandler getBrandsHandler, GetAllTypesHandler getTypesHandler,
+            GetSpecsByTypeIdHandler getSpecsHandler)
         {
             InitializeComponent();
-            _customerId = customerId; 
-            _deviceService = deviceService;
-            _customerService = customerService;
+            _customerId = customerId;
+            _addDeviceHandler = addDeviceHandler;
+            _getBrandsHandler = getBrandsHandler;
+            _getTypesHandler = getTypesHandler;
+            _getSpecsHandler = getSpecsHandler;
 
-            _deviceBrandService = deviceBrandService;
-            _deviceTypeService = deviceTypeService;
-            _deviceSpecService = deviceSpecService;
-
-            CbBrand.ItemsSource = _deviceBrandService.GetAllBrands();
-            CbType.ItemsSource = _deviceTypeService.GetAllTypes();
-
+            CbBrand.ItemsSource = _getBrandsHandler.Handle();
+            CbType.ItemsSource = _getTypesHandler.Handle();
         }
+
         private void CbType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CbType.SelectedValue != null)
+            if (CbType.SelectedValue is int selectedTypeId)
             {
-                int selectedTypeId = (int)CbType.SelectedValue;
-
-
-                var specs = _deviceSpecService.GetSpecsByTypeId(selectedTypeId);
-
-                CbSpec.ItemsSource = specs;
-
+                CbSpec.ItemsSource = _getSpecsHandler.Handle(selectedTypeId);
                 CbSpec.SelectedIndex = -1;
+                TxtSpecError.Visibility = Visibility.Collapsed;
             }
             else
             {
@@ -61,44 +58,68 @@ namespace Presentation.View.Customer_View
             }
         }
 
-        private void BtnCancel_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-
         private void BtnSaveAll_Click(object sender, RoutedEventArgs e)
         {
-            if (CbType.SelectedItem is not TypeDto selectedType ||
-                CbBrand.SelectedItem is not BrandDto selectedBrand ||
-                CbSpec.SelectedItem is not SpecDto selectedSpec)
+            bool isValid = true;
+
+            if (CbType.SelectedItem is not TypeDto)
             {
-               MessageBox.Show("برجاء ادخال بيانات الجهاز");
-                return;
+                TxtTypeError.Visibility = Visibility.Visible;
+                isValid = false;
             }
+            else TxtTypeError.Visibility = Visibility.Collapsed;
+
+            if (CbBrand.SelectedItem is not BrandDto)
+            {
+                TxtBrandError.Visibility = Visibility.Visible;
+                isValid = false;
+            }
+            else TxtBrandError.Visibility = Visibility.Collapsed;
+
+            if (CbSpec.SelectedItem is not SpecDto)
+            {
+                TxtSpecError.Visibility = Visibility.Visible;
+                isValid = false;
+            }
+            else TxtSpecError.Visibility = Visibility.Collapsed;
+
+            if (!isValid) return;
 
             try
             {
-                var deviceDto = new DeviceAddDTO
+                var dto = new DeviceAddDTO
                 {
-                    TypeID = selectedType.TypeID,
-                    BrandID = selectedBrand.BrandID,
-                    SpecID = selectedSpec.SpecID,
+                    TypeID = ((TypeDto)CbType.SelectedItem).TypeID,
+                    BrandID = ((BrandDto)CbBrand.SelectedItem).BrandID,
+                    SpecID = ((SpecDto)CbSpec.SelectedItem).SpecID,
                     Model = TxtDeviceModel.Text.Trim(),
-                    SerialNumber = TxtSerial.Text?.Trim(),
-
+                    SerialNumber = TxtSerial.Text?.Trim()
                 };
 
-                _deviceService.AddDeviceToCustomer(_customerId, deviceDto);
-
-                MessageBox.Show("تم إضافة الجهاز بنجاح");
-
-                this.DialogResult = true;
-                this.Close();
+                bool added = _addDeviceHandler.AddDeviceToCustomer(_customerId, dto);
+                if (added)
+                {
+                    MessageBox.Show("تم إضافة الجهاز بنجاح", "نجاح",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    DialogResult = true;
+                }
+                else
+                {
+                    MessageBox.Show("فشل في إضافة الجهاز", "خطأ",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message, "خطأ في البيانات",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"حدث خطأ أثناء الحفظ: {ex.Message}");
             }
         }
+
+        private void BtnCancel_Click(object sender, RoutedEventArgs e) => DialogResult = false;
     }
 }

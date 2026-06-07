@@ -7,7 +7,7 @@ as
 begin 
     SELECT @TotalOrderCount = COUNT(*) FROM Customers;
 
-select c.CustomerNumber , p.Name , c.Address ,dbo.GetFirstPersonPhoneNumber(p.PersonID) as PhoneNumber
+select c.CustomerID, c.CustomerNumber , p.Name , c.Address ,dbo.GetFirstPersonPhoneNumber(p.PersonID) as PhoneNumber
 from Persons  p join Customers c on p.PersonID = c.PersonID
 order by p.DateCreated desc
 

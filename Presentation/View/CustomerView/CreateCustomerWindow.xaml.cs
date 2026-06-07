@@ -178,7 +178,7 @@ namespace Presentation.View.Customer_View
             }
 
             DevicesList.Add(new DeviceCreateDto(selectedBrand.BrandID, selectedBrand.BrandName,
-                selectedType.TypeID, selectedType.TypeName, selectedSpec.SpecID, selectedBrand.BrandName, TxtDeviceModel.Text, TxtSerial.Text));
+                selectedType.TypeID, selectedType.TypeName, selectedSpec.SpecID, selectedSpec.SpecName, TxtDeviceModel.Text, TxtSerial.Text));
 
             TxtDeviceModel.Clear();
             TxtSerial.Clear();

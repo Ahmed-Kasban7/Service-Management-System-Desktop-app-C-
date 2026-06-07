@@ -8,9 +8,9 @@ namespace Application.DTOs.DeviceDTOs;
 
 public record DeviceAddDTO
 {
-    public int BrandID { get; set; }
-    public int TypeID { get; set; }
-    public int SpecID { get; set; }
-    public string? Model { get; set; } = string.Empty;
-    public string? SerialNumber { get; set; } = string.Empty;
+    public int BrandID { get; init; }
+    public int TypeID { get; init; }
+    public int SpecID { get; init; }
+    public string? Model { get; init; } = string.Empty;
+    public string? SerialNumber { get; init; } = string.Empty;
 }

@@ -15,6 +15,8 @@ public interface IOrderRepository:ICommandRepository<Order> , IQueryRepository<O
     PagedResult<OrderSummaryDto> GetPagedOrderSummaries(int pageNumber, int pageSize);
     PagedResult<OrderSummaryDto> SearchOrderPage(string searchWord,int pageNumber, int pageSize);
     OrderDetailsDto GetOrderFullDetailsById(int orderId);
+    bool IsOrderExists (int orderId);
     int GetOrderCount();
-
+    IEnumerable<DeviceOrderHistoryDto> GetOrdersByDeviceId(int deviceId);
+    IEnumerable<CustomerOrderSummaryDto> GetCustomerOrders(int customerId);
 }

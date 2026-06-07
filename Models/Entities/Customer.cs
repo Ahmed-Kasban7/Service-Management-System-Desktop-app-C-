@@ -7,7 +7,8 @@ public class Customer : Person
 {
     public string Address { get; private set; }
     public int Discount { get; private set; }
-    public string CustomerNumber { get; private set; }
+    public string CustomerNumber { get; init; }
+    public int CustomerId { get; init; }
 
     private readonly HashSet<Device> _customerDevice = new();
 
@@ -28,6 +29,15 @@ public class Customer : Person
         }
 
     } // create new customer constructor
+
+    public Customer(int customerId,string name , int ?age , ESex sex , string address , int discount):base(name , age , sex)
+    {
+        this.CustomerId = customerId;
+        SetAddress(address);
+        SetDiscount(discount);
+
+    } // retrive CustomerData
+
 
     public void SetAddress(string address)
     {
@@ -50,6 +60,13 @@ public class Customer : Person
         Discount = discount;
     }
 
+    public void UpdateDetails(string name, int? age, ESex sex , string address , int discount)
+    {
+        base.UpdateDetails(name, age, sex);
+        SetAddress(address);
+        SetDiscount(discount);
+
+    }
     public void AddDevice(Device device)
     {
         if (device == null)

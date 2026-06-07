@@ -15,13 +15,13 @@ public interface ICustomerRepository  : IQueryRepository<Customer>
     PagedResult<CustomerSummaryDto> GetPagedCustomerSummaries(int pageNumber , int pageSize);
 
     int GetCustomerCount();
-    CustomerProfileDto GetCustomerFullProfile(int id );
+    CustomerBasicInfoDto GetCustomerBasicInfo(int id );
     PagedResult<CustomerSummaryDto> SearchCustomerPaged(string word , int pageNumber, int rowPerPage);
 
     public bool UpdateCustomerInfo(Customer customerInfo);
 
     public bool IsCustomerExist(int id);
-    public bool Delete(int id);
+    public Result Delete(int id);
     public int Create(Customer customer);
 
     public IEnumerable<CustomerLookupDto>  GetCustomersLookup();

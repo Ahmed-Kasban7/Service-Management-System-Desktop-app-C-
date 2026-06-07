@@ -27,38 +27,10 @@ public class CustomerService
     {
         return _customerRepository.GetCustomerCount();
     }
-    public Result DeleteCustomer(int customerId)
-    {
-        if (customerId < 1)
-            return Result.Failure("كود العميل يجب ان يكون اكبر من 0");
-
-        var deleted = _customerRepository.Delete(customerId);
-
-        return deleted ? Result.Success() : Result.Failure("العميل غير موجود");
-    }
+ 
 
 
+  
 
-    //public bool UpdateCustomerInfo(CustomerUpdateDto customerInfo)
-    //{
-        
-    //    //Customer ? customer = _customerRepository.Get(customerInfo.Id);
-
-    //    //if (customer == null)
-    //    //{
-    //    //    throw new ArgumentException($"العميل رقم {customerInfo.Id} غير موجود.");
-    //    //}
-    //    //customer.UpdateDetails(customerInfo.Name , customerInfo.Age , customerInfo.Sex , customerInfo.Address , customerInfo.Discount);
-
-    //    //return _customerRepository.UpdateCustomerInfo(customer);
-    //}
-    
-
-    public CustomerProfileDto GetCustomerFullProfile(int id)
-    {
-        return _customerRepository.GetCustomerFullProfile(id);
-    }
-
-   
 
 }

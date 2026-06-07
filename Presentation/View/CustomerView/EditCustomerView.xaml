@@ -32,54 +32,103 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Margin="0,0,0,15">
-            <TextBlock Text="✏️ تعديل البيانات الاساسية لعميل" FontSize="20" FontWeight="Bold" 
+            <TextBlock Text=" تعديل البيانات الاساسية لعميل" FontSize="20" FontWeight="Bold" 
                        Foreground="{StaticResource PrimaryBlue}" HorizontalAlignment="Center"/>
         </StackPanel>
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="0,0,5,0">
-            <Border Background="White" CornerRadius="12" Padding="20" BorderBrush="#E2E8F0" BorderThickness="1">
+            <Border Background="White" CornerRadius="12" Padding="20"
+        BorderBrush="#E2E8F0" BorderThickness="1">
+
                 <StackPanel>
 
-                    <TextBlock Style="{StaticResource FieldHeader}">
-                        <Run Text="الاسم الكامل"/>
-                        <Run Text="*" Foreground="{StaticResource DangerRed}"/>
-                    </TextBlock>
-                    <TextBox x:Name="TxtName" Style="{StaticResource ModernTextBox}" Margin="0,0,0,15"/>
+                    <!-- الاسم -->
+                    <StackPanel Margin="0,0,0,15">
+                        <TextBlock Style="{StaticResource FieldHeader}">
+                <Run Text="الاسم الكامل" />
+                <Run Text=" *" Foreground="{StaticResource DangerRed}"/>
+                        </TextBlock>
 
+                        <TextBox x:Name="TxtName" Style="{StaticResource ModernTextBox}"/>
+
+                        <TextBlock x:Name="TxtNameError"
+                       Foreground="{StaticResource DangerRed}"
+                       FontSize="12"
+                       Margin="0,4,0,0"
+                       Visibility="Collapsed"/>
+                    </StackPanel>
+
+                    <!-- العمر + الجنس -->
                     <Grid Margin="0,0,0,15">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
+                        <!-- العمر -->
                         <StackPanel Grid.Column="0" Margin="0,0,10,0">
                             <TextBlock Text="العمر" Style="{StaticResource FieldHeader}"/>
                             <TextBox x:Name="TxtAge" Style="{StaticResource ModernTextBox}"/>
+
+                            <TextBlock x:Name="TxtAgeError"
+               Foreground="Red"
+               FontSize="12"
+               Margin="0,4,0,0"
+                                       TextWrapping="Wrap"
+               Visibility="Collapsed"/>
                         </StackPanel>
 
-                        <StackPanel Grid.Column="1">
+                        <!-- الجنس -->
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
                             <TextBlock Style="{StaticResource FieldHeader}">
-                                <Run Text="الجنس"/>
-                                <Run Text="*" Foreground="{StaticResource DangerRed}"/>
+            <Run Text="الجنس"/>
+            <Run Text="*" Foreground="{StaticResource DangerRed}"/>
                             </TextBlock>
+
                             <ComboBox x:Name="TxtSex" Style="{StaticResource ModernComboBox}">
                                 <ComboBoxItem Content="ذكر" IsSelected="True"/>
                                 <ComboBoxItem Content="أنثى"/>
                             </ComboBox>
                         </StackPanel>
+
                     </Grid>
 
-                    <TextBlock Style="{StaticResource FieldHeader}">
-                        <Run Text="العنوان"/>
-                        <Run Text="*" Foreground="{StaticResource DangerRed}"/>
-                    </TextBlock>
-                    <TextBox x:Name="TxtAddress" Style="{StaticResource ModernTextBox}" Margin="0,0,0,15"/>
+                    <!-- العنوان -->
+                    <StackPanel Margin="0,0,0,15">
 
-                    <TextBlock Text="نسبة الخصم (%)" Style="{StaticResource FieldHeader}"/>
-                    <TextBox x:Name="TxtDiscount" Style="{StaticResource ModernTextBox}" Margin="0,0,0,15"/>
+                        <TextBlock Style="{StaticResource FieldHeader}">
+        <Run Text="العنوان" />
+        <Run Text=" *" Foreground="{StaticResource DangerRed}"/>
+                        </TextBlock>
 
+                        <TextBox x:Name="TxtAddress" Style="{StaticResource ModernTextBox}"/>
+
+                        <TextBlock x:Name="TxtAddressError"
+               Foreground="Red"
+               FontSize="12"
+               Margin="0,4,0,0"
+               Visibility="Collapsed"/>
+                    </StackPanel>
+
+                    <!-- الخصم -->
+                    <StackPanel Margin="0,0,0,15">
+
+                        <TextBlock Style="{StaticResource FieldHeader}">
+    <Run Text="نسبة الخصم" />
+    <Run Text="%" Foreground="{StaticResource SuccessGreen}" FontWeight="Bold"/>
+                        </TextBlock>
+                        
+                        <TextBox x:Name="TxtDiscount" Style="{StaticResource ModernTextBox}"/>
+
+                        <TextBlock x:Name="TxtDiscountError"
+               Foreground="Red"
+               FontSize="12"
+               Margin="0,4,0,0"
+               Visibility="Collapsed"/>
+                    </StackPanel>
                 </StackPanel>
             </Border>
+            
         </ScrollViewer>
 
         <Border Grid.Row="2" Padding="0,15,0,0" BorderThickness="0,1,0,0" BorderBrush="#CBD5E1">

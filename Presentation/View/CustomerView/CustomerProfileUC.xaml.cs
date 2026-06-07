@@ -1,12 +1,27 @@
 ﻿using Application.DTOs.CustomerDTOs;
 using Application.DTOs.DeviceDTOs;
+using Application.DTOs.OrderDTOs;
 using Application.Features.BrandManagement;
+using Application.Features.BrandManagement.Queries;
+using Application.Features.CustomerManagement.Queries;
 using Application.Features.CustomerManagment;
+using Application.Features.CustomerManagment.Commands;
 using Application.Features.DeviceManagement;
+using Application.Features.DeviceManagement.Commands;
+using Application.Features.DeviceManagement.Queries;
+using Application.Features.OrderManagement.Commands;
+using Application.Features.OrderManagement.Queries;
 using Application.Features.PhoneManagement;
+using Application.Features.PhoneManagement.Commands;
+using Application.Features.PhoneManagement.Queries;
 using Application.Features.SpecManagement;
+using Application.Features.SpecManagement.Queries;
 using Application.Features.TypeManagement;
+using Application.Features.TypeManagement.Queries;
+using Domain.Entities;
+using Domain.Enums;
 using Presentation.View.Customer_View;
+using Presentation.View.OrderView;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,263 +44,452 @@ namespace Presentation.View.CustomerView
     /// </summary>
     public partial class CustomerProfileUC : UserControl
     {
-        public CustomerProfileUC()
+        public event EventHandler BackRequested;
+        private GetCustomerBasicInfoHandler _getCustomerBasicInfoHandler;
+        private UpdateCustomerHandler _updateCustomerHandler;
+        private readonly GetCustomerPhonesHandler _getCustomerPhonesHandler;
+        private readonly AddPhoneToCustomer _addPhoneToCustomer;
+        private readonly DeletePhoneHandler _deletePhoneHandler;
+        private readonly UpdatePhoneHandler _updatePhoneHandler;
+        private readonly GetCustomerDevicesHandler _getCustomerDevicesHandler;
+        private readonly AddDeviceToCustomerHandler _addDeviceHandler;
+        private readonly GetAllBrandsHandler _getBrandsHandler;
+        private readonly GetAllTypesHandler _getTypesHandler;
+        private readonly GetSpecsByTypeIdHandler _getSpecsHandler;
+        private readonly UpdateDeviceHandler _updateDeviceHandler;
+        private readonly DeleteDeviceHandler _deleteDeviceHandler;
+        private readonly GetDeviceOrders _getDeviceOrders;
+        private readonly GetCustomerOrdersHandler _getCustomerOrdersHandler;
+        private readonly DeleteCustomerHandler _deleteCustomerHandler;
+
+
+        public event EventHandler<int> OrderDetailsRequested;
+
+        private int _customerId;
+
+        public CustomerProfileUC(int customerId, GetCustomerBasicInfoHandler getCustomerBasicInfoHandler, UpdateCustomerHandler updateCustomerHandler,
+            GetCustomerPhonesHandler getCustomerPhones, AddPhoneToCustomer phoneToCustomer, DeletePhoneHandler deletePhone,
+            UpdatePhoneHandler updatePhone, GetCustomerDevicesHandler getCustomerDevices, AddDeviceToCustomerHandler addDeviceToCustomer,
+            GetAllBrandsHandler getAllBrands, GetAllTypesHandler getAllTypes,
+            GetSpecsByTypeIdHandler getSpecsByType, UpdateDeviceHandler updateDeviceHandler,
+            DeleteDeviceHandler deleteDevice , GetDeviceOrders getDeviceOrders, 
+            GetCustomerOrdersHandler getCustomerOrdersHandler , DeleteCustomerHandler deleteCustomer)
         {
             InitializeComponent();
+            _customerId = customerId;
+            _getCustomerBasicInfoHandler = getCustomerBasicInfoHandler;
+            _updateCustomerHandler = updateCustomerHandler;
+            _getCustomerPhonesHandler = getCustomerPhones;
+            _addPhoneToCustomer = phoneToCustomer;
+            _deletePhoneHandler = deletePhone;
+            _updatePhoneHandler = updatePhone;
+            _getCustomerDevicesHandler = getCustomerDevices;
+            _addDeviceHandler = addDeviceToCustomer;
+            _getBrandsHandler = getAllBrands;
+            _getSpecsHandler = getSpecsByType;
+            _getTypesHandler = getAllTypes;
+            _updateDeviceHandler = updateDeviceHandler;
+            _deleteDeviceHandler = deleteDevice;
+            _getDeviceOrders = getDeviceOrders;
+            _getCustomerOrdersHandler = getCustomerOrdersHandler;
+            _deleteCustomerHandler = deleteCustomer;
+
+            LoadCustomerBasicInfo();
+
+            BtnEditCustomer.IsEnabled = true;
+            BtnAddPhone.IsEnabled = true;
+            BtnAddDevice.IsEnabled = true;
         }
+
+        private void  LoadCustomerBasicInfo()
+        {
+            try
+            {
+                var customer = _getCustomerBasicInfoHandler.Handle(_customerId);
+
+                if (customer == null) return;
+
+                TxtProfileID.Text = customer.Code;
+                TxtProfileName.Text = customer.Name;
+                TxtProfileSex.Text = customer.Sex == ESex.FEMALE ? "أنثى" : "ذكر";
+                TxtProfileAge.Text = customer.Age.ToString();
+                TxtProfileAddress.Text = customer.Address;
+                TxtProfileDiscount.Text = $"{customer.Discount}%";
+                RunCustomerCode.Text = $"#{customer.Code}";
+                TxtCreatedDate.Text = $"تاريخ التسجيل: {customer.CreatedDate:yyyy/MM/dd}";
+            }
+            catch (Exception ex) 
+            {
+                    MessageBox.Show("حدث مشكله اثناء تحميل بيانات العميل", "خطأ",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+
+            }
+        }
+        private void LoadCustomerPhones()
+        {
+            try
+            {
+                List<string> Phones = _getCustomerPhonesHandler.Handle(_customerId).ToList();
+                if (Phones?.Any() == true)
+                {
+                    PhonesList.ItemsSource = Phones;
+                    TxtNoPhonesMessage.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    TxtNoPhonesMessage.Visibility = Visibility.Visible;
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("حدث مشكله اثناء تحميل هواتف العميل", "خطأ",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        
+        private void LoadCustomerDevices()
+        {
+            try
+            {
+                var Devices = _getCustomerDevicesHandler.Handle(_customerId).Value.ToList();
+                if (Devices?.Any() == true)
+                {
+                    DevicesList.ItemsSource = Devices;
+                    TxtNoDevicesMessage.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    TxtNoDevicesMessage.Visibility = Visibility.Visible;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("حدث مشكله اثناء تحميل اجهزه العميل", "خطأ",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void LoadCustomerOrders()
+        {
+            try
+            {
+                var orders = _getCustomerOrdersHandler.Handle(_customerId).ToList();
+
+                TxtTotalOrders.Text = orders.Count.ToString();
+                TxtDoneOrders.Text = orders.Count(o => o.OrderState == 3).ToString();
+                TxtActiveOrders.Text = orders.Count(o => o.OrderState == 2).ToString();
+
+                if (orders.Any())
+                {
+                    OrdersList.ItemsSource = orders;
+                    TxtNoOrdersMessage.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    OrdersList.ItemsSource = null;
+                    TxtNoOrdersMessage.Visibility = Visibility.Visible;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("حدث خطأ أثناء تحميل طلبات العميل", "خطأ",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void OrdersList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (OrdersList.SelectedItem is CustomerOrderSummaryDto selectedOrder)
+            {
+                OrderDetailsRequested?.Invoke(this, selectedOrder.OrderId);
+            }
+        }
+        private void BtnEditCustomer_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var customer = _getCustomerBasicInfoHandler.Handle(_customerId);
+                var customerUpdateDTO = new CustomerUpdateDto(_customerId, customer.Name, customer.Age, customer.Sex, customer.Address, customer.Discount);
+
+                var editWindow = new EditCustomerView(
+                    _updateCustomerHandler,
+                    customerUpdateDTO,
+                    _customerId)
+                {
+                    Owner = Window.GetWindow(this)
+                };
+
+                bool? result = editWindow.ShowDialog();
+
+                if (result == true)
+                {
+                    LoadCustomerBasicInfo();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "خطأ",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void BtnAddPhone_Click(object sender, RoutedEventArgs e)
+        {
+            var addPhoneWindow = new AddPhoneWindow(_addPhoneToCustomer, _customerId)
+            {
+                Owner = Window.GetWindow(this)
+            };
+
+            if (addPhoneWindow.ShowDialog() == true)
+                LoadCustomerPhones();
+        }
+
+        private void BtnDeletePhone_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is string phoneNumber)
+            {
+                var result = MessageBox.Show(
+                    $"هل أنت متأكد من حذف الرقم {phoneNumber} ؟",
+                    "تأكيد الحذف",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+
+                        var deleted = _deletePhoneHandler.Handle(phoneNumber, _customerId);
+
+                        if (deleted.IsSuccess)
+                        {
+                            MessageBox.Show("تم حذف الرقم بنجاح", "نجاح",
+                                MessageBoxButton.OK, MessageBoxImage.Information);
+
+                            LoadCustomerPhones();
+
+                        }
+                        else
+                        {
+                            MessageBox.Show(deleted.Error, "خطأ",
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"حدث خطأ أثناء الحذف: {ex.Message}");
+                    }
+                }
+            }
+        }
+        private void BtnEditPhone_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is string oldPhone)
+            {
+                var updatePhoneWindow = new UpdatePhoneWindow(_updatePhoneHandler, oldPhone)
+                {
+                    Owner = Window.GetWindow(this)
+                };
+
+                if (updatePhoneWindow.ShowDialog() == true)
+                    LoadCustomerPhones();
+            }
+        }
+
 
         private void BtnEditDevice_Click(object sender, RoutedEventArgs e)
         {
-            //if (_currentCustomer == null)
-            //{
-            //    MessageBox.Show("الرجاء اختيار عميل أولاً.", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Warning);
-            //    return;
-            //}
+            if (sender is Button btn && btn.Tag is DeviceInfoDTO selectedDevice)
+            {
+                var updateWindow = new UpdateDeviceWindow(
+                    selectedDevice,
+                    _updateDeviceHandler,
+                    _getBrandsHandler,
+                    _getTypesHandler,
+                    _getSpecsHandler)
+                {
+                    Owner = Window.GetWindow(this)
+                };
 
-            //if (sender is Button btn && btn.Tag is DeviceInfoDTO selectedDevice)
-            //{
-            //    int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
-
-            //    var updateWindow = new UpdateDeviceWindow(
-            //        selectedDevice,
-            //        _deviceService,
-            //        _deviceBrandService,
-            //        _deviceTypeService,
-            //        _deviceSpecService
-            //    )
-            //    {
-            //        Owner = this
-            //    };
-
-            //    bool? result = updateWindow.ShowDialog();
-
-            //    if (result == true)
-            //    {
-            //        ReloadCustomerProfile(customerId);
-            //    }
-            //}
-            //else
-            //{
-            //    MessageBox.Show("برجاء اختيار الجهاز الذي تريد تعديله");
-            //}
+                if (updateWindow.ShowDialog() == true)
+                    LoadCustomerDevices();
+            }
         }
-
         private void BtnAddDevice_Click(object sender, RoutedEventArgs e)
         {
-            //int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
+            var addDeviceWindow = new AddDeviceWindow(
+                _customerId,
+                _addDeviceHandler,
+                _getBrandsHandler,
+                _getTypesHandler,
+                _getSpecsHandler)
+            {
+                Owner = Window.GetWindow(this)
+            };
 
-            //var AddWin = new AddDeviceWindow(customerId, _deviceService, _customerService, _deviceBrandService, _deviceTypeService, _deviceSpecService);
-
-            //AddWin.Owner = GetWindow(this);
-
-            //if (AddWin.ShowDialog() == true)
-            //{
-
-            //    ReloadCustomerProfile(customerId);
-            //}
+            if (addDeviceWindow.ShowDialog() == true)
+                LoadCustomerDevices();
         }
 
         private void BtnDeleteDevice_Click(object sender, RoutedEventArgs e)
         {
-        //    if (_currentCustomer == null)
-        //        return;
+            if (sender is Button btn && btn.Tag is DeviceInfoDTO selectedDevice)
+            {
+                var confirm = MessageBox.Show(
+                    "هل أنت متأكد من حذف الجهاز ؟",
+                    "تأكيد الحذف",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
 
-        //    if (sender is Button btn && btn.Tag is DeviceInfoDTO selectedDevice)
-        //    {
-        //        var result = MessageBox.Show(
-        //            $"هل أنت متأكد من حذف الجهاز ؟",
-        //            "تأكيد الحذف",
-        //            MessageBoxButton.YesNo,
-        //            MessageBoxImage.Warning);
+                if (confirm == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        var result  =  _deleteDeviceHandler.Handle(selectedDevice.DeviceId);
 
-        //        if (result == MessageBoxResult.Yes)
-        //        {
-        //            try
-        //            {
-        //                int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
-        //                bool deleted = _deviceService.DeleteCustomerDevice(selectedDevice.DeviceId);
-
-        //                if (deleted)
-        //                {
-        //                    MessageBox.Show("تم حذف الجهاز بنجاح", "نجاح",
-        //                        MessageBoxButton.OK, MessageBoxImage.Information);
-
-        //                    ReloadCustomerProfile(customerId);
-        //                }
-        //                else
-        //                {
-        //                    MessageBox.Show("فشل في حذف الجهاز", "خطأ",
-        //                        MessageBoxButton.OK, MessageBoxImage.Error);
-        //                }
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                MessageBox.Show($"حدث خطأ أثناء الحذف: {ex.Message}", "خطأ",
-        //                    MessageBoxButton.OK, MessageBoxImage.Error);
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("الرجاء اختيار جهاز للحذف", "تنبيه",
-        //            MessageBoxButton.OK, MessageBoxImage.Warning);
-        //    }
-        }
-        private void BtnAddPhone_Click(object sender, RoutedEventArgs e)
-        {
-            //if (_currentCustomer == null)
-            //    return;
-
-            //var input = Microsoft.VisualBasic.Interaction.InputBox(
-            //    "أدخل رقم الهاتف الجديد:",
-            //    "إضافة رقم هاتف",
-            //    "");
-
-            //if (string.IsNullOrWhiteSpace(input))
-            //    return;
-
-            //try
-            //{
-            //    int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
-
-            //    bool added = _phoneService.AddPhone(input, customerId);
-
-            //    if (added)
-            //    {
-            //        MessageBox.Show("تمت إضافة الرقم بنجاح", "نجاح",
-            //            MessageBoxButton.OK, MessageBoxImage.Information);
-
-            //        ReloadCustomerProfile(customerId);
-            //    }
-            //    else
-            //    {
-            //        MessageBox.Show("فشل في إضافة الرقم", "خطأ",
-            //            MessageBoxButton.OK, MessageBoxImage.Error);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show($"حدث خطأ: {ex.Message}");
-            //}
-        }
-
-        private void BtnEditPhone_Click(object sender, RoutedEventArgs e)
-        {
-            //if (sender is Button btn && btn.Tag is string oldPhone)
-            //{
-            //    var newPhone = Microsoft.VisualBasic.Interaction.InputBox(
-            //        "عدل رقم الهاتف:",
-            //        "تعديل رقم",
-            //        oldPhone);
-
-            //    if (string.IsNullOrWhiteSpace(newPhone) || newPhone == oldPhone)
-            //        return;
-
-            //    try
-            //    {
-            //        int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
-
-            //        bool updated = _phoneService.UpdatePhone(newPhone, oldPhone);
-
-            //        if (updated)
-            //        {
-            //            MessageBox.Show("تم تعديل الرقم بنجاح", "نجاح",
-            //                MessageBoxButton.OK, MessageBoxImage.Information);
-
-            //            ReloadCustomerProfile(customerId);
-
-            //        }
-            //        else
-            //        {
-            //            MessageBox.Show("فشل في تعديل الرقم", "خطأ",
-            //                MessageBoxButton.OK, MessageBoxImage.Error);
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBox.Show($"حدث خطأ: {ex.Message}");
-            //    }
-            //}
-        }
-        private void BtnDeletePhone_Click(object sender, RoutedEventArgs e)
-        {
-            //if (sender is Button btn && btn.Tag is string phoneNumber)
-            //{
-            //    var result = MessageBox.Show(
-            //        $"هل أنت متأكد من حذف الرقم {phoneNumber} ؟",
-            //        "تأكيد الحذف",
-            //        MessageBoxButton.YesNo,
-            //        MessageBoxImage.Warning);
-
-            //    if (result == MessageBoxResult.Yes)
-            //    {
-            //        try
-            //        {
-            //            int customerId = int.Parse(_currentCustomer.ID.Replace("C-", ""));
-
-            //            bool deleted = _phoneService.DeletePhone(phoneNumber, customerId);
-
-            //            if (deleted)
-            //            {
-            //                MessageBox.Show("تم حذف الرقم بنجاح", "نجاح",
-            //                    MessageBoxButton.OK, MessageBoxImage.Information);
-
-            //                ReloadCustomerProfile(customerId);
-
-            //            }
-            //            else
-            //            {
-            //                MessageBox.Show("فشل في حذف الرقم", "خطأ",
-            //                    MessageBoxButton.OK, MessageBoxImage.Error);
-            //            }
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            MessageBox.Show($"حدث خطأ أثناء الحذف: {ex.Message}");
-            //        }
-            //    }
-            //}
-        }
-        private void BtnEditCustomer_Click(object sender, RoutedEventArgs e)
-        {
-            //if (_currentCustomer == null)
-            //{
-            //    MessageBox.Show("الرجاء اختيار عميل قبل التعديل.", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Warning);
-            //    return;
-            //}
-
-            //int customerId = GetCurrentCustomerId();
-
-
-            //var customerUpdateDTO = new CustomerUpdateDto(customerId, _currentCustomer.Name, _currentCustomer.Age,
-            //    _currentCustomer.Sex, _currentCustomer.Address, _currentCustomer.Discount);
-
-            //try
-            //{
-            //    var editWindow = new EditCustomerView(_customerService, customerUpdateDTO, customerId)
-            //    {
-            //        Owner = this
-            //    };
-
-
-            //    bool? dialogResult = editWindow.ShowDialog();
-
-
-            //    if (dialogResult == true)
-            //    {
-            //        ReloadCustomerProfile(customerUpdateDTO.Id);
-
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message, "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
-            //}
+                        if (result.IsSuccess)
+                        {
+                            MessageBox.Show("تم حذف الجهاز بنجاح", "نجاح",
+                                MessageBoxButton.OK, MessageBoxImage.Information);
+                            LoadCustomerDevices();
+                        }
+                        else
+                        {
+                            MessageBox.Show(result.Error, "خطأ",
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "خطأ",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
         }
 
         private void BtnDeviceHistory_Click(object sender, RoutedEventArgs e)
         {
+            if (sender is Button btn && btn.Tag is DeviceInfoDTO selectedDevice)
+            {
+                TxtHistoryDeviceName.Text = $"{selectedDevice.TypeName} - {selectedDevice.BrandName}";
+                TxtHistoryDeviceDetails.Text = selectedDevice.SpecName;
+                TxtHistoryDeviceId.Text = selectedDevice.DeviceId.ToString();
 
+                if (string.IsNullOrEmpty(selectedDevice.SerialNumber))
+                {
+                    HistorySerialPanel.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    HistorySerialPanel.Visibility = Visibility.Visible;
+                    TxtHistorySerial.Text = selectedDevice.SerialNumber;
+                }
+
+                if (string.IsNullOrEmpty(selectedDevice.Model))
+                {
+                    HistoryModelPanel.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    HistoryModelPanel.Visibility = Visibility.Visible;
+                    TxtHistoryModel.Text = selectedDevice.Model;
+                }
+
+                var orders = _getDeviceOrders.Handle(selectedDevice.DeviceId).ToList();
+                if (orders.Any())
+                {
+                    DeviceOrdersList.ItemsSource = orders;
+                    TxtNoDeviceOrdersMessage.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    DeviceOrdersList.ItemsSource = null;
+                    TxtNoDeviceOrdersMessage.Visibility = Visibility.Visible;
+                }
+
+                SubPanelDevicesList.Visibility = Visibility.Collapsed;
+                PanelDeviceHistory.Visibility = Visibility.Visible;
+            }
+        }
+        private void DeviceOrdersList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is DataGrid dataGrid && dataGrid.SelectedItem is DeviceOrderHistoryDto selectedOrder)
+            {
+                OrderDetailsRequested?.Invoke(this, selectedOrder.OrderId);
+            }
+        }
+
+        private void BtnBackToDevices_Click(object sender, RoutedEventArgs e)
+        {
+            PanelDeviceHistory.Visibility = Visibility.Collapsed;
+            SubPanelDevicesList.Visibility = Visibility.Visible;
+        }
+        private void SetActiveTab(Border panel, Button tab)
+        {
+           
+            PanelBasicInfo.Visibility = Visibility.Collapsed;
+            PanelPhones.Visibility = Visibility.Collapsed;
+            PanelDevices.Visibility = Visibility.Collapsed;
+            PanelOrders.Visibility = Visibility.Collapsed;
+
+
+            foreach (var t in new[] { TabBasicInfo, TabPhones, TabDevices , TabOrders })
+            {
+                t.BorderBrush = Brushes.Transparent;
+                t.Foreground = new SolidColorBrush(Color.FromRgb(0x64, 0x74, 0x8B));
+                t.FontWeight = FontWeights.Normal;
+            }
+
+            panel.Visibility = Visibility.Visible;
+            tab.BorderBrush = new SolidColorBrush(Color.FromRgb(0x25, 0x63, 0xEB));
+            tab.Foreground = new SolidColorBrush(Color.FromRgb(0x25, 0x63, 0xEB));
+            tab.FontWeight = FontWeights.SemiBold;
+        }
+
+        private void TabBasicInfo_Click(object sender, RoutedEventArgs e) => SetActiveTab(PanelBasicInfo, TabBasicInfo);
+        private void TabPhones_Click(object sender, RoutedEventArgs e) {
+
+            SetActiveTab(PanelPhones, TabPhones);
+            LoadCustomerPhones();
+        }
+        private void TabDevices_Click(object sender, RoutedEventArgs e)
+        {
+            SetActiveTab(PanelDevices, TabDevices);
+
+            PanelDeviceHistory.Visibility = Visibility.Collapsed;
+            SubPanelDevicesList.Visibility = Visibility.Visible;
+
+            LoadCustomerDevices();
+        }
+        private void TabOrders_Click(object sender, RoutedEventArgs e)
+        {
+            SetActiveTab(PanelOrders, TabOrders);
+            LoadCustomerOrders();
+        }
+        public void BtnBack_Click(object sender, RoutedEventArgs e) => BackRequested?.Invoke(this, EventArgs.Empty);
+
+        private void BtnDeleteCustomer_Click(object sender, RoutedEventArgs e)
+        {
+            var confirm = MessageBox.Show(
+                $"هل أنت متأكد من حذف العميل ؟",
+                "تأكيد الحذف",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (confirm == MessageBoxResult.Yes)
+            {
+                var result = _deleteCustomerHandler.Handle(_customerId);
+                if (result.IsSuccess)
+                {
+                    MessageBox.Show("تم حذف العميل بنجاح", "نجاح",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    BackRequested?.Invoke(this, EventArgs.Empty);
+                }
+                else
+                {
+                    MessageBox.Show(result.Error, "خطأ",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
     }
 }

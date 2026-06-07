@@ -3,15 +3,19 @@
 AS
 BEGIN
 
+    SET NOCOUNT ON;
+
     SELECT 
-        p.PersonID,
+        c.CustomerNumber,
+        c.CustomerID,
         p.Name,
         p.Sex,
         p.Age,
         c.Address,
-        c.Discount
-    FROM Persons p
-    INNER JOIN Customers c ON p.PersonID = c.PersonID
-    WHERE p.PersonID = @id;
+        c.Discount , 
+        p.DateCreated
+    FROM Customers c
+    INNER JOIN Persons p ON p.PersonID = c.PersonID
+    WHERE c.CustomerID = @id;
 
 END

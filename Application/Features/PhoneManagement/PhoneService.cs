@@ -24,25 +24,7 @@ public class PhoneService
         return _phoneRepository.DeletePhone(phoneNumber);
     }
 
-    //public bool AddPhone(string phoneNumber, int personId)
-    //{
-    //    var newPhone = new Phone(phoneNumber);
-
-    //    if(_phoneRepository.PhoneExists(phoneNumber))
-    //        throw new ArgumentException("رقم الهاتف مسجل بالفعل.");
-
-    //    return _phoneRepository.AddPhone(newPhone.PhoneNumber, personId);
-    //}
-    //public bool UpdatePhone(string newPhone, string oldPhone)
-    //{
-    //    var Phone = new Phone(newPhone);
-
-    //    if (_phoneRepository.PhoneExists(newPhone))
-    //        throw new ArgumentException("رقم الهاتف مسجل بالفعل.");
-
-
-    //    return _phoneRepository.UpdatePhone(Phone.PhoneNumber, oldPhone);
-    //}
+    
 
 
 }

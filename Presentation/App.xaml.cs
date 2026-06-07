@@ -6,10 +6,13 @@ using Application.Features.CustomerManagement.Queries;
 using Application.Features.CustomerManagment;
 using Application.Features.CustomerManagment.Commands;
 using Application.Features.DeviceManagement;
+using Application.Features.DeviceManagement.Commands;
 using Application.Features.DeviceManagement.Queries;
 using Application.Features.OrderManagement.Commands;
 using Application.Features.OrderManagement.Queries;
 using Application.Features.PhoneManagement;
+using Application.Features.PhoneManagement.Commands;
+using Application.Features.PhoneManagement.Queries;
 using Application.Features.SpecManagement;
 using Application.Features.SpecManagement.Queries;
 using Application.Features.TypeManagement;
@@ -48,7 +51,6 @@ public partial class App : System.Windows.Application
             var BrandService = new DeviceBrandService(brandRepo);
             var TypeService = new DeviceTypeService(typeRepo);
             var SpecService = new DeviceSpecService(specRepo);
-            var deviceServie = new DeviceService(customerRepo, deviceRepo);
             var createOrderHandler = new CreateOrderHandler(orderRepo, customerRepo, deviceRepo);
             var  getCustomerDeviceHandler= new GetCustomerDevicesHandler(deviceRepo);
             var  getCustomerLookupHandler= new GetCustomersLookupHandler(customerRepo);
@@ -63,11 +65,25 @@ public partial class App : System.Windows.Application
             var getPagedCustomerHandler = new GetPagedCustomerSummariesHandler(customerRepo);
             var SearchOrderPage = new SearchOrderPageHandler(orderRepo);
             var SearchCustomerPage = new SearchCustomerPageHandler(customerRepo);
-
+            var GetCustomerBasicInfo = new GetCustomerBasicInfoHandler(customerRepo);
+            var updateCusotmer = new UpdateCustomerHandler(customerRepo);
+            var getCustomerPhones = new GetCustomerPhonesHandler(phoneRepo);
+            var addPhone = new AddPhoneToCustomer(phoneRepo);
+            var deletePhone = new DeletePhoneHandler(phoneRepo);
+            var UpdatePhone = new UpdatePhoneHandler(phoneRepo);
+            var customerDevices = new GetCustomerDevicesHandler(deviceRepo);
+            var addDevice = new AddDeviceToCustomerHandler(deviceRepo);
+            var updateDevice= new UpdateDeviceHandler(deviceRepo);
+            var getDeviceOrders = new GetDeviceOrders(orderRepo);
+            var deleteDevice= new DeleteDeviceHandler(deviceRepo, getDeviceOrders);
+            var GetCustomerOrders = new GetCustomerOrdersHandler(orderRepo);
+            var deleteCustomer = new DeleteCustomerHandler (customerRepo);
             var mainWindow = new MainWindow(getOrderDetails , getorderPaged  , getCustomerLookupHandler ,
                 getCustomerDeviceHandler , createOrderHandler , updateOrder
                 ,createCustomerHandler , getAllBrandsHandler , getAllTypesHandler ,getSpecsByTypeIdHandler 
-                , getPagedCustomerHandler , SearchOrderPage , SearchCustomerPage);
+                , getPagedCustomerHandler , SearchOrderPage , SearchCustomerPage , GetCustomerBasicInfo , updateCusotmer , getCustomerPhones 
+                , addPhone , deletePhone , UpdatePhone  , customerDevices , addDevice ,
+                updateDevice , deleteDevice , getDeviceOrders , GetCustomerOrders , deleteCustomer);
             mainWindow.Show();
         }
         catch (Exception ex)

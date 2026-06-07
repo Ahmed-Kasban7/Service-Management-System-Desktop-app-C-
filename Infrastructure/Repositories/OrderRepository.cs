@@ -97,6 +97,11 @@ public class OrderRepository:IOrderRepository
         return null;
     }
 
+    public bool IsOrderExists(int orderId)
+    {
+        return Get(orderId) != null;
+    }
+
     public PagedResult<OrderSummaryDto> GetPagedOrderSummaries(int pageNumber, int pageSize)
     {
         var orders = new List<OrderSummaryDto>();
@@ -164,6 +169,7 @@ public class OrderRepository:IOrderRepository
         if (reader.Read())
         {
             var device = new DeviceSummaryDto(
+                Id : Convert.ToInt32( reader["DeviceId"]) ,    
                 BrandName: reader["Brand"]?.ToString(),
                 TypeName: reader["Type"]?.ToString(),
                 SpecName: reader["Spec"]?.ToString(),
@@ -235,5 +241,57 @@ public class OrderRepository:IOrderRepository
         }
 
         return new PagedResult<OrderSummaryDto>(orders, totalCount, pageNumber, pageSize);
+    }
+    public IEnumerable<DeviceOrderHistoryDto> GetOrdersByDeviceId(int deviceId)
+    {
+        var orders = new List<DeviceOrderHistoryDto>();
+
+        using var conn = DatabaseInitializer.GetConnection();
+        using var cmd = new SqlCommand("SP_GetDeviceOrdersHistory", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@DeviceId", deviceId);
+
+        conn.Open();
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            orders.Add(new DeviceOrderHistoryDto
+            (
+                orderId: (int)reader["OrderID"],
+                orderNumber: reader["OrderNumber"]?.ToString() ?? "---",
+                problem: reader["Problem"] == DBNull.Value ? null : reader["Problem"].ToString(),
+                startDate: (DateTime)reader["StartDate"],
+                state: reader["State"]?.ToString() ?? "---",
+                orderState: reader["OrderState"] == DBNull.Value ? 0 : (byte)reader["OrderState"]));
+        }
+
+        return orders;
+    }
+
+    public IEnumerable<CustomerOrderSummaryDto> GetCustomerOrders(int customerId)
+    {
+        var orders = new List<CustomerOrderSummaryDto>();
+
+        using var conn = DatabaseInitializer.GetConnection();
+        using var cmd = new SqlCommand("SP_GetCustomerOrders", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@CustomerId", customerId);
+
+        conn.Open();
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            orders.Add(new CustomerOrderSummaryDto
+            {
+                OrderId = (int)reader["OrderID"],
+                OrderNumber = reader["OrderNumber"].ToString(),
+                StartDate = (DateTime)reader["StartDate"],
+                State = reader["State"].ToString(),
+                OrderState = Convert.ToByte(reader["OrderState"]),
+                DeviceName = reader["DeviceName"]?.ToString()
+            });
+        }
+
+        return orders;
     }
 }

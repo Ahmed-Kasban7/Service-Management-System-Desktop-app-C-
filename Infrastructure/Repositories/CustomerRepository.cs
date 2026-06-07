@@ -59,7 +59,24 @@ public class CustomerRepository : ICustomerRepository
     }
     public Customer Get(int id)
     {
-        return null;
+        using var conn = DatabaseInitializer.GetConnection();
+        using var cmd = new SqlCommand("SP_GetCustomerByID", conn);
+
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.Add("@customerId", SqlDbType.Int).Value = id;
+
+        conn.Open();
+
+        using var reader = cmd.ExecuteReader();
+
+        if (!reader.Read())
+            return null;
+
+        return new Customer(id,reader["Name"].ToString() ,
+            reader["Age"] != DBNull.Value ? Convert.ToInt32(reader["Age"]) : null, 
+            (ESex)Convert.ToInt32(reader["Sex"]), reader["Address"].ToString()  
+            , reader["Discount"] != DBNull.Value ? Convert.ToInt32(reader["Discount"]) : 0) ;
+           
     }
     private DataTable BuildPhoneTable(IReadOnlySet<Phone> phones)
     {
@@ -112,7 +129,7 @@ public class CustomerRepository : ICustomerRepository
             while (reader.Read())
             {
 
-                 customers.Add(new CustomerSummaryDto(reader["CustomerNumber"].ToString()
+                 customers.Add(new CustomerSummaryDto(Convert.ToInt32( reader["CustomerID"]),reader["CustomerNumber"].ToString()
                     , reader["Name"].ToString(), reader["Address"].ToString(), reader["PhoneNumber"].ToString()));
             }
 
@@ -133,17 +150,23 @@ public class CustomerRepository : ICustomerRepository
         int custoemrCount = (int) command.ExecuteScalar();
         return custoemrCount;
     }
-    public bool Delete(int customerId)
+    public Result Delete(int customerId)
     {
         using var conn = DatabaseInitializer.GetConnection();
+        using var cmd = new SqlCommand("SP_DeleteCustomer", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@CustomerId", customerId);
 
-        using var command = new SqlCommand("SP_DeletePerson", conn);
-        command.Parameters.AddWithValue("@personId", customerId);
-        command.CommandType = CommandType.StoredProcedure;
-        conn.Open();
-        int row = command.ExecuteNonQuery();
-
-        return row > 0;
+        try
+        {
+            conn.Open();
+            cmd.ExecuteNonQuery();
+            return Result.Success();
+        }
+        catch (SqlException ex)
+        {
+            return Result.Failure(ex.Message);
+        }
     }
     public PagedResult<CustomerSummaryDto> SearchCustomerPaged(string word, int pageNumber, int rowPerPage)
     {
@@ -168,12 +191,8 @@ public class CustomerRepository : ICustomerRepository
             if (totalCount == 0 && reader["TotalCount"] != DBNull.Value)
                 totalCount = Convert.ToInt32(reader["TotalCount"]);
 
-            customers.Add(new CustomerSummaryDto(
-                "C-" + reader["CustomerID"].ToString(),
-                reader["Name"].ToString(),
-                reader["Address"].ToString(),
-                reader["PhoneNumber"].ToString()
-            ));
+            customers.Add(new CustomerSummaryDto(Convert.ToInt32(reader["CustomerID"]), reader["CustomerNumber"].ToString()
+                    , reader["Name"].ToString(), reader["Address"].ToString(), reader["PhoneNumber"].ToString()));
         }
 
         return new PagedResult<CustomerSummaryDto>(
@@ -185,23 +204,26 @@ public class CustomerRepository : ICustomerRepository
     }
     public bool UpdateCustomerInfo(Customer customerInfo)
     {
+        using var conn = DatabaseInitializer.GetConnection();
+        using var command = new SqlCommand("SP_UpdateCustomerInfo", conn);
 
-         using var conn = DatabaseInitializer.GetConnection();
-         using var command = new SqlCommand("SP_UpdateCustomerInfo", conn);
-         command.Parameters.AddWithValue("@Name", customerInfo.Name);
-         command.Parameters.AddWithValue("@Sex", (int)customerInfo.Sex );
-         command.Parameters.AddWithValue("@Age", customerInfo.Age is null ? DBNull.Value : customerInfo.Age);
-         command.Parameters.AddWithValue("@PersonId", customerInfo.Id);
-         command.Parameters.AddWithValue("@Address", customerInfo.Address);
-         command.Parameters.AddWithValue("@Discount", customerInfo.Discount);
-         command.CommandType = CommandType.StoredProcedure;
-         conn.Open();
-         var rows = command.ExecuteNonQuery();
-        return rows > 0;
+        command.CommandType = CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue("@Name", customerInfo.Name);
+        command.Parameters.AddWithValue("@Sex", (int)customerInfo.Sex);
+        command.Parameters.AddWithValue("@Age", customerInfo.Age is null ? DBNull.Value : customerInfo.Age);
+        command.Parameters.AddWithValue("@customerId", customerInfo.CustomerId);
+        command.Parameters.AddWithValue("@Address", customerInfo.Address);
+        command.Parameters.AddWithValue("@Discount", customerInfo.Discount);
+
+        conn.Open();
+        int rowsAffected = command.ExecuteNonQuery();
+
+        return rowsAffected > 0;
     }
 
 
-    public CustomerProfileDto GetCustomerFullProfile(int id)
+    public CustomerBasicInfoDto GetCustomerBasicInfo(int id)
     {
         using var conn = DatabaseInitializer.GetConnection();
         using var command = new SqlCommand("SP_GetCustomerProfile", conn);
@@ -216,15 +238,18 @@ public class CustomerRepository : ICustomerRepository
         if (!reader.Read())
             return null;
 
-        var customerProfileDTO = new CustomerProfileDto(
-            "C-" + reader["PersonID"].ToString(),
+        var CustomerBasicInfo = new CustomerBasicInfoDto(
+            Convert.ToInt32(reader["CustomerID"]),
+            reader["CustomerNumber"].ToString(),
             reader["Name"].ToString(),
             reader["Address"].ToString(),
             reader["Discount"] != DBNull.Value ? Convert.ToInt32(reader["Discount"]) : 0,
             reader["Age"] != DBNull.Value ? Convert.ToInt32(reader["Age"]) : null,
-            (ESex)Convert.ToInt32(reader["Sex"]) , _deviceRepository.GetCustomerDevicesBy(id).ToList() , _phoneRepository.GetCustomerPhonesBy(id)
+            (ESex)Convert.ToInt32(reader["Sex"]) ,
+            Convert.ToDateTime(reader["DateCreated"])
         );
-        return customerProfileDTO;
+
+        return CustomerBasicInfo;
     }
     public IEnumerable<CustomerLookupDto> GetCustomersLookup()
     {

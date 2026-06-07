@@ -2,6 +2,7 @@
 using Application.DTOs.OrderDTOs;
 using Application.Features.OrderManagement.Commands;
 using Application.Features.OrderManagement.Queries;
+using Presentation.View.MainView;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -137,7 +138,7 @@ namespace Presentation.View.OrderView
         private PagedResult<OrderSummaryDto> GetEmptyResult()
         {
             return new PagedResult<OrderSummaryDto>(
-                new System.Collections.Generic.List<OrderSummaryDto>(),
+                new List<OrderSummaryDto>(),
                 0,
                 1,
                 ROWPERPAGE);
@@ -170,7 +171,38 @@ namespace Presentation.View.OrderView
             }
         }
 
-      
+        // قمنا بإضافة بارامتر bool اختياري وقيمته الافتراضية false
+        public void NavigateToOrderDetails(int orderId, bool isComingFromDevices = false)
+        {
+            OrdersListPanel.Visibility = Visibility.Collapsed;
+
+            var detailsUC = new OrderDetailsUC(
+                _getOrderFullDetailsHandler,
+                _updateOrderHandler,
+                orderId);
+
+            detailsUC.BackRequested += (s, args) =>
+            {
+                OrderDetailsHolder.Visibility = Visibility.Collapsed;
+                OrderDetailsHolder.Content = null;
+
+                if (isComingFromDevices)
+                {
+                    if (Window.GetWindow(this) is MainWindow mainWindow)
+                    {
+                        mainWindow.ReturnToDeviceHistory();
+                    }
+                }
+                else
+                {
+                    OrdersListPanel.Visibility = Visibility.Visible;
+                    LoadAndBindOrders();
+                }
+            };
+
+            OrderDetailsHolder.Content = detailsUC;
+            OrderDetailsHolder.Visibility = Visibility.Visible;
+        }
         public void RefreshIfVisible()
         {
             if (this.Visibility == Visibility.Visible)
@@ -179,9 +211,6 @@ namespace Presentation.View.OrderView
             }
         }
 
-        private void DgOrders_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
+       
     }
 }

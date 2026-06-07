@@ -7,13 +7,13 @@ BEGIN
         TechnicianId INT NOT NULL,
         TechnicianAssistantId INT NULL,
         ScheduledDate DATE NOT NULL ,
-        IsCancelled BIT NOT NULL DEFAULT 0,
+        AppointmentState BIT NOT NULL DEFAULT 0,
         VisitType TINYINT NOT NULL,
 
         Notes NVARCHAR(MAX) NULL,
 
         CONSTRAINT FK_Appointments_Orders
-            FOREIGN KEY (OrderId) REFERENCES Orders(OrderId),
+            FOREIGN KEY (OrderId) REFERENCES Orders(OrderId) ON DELETE CASCADE , 
 
         CONSTRAINT FK_Appointments_Technicians
             FOREIGN KEY (TechnicianId) REFERENCES Employees(EmployeeId),
@@ -25,7 +25,7 @@ BEGIN
             TechnicianAssistantId IS NULL OR TechnicianAssistantId <> TechnicianId
         ),
 
-        CONSTRAINT CHK_VisitType CHECK (VisitType IN (0,1,2)), --0 =>  Diagnosis  ,1=> Maintenance , 2=> return 
-
+        CONSTRAINT CHK_VisitType CHECK (VisitType IN (0,1)), --0 =>  Diagnostic  ,1=> Repair 
+        CONSTRAINT CHK_AppointmentState CHECK (AppointmentState IN (0,1, 2)), -- Scheduled , Completed , Cancelled
     )
 END

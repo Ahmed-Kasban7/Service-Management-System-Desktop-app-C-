@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.DeviceDTOs;
 
-public record DeviceSummaryDto(string BrandName ,string TypeName ,string SpecName  , string ? Model , string ? SerialNumber);
+public record DeviceSummaryDto(int Id,string BrandName ,string TypeName ,string SpecName  , string ? Model , string ? SerialNumber);
 
 

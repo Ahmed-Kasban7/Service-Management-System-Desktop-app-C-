@@ -18,12 +18,11 @@
 
         <!-- عنوان النافذة -->
         <TextBlock Grid.Row="0" 
-                   Text="🧺 إضافة أجهزة جديدة" 
                    FontSize="18" 
                    FontWeight="Bold" 
                    Foreground="{StaticResource PrimaryBlue}" 
                    HorizontalAlignment="Center" 
-                   Margin="0,0,0,15"/>
+                   Margin="0,0,0,15"><Run Text=" إضافة "/><Run FlowDirection="RightToLeft" Language="ar-eg" Text="جهاز جديد"/></TextBlock>
 
         <!-- محتوى الأجهزة مع Scroll -->
         <ScrollViewer Grid.Row="1" 
@@ -59,51 +58,57 @@
 
                             <!-- نوع الجهاز -->
                             <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,10">
-                                <TextBlock Margin="0,0,0,5" 
-                                           FontSize="11" 
-                                           FontWeight="SemiBold" 
-                                           Foreground="#475569"> 
-                                    <Run Text="نوع الجهاز"/> 
-                                    <Run Text="*" Foreground="Red"/>
+                                <TextBlock Margin="0,0,0,5" FontSize="11" FontWeight="SemiBold" Foreground="#475569"> 
+        <Run Text="نوع الجهاز"/> 
+        <Run Text="*" Foreground="Red"/>
                                 </TextBlock>
                                 <ComboBox x:Name="CbType" 
-                                          Style="{StaticResource ModernComboBox}" 
-                                          Height="32" 
-                                          DisplayMemberPath="TypeName" 
-                                          SelectedValuePath="TypeID" 
-                                          SelectionChanged="CbType_SelectionChanged"/>
+              Style="{StaticResource ModernComboBox}" 
+              Height="32" 
+              DisplayMemberPath="TypeName" 
+              SelectedValuePath="TypeID" 
+              SelectionChanged="CbType_SelectionChanged"/>
+                                <TextBlock x:Name="TxtTypeError"
+               Text="برجاء اختيار نوع الجهاز"
+               Foreground="Red" FontSize="11"
+               Margin="0,4,0,0" TextWrapping="Wrap"
+               Visibility="Collapsed"/>
                             </StackPanel>
 
                             <!-- الماركة -->
                             <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,10">
-                                <TextBlock Margin="0,0,0,5" 
-                                           FontSize="11" 
-                                           FontWeight="SemiBold" 
-                                           Foreground="#475569"> 
-                                    <Run Text="الماركة"/> 
-                                    <Run Text="*" Foreground="Red"/>
+                                <TextBlock Margin="0,0,0,5" FontSize="11" FontWeight="SemiBold" Foreground="#475569"> 
+        <Run Text="الماركة"/> 
+        <Run Text="*" Foreground="Red"/>
                                 </TextBlock>
                                 <ComboBox x:Name="CbBrand" 
-                                          Style="{StaticResource ModernComboBox}" 
-                                          Height="32" 
-                                          DisplayMemberPath="BrandName" 
-                                          SelectedValuePath="BrandID"/>
+              Style="{StaticResource ModernComboBox}" 
+              Height="32" 
+              DisplayMemberPath="BrandName" 
+              SelectedValuePath="BrandID"/>
+                                <TextBlock x:Name="TxtBrandError"
+               Text="برجاء اختيار الماركة"
+               Foreground="Red" FontSize="11"
+               Margin="0,4,0,0" TextWrapping="Wrap"
+               Visibility="Collapsed"/>
                             </StackPanel>
 
                             <!-- المواصفات -->
                             <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,10">
-                                <TextBlock Margin="0,0,0,5" 
-                                           FontSize="11" 
-                                           FontWeight="SemiBold" 
-                                           Foreground="#475569"> 
-                                    <Run Text="المواصفات"/> 
-                                    <Run Text="*" Foreground="Red"/>
+                                <TextBlock Margin="0,0,0,5" FontSize="11" FontWeight="SemiBold" Foreground="#475569"> 
+        <Run Text="المواصفات"/> 
+        <Run Text="*" Foreground="Red"/>
                                 </TextBlock>
                                 <ComboBox x:Name="CbSpec" 
-                                          Style="{StaticResource ModernComboBox}" 
-                                          Height="32" 
-                                          DisplayMemberPath="SpecName" 
-                                          SelectedValuePath="SpecID"/>
+              Style="{StaticResource ModernComboBox}" 
+              Height="32" 
+              DisplayMemberPath="SpecName" 
+              SelectedValuePath="SpecID"/>
+                                <TextBlock x:Name="TxtSpecError"
+               Text="برجاء اختيار المواصفات"
+               Foreground="Red" FontSize="11"
+               Margin="0,4,0,0" TextWrapping="Wrap"
+               Visibility="Collapsed"/>
                             </StackPanel>
 
                             <!-- الموديل -->
@@ -149,8 +154,8 @@
 
                 <!-- زر الحفظ -->
                 <Button x:Name="BtnSaveAll" 
-                Content="💾 حفظ" 
-                Style="{StaticResource SuccessButton}" 
+                 Content="✚ إضافة"
+                        Style="{StaticResource SuccessButton}" 
                 Height="38" 
                 Width="120" 
                 HorizontalAlignment="Right" 
@@ -159,7 +164,7 @@
 
                 <!-- زر الإلغاء -->
                 <Button x:Name="BtnCancel" 
-                Content="إلغاء" 
+                        Content="❌ إلغاء"
                 Style="{StaticResource CancelButton}" 
                 Height="38" 
                 Width="120" 

@@ -7,7 +7,7 @@ namespace Infrastructure.Data;
 
 public class PhoneRepository :IPhoneRepository
 {
-    public List<string> GetCustomerPhonesBy (int customerid)
+    public IEnumerable<string> GetCustomerPhones (int customerid)
     {
         var phones = new List<string>();
 
@@ -104,6 +104,25 @@ public class PhoneRepository :IPhoneRepository
         var result = command.ExecuteScalar();
 
         return (result == null) ? 0 : (int)result;
+    }
+
+    public bool IsPhoneExist(string phone)
+    {
+        using (SqlConnection connection = DatabaseInitializer.GetConnection())
+        {
+            using (SqlCommand command = new SqlCommand("SP_IsPhoneExist", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.AddWithValue("@phone", phone);
+
+                connection.Open();
+
+                object result = command.ExecuteScalar();
+
+                return result != null;
+            }
+        }
     }
 
 

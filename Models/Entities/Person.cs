@@ -13,13 +13,8 @@ public class Person : BaseEntity
     public IReadOnlySet<Phone> Phones => _phones;
 
     public Person() { }
-    public Person(string name , int? age , ESex sex , HashSet<Phone> phones ) 
+    public Person(string name , int? age , ESex sex , HashSet<Phone> phones ) : this(name , age , sex)
     {
-
-        SetName(name);
-        SetAge(age);
-        SetSex(sex);
-
         if (phones == null || phones.Count == 0)
             throw new ArgumentException("يجب إضافة رقم هاتف واحد على الأقل");
 
@@ -29,7 +24,14 @@ public class Person : BaseEntity
         }
 
     } // when create a new person 
+    public Person(string name , int? age , ESex sex) 
+    {
 
+        SetName(name);
+        SetAge(age);
+        SetSex(sex);
+
+    } // when retrive
     public void SetName(string Name)
     {
         if (string.IsNullOrWhiteSpace(Name))
@@ -80,18 +82,18 @@ public class Person : BaseEntity
         }
     }
 
-    //protected  void UpdateDetails(string name, int? age, ESex sex)
-    //{
-    //    UpdateName(name);
-    //    UpdateAge(age);
-    //    UpdateSex(sex);
-    //}
+    protected  void UpdateDetails(string name, int? age, ESex sex)
+    {
+        SetName(name);
+        SetAge(age);
+        SetSex(sex);
+    }
     //public void DeletePhone(string phone)
     //{
 
     //    Phone p = new Phone(phone);
 
-    //    if(!_phones.Contains(p))
+    //    if (!_phones.Contains(p))
     //        throw new InvalidOperationException("رقم الهاتف غير موجود.");
 
     //    if (_phones.Count <= 1)

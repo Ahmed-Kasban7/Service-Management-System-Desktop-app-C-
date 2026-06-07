@@ -89,7 +89,6 @@ public static class DatabaseInitializer
        ExecuteScript(@"Scripts\Tables\CreateOrdersTable.sql");
        ExecuteScript(@"Scripts\Tables\CreatePhoneListType.sql");
        ExecuteScript(@"Scripts\Tables\CreateDeviceListType.sql");
-       ExecuteScript(@"Scripts\Tables\CreateJobTitlesTable.sql");
        ExecuteScript(@"Scripts\Tables\CreateEmployeesTable.sql");
        ExecuteScript(@"Scripts\Tables\CreateAppointmentsTable.sql");
 
@@ -102,12 +101,14 @@ public static class DatabaseInitializer
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetCustomerProfile.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_IsCustomerExist.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetCustomersLookup.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_DeleteCustomer.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Persons\SP_DeletePerson.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_DeletePhone.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_GetCustomerPhones.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_AddCustomerPhone.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_UpdateCustomerPhone.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_GetExistingPhones.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_IsPhoneExist.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_GetCustomerDevices.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_DeleteCustomerDevice.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_CreateDevice.sql");
@@ -126,9 +127,10 @@ public static class DatabaseInitializer
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_UpdateOrder.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetOrderById.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetPagedOrderSummaries.sql");
-        ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetOrderCount.sql");
        ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetOrderFullDetailsById.sql");
        ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_SearchOrderPage.sql");
+       ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetDeviceOrdersHistory.sql");
+       ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetCustomerOrders.sql");
 
         // Functions 
         ExecuteScript(@"Scripts\Functions\GetFirstPersonPhoneNumber.sql");

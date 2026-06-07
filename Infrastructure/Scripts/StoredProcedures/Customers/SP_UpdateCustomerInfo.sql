@@ -1,5 +1,5 @@
 ﻿CREATE OR ALTER PROCEDURE SP_UpdateCustomerInfo 
-    @personId INT,
+    @customerId INT,
     @Name NVARCHAR(200),
     @Age INT,
     @Sex INT,
@@ -9,12 +9,19 @@ AS
 BEGIN 
     BEGIN TRANSACTION 
     BEGIN TRY 
-        UPDATE Persons 
-        SET Name = @Name, Age = @Age, Sex = @Sex
-        WHERE PersonID = @personId;
+
+        DECLARE @personId INT;
+
+        SELECT @personId = PersonID
+        FROM Customers
+        WHERE CustomerID = @customerId; 
 
         UPDATE Customers 
         SET Address = @Address, Discount = @discount
+        WHERE CustomerID = @customerId;
+
+        UPDATE Persons 
+        SET Name = @Name, Age = @Age, Sex = @Sex
         WHERE PersonID = @personId;
 
         COMMIT 

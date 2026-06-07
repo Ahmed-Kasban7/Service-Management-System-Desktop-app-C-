@@ -23,8 +23,8 @@ BEGIN
 
         c.Address,
         p.Name,
-
-        STRING_AGG(ph.PhoneNumber, '-') AS PhoneNumbers,
+        d.DeviceID,
+        STRING_AGG(ph.PhoneNumber, ' - ') AS PhoneNumbers,
 
         d.ModelName,
         d.SerialNumber,
@@ -56,6 +56,7 @@ BEGIN
         ord.OrderState,
         c.Address,
         p.Name,
+        d.DeviceID,
         d.ModelName,
         d.SerialNumber,
         b.BrandName,

@@ -1,4 +1,5 @@
-﻿using Application.DTOs.DeviceDTOs;
+﻿using Application.DTOs.CustomerDTOs;
+using Application.DTOs.DeviceDTOs;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace Application.Repositories;
 public interface IDeviceRepository
 {
     bool AddDeviceToCustomer(int customerId, Device device);
-    public IEnumerable<DeviceInfoDTO> GetCustomerDevicesBy(int customerId);
+    public IEnumerable<DeviceInfoDTO> GetCustomerDevices(int customerId);
     public bool DeleteCustomerDevice(int deviceId);
     public bool UpdateCustomerDevice(DeviceInfoDTO deviceDto );
      

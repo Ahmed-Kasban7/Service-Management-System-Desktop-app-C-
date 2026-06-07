@@ -2,27 +2,21 @@
 using Application.DTOs;
 using Application.DTOs.CustomerDTOs;
 using Application.DTOs.DeviceDTOs;
-using Application.Features.BrandManagement;
 using Application.Features.BrandManagement.Queries;
 using Application.Features.CustomerManagement.Queries;
-using Application.Features.CustomerManagment;
 using Application.Features.CustomerManagment.Commands;
-using Application.Features.DeviceManagement;
+using Application.Features.DeviceManagement.Commands;
 using Application.Features.DeviceManagement.Queries;
 using Application.Features.OrderManagement.Commands;
 using Application.Features.OrderManagement.Queries;
-using Application.Features.PhoneManagement;
-using Application.Features.SpecManagement;
+using Application.Features.PhoneManagement.Commands;
+using Application.Features.PhoneManagement.Queries;
 using Application.Features.SpecManagement.Queries;
-using Application.Features.TypeManagement;
 using Application.Features.TypeManagement.Queries;
-using Application.Repositories;
-using Domain.Entities;
-using Domain.Enums;
-using Microsoft.Extensions.Configuration;
 using Presentation.View.Customer_View;
 using Presentation.View.OrderView;
 using Presentation.View.Settings_View;
+using System;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
@@ -31,7 +25,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-
+using Microsoft.Extensions.Configuration;
 
 namespace Presentation.View.MainView
 {
@@ -50,12 +44,34 @@ namespace Presentation.View.MainView
         private GetPagedCustomerSummariesHandler GetPagedCustomerSummariesHandler;
         private SearchOrderPageHandler _SearchOrderPageHandler;
         private SearchCustomerPageHandler _SearchCustomerPageHandler;
-        public MainWindow(GetOrderFullDetailsHandler getOrderFullDetails ,
+        private GetCustomerBasicInfoHandler _getCustomersBasicInfoHandler;
+        private UpdateCustomerHandler _updateCustomerHandler;
+        private GetCustomerPhonesHandler _getCustomerPhonesHandler;
+        private AddPhoneToCustomer _addPhoneToCustomer;
+        private DeletePhoneHandler _deletePhoneHandler;
+        private UpdatePhoneHandler _updatePhoneHandler;
+        private GetCustomerDevicesHandler customerDevicesHandler;
+        private readonly AddDeviceToCustomerHandler _addDeviceHandler;
+        private readonly UpdateDeviceHandler _updateDeviceHandler;
+        private readonly DeleteDeviceHandler _deleteDeviceHandler;
+        private readonly GetDeviceOrders _getDeviceOrders;
+        private readonly GetCustomerOrdersHandler _getCustomerOrdersHandler;
+        private readonly DeleteCustomerHandler _deleteCustomerHandler;
+
+        public MainWindow(GetOrderFullDetailsHandler getOrderFullDetails,
             GetPagedOrderSummariesHandler getPagedOrderSummaries, GetCustomersLookupHandler getCustomersLookup,
             GetCustomerDevicesHandler getCustomerDevicesHandler, CreateOrderHandler createOrderHandler
-            , UpdateOrderHandler updateOrderHandler , CreateCustomerHandler createCustomer,
+            , UpdateOrderHandler updateOrderHandler, CreateCustomerHandler createCustomer,
             GetAllBrandsHandler getAllBrands, GetAllTypesHandler getAllTypes, GetSpecsByTypeIdHandler getSpecsByTypeId,
-            GetPagedCustomerSummariesHandler getPagedCustomer , SearchOrderPageHandler searchOrder , SearchCustomerPageHandler searchCustomerPage)
+            GetPagedCustomerSummariesHandler getPagedCustomer, SearchOrderPageHandler searchOrder,
+            SearchCustomerPageHandler searchCustomerPage, GetCustomerBasicInfoHandler getCustomersBasicInfoHandler,
+            UpdateCustomerHandler updateCustomerHandler, GetCustomerPhonesHandler getCustomerPhones,
+            AddPhoneToCustomer addPhoneToCustomer,
+            DeletePhoneHandler deletePhone, UpdatePhoneHandler updatePhone,
+            GetCustomerDevicesHandler getCustomerDevices
+            , AddDeviceToCustomerHandler addDeviceToCustomer
+            , UpdateDeviceHandler updateDevice, DeleteDeviceHandler deleteDevice,
+            GetDeviceOrders getDeviceOrders, GetCustomerOrdersHandler getCustomerOrdersHandler , DeleteCustomerHandler deleteCustomer)
         {
             InitializeComponent();
             LoadSavedLogo();
@@ -64,21 +80,60 @@ namespace Presentation.View.MainView
             _getPagedOrderSummariesHandler = getPagedOrderSummaries;
             _getCustomerDevicesHandler = getCustomerDevicesHandler;
             _createOrderHandler = createOrderHandler;
-            _getCustomerDevicesHandler = getCustomerDevicesHandler;
             _getCustomersLookupHandler = getCustomersLookup;
-            _createOrderHandler = createOrderHandler;
             _updateOrderHandler = updateOrderHandler;
             _createCustomerHandler = createCustomer;
             _getAllBrandsHandler = getAllBrands;
             _getAllTypesHandler = getAllTypes;
             _getSpecsByTypeIdHandler = getSpecsByTypeId;
-            _updateOrderHandler = updateOrderHandler;
             GetPagedCustomerSummariesHandler = getPagedCustomer;
             _SearchOrderPageHandler = searchOrder;
             _SearchCustomerPageHandler = searchCustomerPage;
+            _getCustomersBasicInfoHandler = getCustomersBasicInfoHandler;
+            _getCustomerPhonesHandler = getCustomerPhones;
+            _addPhoneToCustomer = addPhoneToCustomer;
+            _deletePhoneHandler = deletePhone;
+            _updatePhoneHandler = updatePhone;
+            customerDevicesHandler = getCustomerDevices;
+            _addDeviceHandler = addDeviceToCustomer;
+            _updateDeviceHandler = updateDevice;
+            _deleteDeviceHandler = deleteDevice;
+            _getDeviceOrders = getDeviceOrders;
+            _updateCustomerHandler = updateCustomerHandler;
+            _getCustomerOrdersHandler = getCustomerOrdersHandler;
+            _deleteCustomerHandler = deleteCustomer;
+
 
             _createOrderHandler.AddOrderToList += OrdersControl.RefreshIfVisible;
         }
+
+   
+        public void OpenOrderDetailsFromCustomers(int orderId)
+        {
+            TabOrders.IsChecked = true;
+
+            CustomersControl.Visibility = Visibility.Collapsed;
+            SettingsControl.Visibility = Visibility.Collapsed;
+            OrdersControl.Visibility = Visibility.Visible;
+
+            SidePanelColumn.Width = new GridLength(0);
+
+            OrdersControl.InitializeServices(_getPagedOrderSummariesHandler, _getOrderFullDetailsHandler, _updateOrderHandler, _SearchOrderPageHandler);
+
+            OrdersControl.NavigateToOrderDetails(orderId, isComingFromDevices: true);
+        }
+
+     
+        public void ReturnToDeviceHistory()
+        {
+            TabCustomers.IsChecked = true;
+
+            OrdersControl.Visibility = Visibility.Collapsed;
+            CustomersControl.Visibility = Visibility.Visible;
+
+        }
+    
+
         private void SwitchToTab(UserControl selectedContent, RadioButton selectedTab)
         {
             CustomersControl.Visibility = Visibility.Collapsed;
@@ -86,7 +141,6 @@ namespace Presentation.View.MainView
             SettingsControl.Visibility = Visibility.Collapsed;
 
             selectedContent.Visibility = Visibility.Visible;
-
             SidePanelColumn.Width = new GridLength(0);
 
             InitializeTabServices(selectedContent);
@@ -94,14 +148,31 @@ namespace Presentation.View.MainView
 
         private void InitializeTabServices(UserControl content)
         {
+            if (content == OrdersControl)
+            {
+                OrdersControl.InitializeServices(_getPagedOrderSummariesHandler, _getOrderFullDetailsHandler, _updateOrderHandler, _SearchOrderPageHandler);
 
-             if (content == OrdersControl)
-                OrdersControl.InitializeServices(_getPagedOrderSummariesHandler, _getOrderFullDetailsHandler , _updateOrderHandler ,_SearchOrderPageHandler);
+                OrdersControl.OrdersListPanel.Visibility = Visibility.Visible;
 
-             if(content == CustomersControl)
-                CustomersControl.InitializeServices(_createCustomerHandler , _getAllBrandsHandler 
-                    , _getAllTypesHandler , _getSpecsByTypeIdHandler , GetPagedCustomerSummariesHandler , _SearchCustomerPageHandler);
+                if (OrdersControl.OrderDetailsHolder != null)
+                {
+                    OrdersControl.OrderDetailsHolder.Content = null;
+                    OrdersControl.OrderDetailsHolder.Visibility = Visibility.Collapsed;
+                }
+            }
+
+            if (content == CustomersControl)
+            {
+                CustomersControl.InitializeServices(_createCustomerHandler, _getAllBrandsHandler
+                    , _getAllTypesHandler, _getSpecsByTypeIdHandler, GetPagedCustomerSummariesHandler,
+                    _SearchCustomerPageHandler, _getCustomersBasicInfoHandler, _updateCustomerHandler,
+                    _getCustomerPhonesHandler, _addPhoneToCustomer, _deletePhoneHandler
+                    , _updatePhoneHandler, customerDevicesHandler, _addDeviceHandler, 
+                    _updateDeviceHandler, _deleteDeviceHandler, _getDeviceOrders ,
+                    _getCustomerOrdersHandler , _deleteCustomerHandler);
+            }
         }
+
         private void Navigate_Click(object sender, RoutedEventArgs e)
         {
             var btn = sender as RadioButton;
@@ -129,6 +200,7 @@ namespace Presentation.View.MainView
             };
             createOrderWin.ShowDialog();
         }
+
         private void LoadSavedLogo()
         {
             try
@@ -163,7 +235,6 @@ namespace Presentation.View.MainView
             if (dlg.ShowDialog() == true)
             {
                 string selectedFileName = dlg.FileName;
-
                 CompanyLogo.Source = new BitmapImage(new Uri(selectedFileName));
 
                 try
@@ -181,224 +252,5 @@ namespace Presentation.View.MainView
                 }
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        private void LoadCustomers()
-        {
-            //try
-            //{
-            //    var customers = string.IsNullOrWhiteSpace(_searchWord)
-            //        ? _customerService.GetPagedCustomerSummaries(CurrentPage, ROWPERPAGE)
-            //        : _customerService.SearchCustomerPagedBy(_searchWord, CurrentPage, ROWPERPAGE);
-
-            //    DgCustomers.ItemsSource = customers;
-
-            //    if (customers == null || !customers.Any())
-            //    {
-            //        DgCustomers.Visibility = Visibility.Collapsed;
-            //        EmptyStateOverlay.Visibility = Visibility.Visible;
-
-            //        TxtEmptyMessage.Text = string.IsNullOrWhiteSpace(_searchWord)
-            //            ? "لا يوجد عملاء مسجلين حالياً"
-            //            : $"لا توجد نتائج للبحث عن: \"{_searchWord}\"";
-            //    }
-            //    else
-            //    {
-            //        DgCustomers.Visibility = Visibility.Visible;
-            //        EmptyStateOverlay.Visibility = Visibility.Collapsed;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show($"خطأ في تحميل قائمة العملاء");
-            //}
-        }
-
-        private void BtnDeleteCustomer_Click(object sender, RoutedEventArgs e)
-        {
-            //var clickedButton = sender as Button;
-            //var selectedSummary = clickedButton?.DataContext as CustomerSummaryDto;
-
-            //if (selectedSummary == null) return;
-
-            //var result = MessageBox.Show(
-            //    $"هل أنت متأكد من حذف العميل {selectedSummary.Name}؟",
-            //    "تأكيد الحذف",
-            //    MessageBoxButton.YesNo,
-            //    MessageBoxImage.Warning);
-
-            //if (result == MessageBoxResult.Yes)
-            //{
-            //    try
-            //    {
-            //        int customerId = int.Parse(selectedSummary.ID.Replace("C-", ""));
-
-            //        var deleted = _customerService.DeleteCustomer(customerId);
-
-            //        if (deleted.IsSuccess)
-            //        {
-            //            MessageBox.Show("تم حذف العميل بنجاح", "نجاح");
-            //            UpdatePageInfo();
-
-            //        }
-            //        else
-            //        {
-            //            MessageBox.Show($"فشل في حذف العميل: {deleted.Error}");
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBox.Show($"حدث خطأ: {ex.Message}");
-            //    }
-            //}
-        }
-
-        private void SearchBox_KeyDown(object sender, KeyEventArgs e)
-        {
-
-            //if (e.Key == Key.Enter )
-            //{
-            //    try
-            //    {
-            //        if (string.IsNullOrWhiteSpace(SearchBox.Text))
-            //        {
-            //            _searchWord = null;
-            //            CurrentPage = 1;
-            //            UpdatePageInfo();
-            //            return;
-            //        }
-
-            //        var search = SearchBox.Text;
-
-            //        if (SearchBox.Text.ToLower().StartsWith("c-"))
-            //        {
-            //            search = SearchBox.Text.ToLower().Replace("c-", "");
-            //        }
-
-            //        _searchWord = search;
-            //        CurrentPage = 1;
-
-            //        UpdatePageInfo();
-            //        DgCustomers.SelectedItem = null;
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBox.Show($"خطأ في تحميل العملاء: {ex.Message}");
-            //    }
-            //}
-
-        }
-     
-
-        //private int GetCurrentCustomerId()
-        //{
-        //    //if (!int.TryParse(_currentCustomer.ID.Replace("C-", ""), out int customerId))
-        //    //{
-        //    //    MessageBox.Show("رقم العميل غير صالح.", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
-        //    //}
-        //    //return customerId;
-        //}
-        private void BtnCreateCustomer_Click(object sender, RoutedEventArgs e)
-        {
-            //var createWin = new CreateCustomerWindow(_customerService, _deviceBrandService, _deviceTypeService, _deviceSpecService);
-
-            //createWin.Owner = GetWindow(this);
-            //createWin.ShowDialog();
-        }
-   
-        //private void ReloadCustomerProfile(int customerId)
-        //{
-
-        //    _currentCustomer = _customerService.GetCustomerFullProfile(customerId);
-        //    LoadCustomerProfile(_currentCustomer);
-
-        //    LoadCustomers();
-
-        //    var customers = DgCustomers.ItemsSource as IEnumerable<CustomerSummaryDto>;
-        //    var updatedCustomer = customers.FirstOrDefault(c => c.ID == $"C-{customerId}");
-
-        //    if (updatedCustomer != null)
-        //    {
-        //        DgCustomers.SelectedItem = updatedCustomer;
-        //        DgCustomers.ScrollIntoView(updatedCustomer);
-        //    }
-        //}
-        //private void LoadCustomerProfile(CustomerProfileDto customer)
-        //{
-        //    _currentCustomer = customer;
-
-        //    TxtProfileID.Text = customer.ID;
-        //    TxtProfileName.Text = customer.Name;
-        //    TxtProfileAge.Text = customer.Age?.ToString() ?? "---";
-        //    TxtProfileSex.Text = customer.Sex == ESex.MALE ? "ذكر" : "أنثى";
-        //    TxtProfileAddress.Text = customer.Address;
-        //    TxtProfileDiscount.Text = $"{customer.Discount}%";
-
-        //    PhonesList.ItemsSource = customer.Phones;
-        //    TxtNoPhonesMessage.Visibility = customer.Phones == null || customer.Phones.Count == 0
-        //        ? Visibility.Visible : Visibility.Collapsed;
-
-        //    DevicesList.ItemsSource = customer.Devices;
-        //    TxtNoDevicesMessage.Visibility = customer.Devices == null || customer.Devices.Count == 0
-        //        ? Visibility.Visible : Visibility.Collapsed;
-        //}
-        //private void SetButtonsEnabled(bool isEnabled)
-        //{
-        //    BtnEditCustomer.IsEnabled = isEnabled;
-        //    btnAddNum.IsEnabled = isEnabled;
-        //    btnAddDevice.IsEnabled = isEnabled;
-        //}
-    
-        private void DgCustomers_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //if (DgCustomers.SelectedItem is CustomerSummaryDto selectedSummary)
-            //{
-            //    ProfileSection.Visibility = Visibility.Visible;
-            //    ProfileColumn.Width = new GridLength(450);
-            //    ProfileSection.Opacity = 1.0;
-            //    try
-            //    {
-            //        int customerId = int.Parse(selectedSummary.ID.Replace("C-", ""));
-            //        var fullProfile = _customerService.GetCustomerFullProfile(customerId);
-
-            //        if (fullProfile != null)
-            //        {
-            //            SetButtonsEnabled(true);
-            //            LoadCustomerProfile(fullProfile);
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBox.Show($"خطأ: {ex.Message}");
-            //    }
-            //}
-            //else
-            //{
-            //    ProfileColumn.Width = new GridLength(0);
-            //    ProfileSection.Visibility = Visibility.Collapsed;
-            //}
-        }
-
-   
-
     }
-
 }

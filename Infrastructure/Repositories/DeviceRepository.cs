@@ -1,4 +1,5 @@
-﻿using Application.DTOs.DeviceDTOs;
+﻿using Application.DTOs.CustomerDTOs;
+using Application.DTOs.DeviceDTOs;
 using Application.Repositories;
 using Domain.Entities;
 using Microsoft.Data.SqlClient;
@@ -9,7 +10,7 @@ namespace Infrastructure.Data;
 
 public class DeviceRepository : IDeviceRepository
 {
-    public IEnumerable<DeviceInfoDTO> GetCustomerDevicesBy(int customerId)
+    public IEnumerable<DeviceInfoDTO> GetCustomerDevices(int customerId)
     {
         var customerDevices = new List<DeviceInfoDTO>();
 
@@ -25,16 +26,15 @@ public class DeviceRepository : IDeviceRepository
             customerDevices.Add(new DeviceInfoDTO
             (
                Convert.ToInt32(reader["DeviceID"]),
+
                 reader["Brand"].ToString() ?? string.Empty,
-
                 Convert.ToInt32(reader["BrandID"]),
+
                 reader["Type"]?.ToString() ?? string.Empty,
+                Convert.ToInt32(reader["TypeID"]),
 
-                 Convert.ToInt32(reader["TypeID"]),
-                                  reader["Spec"]?.ToString() ?? string.Empty,
-
+                reader["Spec"]?.ToString() ?? string.Empty,
                 Convert.ToInt32(reader["SpecID"]),
-
 
                 reader["ModelName"] == DBNull.Value ? null : reader["ModelName"].ToString(),
                reader["SerialNumber"] == DBNull.Value ? null : reader["SerialNumber"].ToString()
