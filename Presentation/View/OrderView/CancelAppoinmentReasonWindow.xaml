@@ -1,0 +1,148 @@
+﻿<Window x:Class="Presentation.View.OrderView.CancelAppoinmentReasonWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="سبب إلغاء الموعد"
+        Height="260" Width="420"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#EEF2F7"
+        FlowDirection="RightToLeft">
+
+    <Window.Resources>
+
+        <SolidColorBrush x:Key="DangerRed" Color="#E53935"/>
+        <SolidColorBrush x:Key="DangerRedDark" Color="#B71C1C"/>
+        <SolidColorBrush x:Key="CancelGray" Color="#64748B"/>
+        <SolidColorBrush x:Key="CancelGrayDark" Color="#475569"/>
+
+        <!-- TextBox Style -->
+        <Style x:Key="CustomModernTextBox" TargetType="TextBox">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#0F172A"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#CBD5E1"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          HorizontalScrollBarVisibility="Hidden"
+                                          VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#4169E1"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#4169E1"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="1.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Button Base Style -->
+        <Style x:Key="BaseButtonStyle" TargetType="Button">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid Margin="20">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <TextBlock Grid.Row="0"
+                   FontSize="14"
+                   FontWeight="Bold"
+                   Foreground="#374151"
+                   Margin="0,0,0,12">
+            <Run Text="سبب إلغاء الموعد"/>
+            <Run Text=" *" Foreground="#E53935"/>
+        </TextBlock>
+
+        <!-- Input -->
+        <TextBox x:Name="TxtCancelReason"
+                 Grid.Row="1"
+                 Style="{StaticResource CustomModernTextBox}"
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True"
+                 VerticalScrollBarVisibility="Auto"
+                 MaxLength="250"
+                 VerticalContentAlignment="Top"/>
+
+        <!-- Error -->
+        <TextBlock x:Name="TxtCancelReasonError"
+                   Grid.Row="2"
+                   Foreground="{StaticResource DangerRed}"
+                   FontSize="12"
+                   FontWeight="SemiBold"
+                   Margin="0,6,0,0"
+                   Visibility="Collapsed"/>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0,45,0,0">
+
+            <Button x:Name="BtnConfirm"
+                    Content="❌ تأكيد الإلغاء"
+                    Width="140" Height="38"
+                    Background="{StaticResource DangerRed}"
+                    Tag="{StaticResource DangerRedDark}"
+                    Style="{StaticResource BaseButtonStyle}"
+                    Click="BtnConfirm_Click"/>
+
+            <Button x:Name="BtnCancel"
+                    Content="تراجع"
+                    Width="90" Height="38"
+                    Margin="15,0,0,0"
+                    Background="{StaticResource CancelGray}"
+                    Tag="{StaticResource CancelGrayDark}"
+                    Style="{StaticResource BaseButtonStyle}"
+                    Click="BtnCancel_Click"/>
+
+        </StackPanel>
+
+    </Grid>
+</Window>

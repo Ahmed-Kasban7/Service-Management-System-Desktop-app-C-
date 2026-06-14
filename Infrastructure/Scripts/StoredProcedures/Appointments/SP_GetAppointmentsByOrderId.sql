@@ -9,9 +9,10 @@ BEGIN
         a.VisitType,
         a.AppointmentState,
         a.Notes,
+        a.CancelReason,
         pt.Name   AS TechnicianName,
         pa.Name   AS AssistantName,
-        pd.Name   AS DriverName 
+        pd.Name   AS DriverName
         
     FROM Appointments a
     INNER JOIN Employees et ON a.TechnicianId = et.EmployeeId

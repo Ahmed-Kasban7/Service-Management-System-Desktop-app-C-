@@ -15,6 +15,6 @@ public interface IAppointmentRepository
     bool Update(UpdateAppointmentDto entity);
     public IEnumerable<AppointmentSummaryDto> GetAppointmentByOrderId(int orderId);
     public AppointmentDetailsDto? GetById(int appointmentId);
-    public bool Cancel(int appointmentId);
+    public bool Cancel(int appointmentId , string CancelReason);
 
 }

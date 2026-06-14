@@ -10,6 +10,7 @@ BEGIN
         AppointmentState      TINYINT NOT NULL DEFAULT 0,
         VisitType             TINYINT NOT NULL,
         Notes                 NVARCHAR(MAX) NULL,
+        CancelReason NVARCHAR(MAX) NULL
 
         CONSTRAINT FK_Appointments_Orders
             FOREIGN KEY (OrderId) REFERENCES Orders(OrderId) ON DELETE CASCADE,

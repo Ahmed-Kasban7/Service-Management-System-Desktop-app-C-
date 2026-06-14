@@ -14,6 +14,7 @@ namespace Application.DTOs.AppointmentDTOs
         public string AssistantName { get; set; }
         public string DriverName { get; set; }
         public string? Notes { get; set; } 
+        public string? CancelReason { get; set; }
 
         public string VisitTypeName => VisitType switch
         {
@@ -28,7 +29,7 @@ namespace Application.DTOs.AppointmentDTOs
         public string AppointmentStateName => AppointmentState switch
         {
             0 => "مجدول",
-            1 => "لم يُنجز",
+            1 => "لم يتم تسجيل التقرير",
             2 => "مكتمل",
             3 => "ملغي",
             _ => "غير معروف"

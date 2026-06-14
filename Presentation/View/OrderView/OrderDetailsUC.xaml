@@ -473,6 +473,7 @@
                                                         <ColumnDefinition Width="1.2*"/>
                                                         <ColumnDefinition Width="1.2*"/>
                                                         <ColumnDefinition Width="1.5*"/>
+                                                        <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
 
                                                     <StackPanel Grid.Column="0">
@@ -561,7 +562,43 @@
                                                             </TextBlock.Style>
                                                         </TextBlock>
                                                     </StackPanel>
+
+                                                    <StackPanel Grid.Column="5" Margin="20,0,0,0">
+                                                        <StackPanel.Style>
+                                                            <Style TargetType="StackPanel">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding AppointmentState}" Value="3">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </StackPanel.Style>
+
+                                                        <TextBlock Text="سبب الإلغاء ⚠️" FontSize="11" Foreground="#EF4444" Margin="0,0,0,6"/>
+                                                        <TextBlock FontSize="13" TextWrapping="Wrap" MaxHeight="44">
+                                                            <TextBlock.Style>
+                                                                <Style TargetType="TextBlock">
+                                                                    <Setter Property="Text" Value="{Binding CancelReason}"/>
+                                                                    <Setter Property="Foreground" Value="#B91C1C"/>
+                                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding CancelReason}" Value="{x:Null}">
+                                                                            <Setter Property="Text" Value="لم يتم تحديد السبب"/>
+                                                                            <Setter Property="FontStyle" Value="Italic"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding CancelReason}" Value="">
+                                                                            <Setter Property="Text" Value="لم يتم تحديد السبب"/>
+                                                                            <Setter Property="FontStyle" Value="Italic"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBlock.Style>
+                                                        </TextBlock>
+                                                    </StackPanel>
+
                                                 </Grid>
+                                                
                                                 <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,4,0,0">
 
                                                     <Button Width="100" Height="36"

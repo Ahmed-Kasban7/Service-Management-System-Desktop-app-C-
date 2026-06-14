@@ -191,25 +191,17 @@ namespace Presentation.View.OrderView
 
         private void BtnCancelAppointment_Click(object sender, RoutedEventArgs e)
         {
-            var appointmentId = (int)((Button)sender).Tag;
-
-            var confirm = MessageBox.Show(
-                "هل أنت متأكد من إلغاء هذا الموعد؟",
-                "تأكيد الإلغاء",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
-
-            if (confirm != MessageBoxResult.Yes) return;
-
-            var result = _cancelAppointmentHandler.Handle(appointmentId);
-
-            if (result.IsSuccess)
+            if (sender is Button btn && btn.Tag is int appointmentId)
             {
-                LoadAppointments();
-                LoadOrder();
+                var reasonWindow = new CancelAppoinmentReasonWindow(appointmentId, _cancelAppointmentHandler);
+                reasonWindow.Owner = Window.GetWindow(this); 
+
+                if (reasonWindow.ShowDialog() == true)
+                {
+                    LoadAppointments(); 
+                    LoadOrder();        
+                }
             }
-            else
-                MessageBox.Show(result.Error);
         }
 
         private void BtnRecordVisit_Click(object sender, RoutedEventArgs e)

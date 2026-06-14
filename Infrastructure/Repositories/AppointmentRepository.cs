@@ -71,6 +71,12 @@ public class AppointmentRepository : IAppointmentRepository
                 Notes = reader.IsDBNull(reader.GetOrdinal("Notes"))          
                         ? null
                         : reader.GetString(reader.GetOrdinal("Notes"))
+                        ,
+
+                CancelReason = reader.IsDBNull(reader.GetOrdinal("CancelReason"))          
+                        ? null
+                        : reader.GetString(reader.GetOrdinal("CancelReason"))
+
             });
         }
         return result;
@@ -104,7 +110,6 @@ public class AppointmentRepository : IAppointmentRepository
         cmd.Parameters.AddWithValue("@ScheduledDate", dto.ScheduledDate);
         cmd.Parameters.AddWithValue("@VisitType", dto.VisitType);
         cmd.Parameters.AddWithValue("@Notes", dto.Notes ?? (object)DBNull.Value);
-
         return cmd.ExecuteNonQuery() > 0;
     }
     public AppointmentDetailsDto? GetById(int appointmentId)
@@ -135,7 +140,7 @@ public class AppointmentRepository : IAppointmentRepository
         }
         return null;
     }
-    public bool Cancel(int appointmentId)
+    public bool Cancel(int appointmentId , string CancelReason)
     {
         using var conn = DatabaseInitializer.GetConnection();
         conn.Open();
@@ -144,6 +149,7 @@ public class AppointmentRepository : IAppointmentRepository
             CommandType = CommandType.StoredProcedure
         };
         cmd.Parameters.AddWithValue("@AppointmentId", appointmentId);
+        cmd.Parameters.AddWithValue("@CancelReason", CancelReason);
 
         int rows = cmd.ExecuteNonQuery();
 
