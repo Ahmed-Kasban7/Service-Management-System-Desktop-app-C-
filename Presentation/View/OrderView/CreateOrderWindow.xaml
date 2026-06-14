@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Presentation.View.OrderView.CreateOrderWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="انشاء طلب جديد" Height="458" Width="621"
+        Title="انشاء طلب جديد" Height="520" Width="620"
         FlowDirection="RightToLeft">
     <Window.Resources>
         <Style x:Key="ModernDataGrid" TargetType="DataGrid">
@@ -41,7 +41,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
@@ -49,58 +49,117 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0" Margin="0,0,10,10">
+                <!-- العميل -->
+                <StackPanel Grid.Column="0" Margin="0,0,10,15">
                     <TextBlock HorizontalAlignment="Left" Margin="0,0,0,2">
-                        <Run Text=" *" Foreground="Red"/>
-                        <Run Text="العميل"/>
+        <Run Text=" *" Foreground="Red"/>
+        <Run Text="العميل"/>
                     </TextBlock>
 
-                    <ComboBox x:Name="customerID"
-          Style="{StaticResource ModernComboBox}"
-          DisplayMemberPath="Name"
-          SelectedValuePath="Id"
-          HorizontalAlignment="Stretch"
-          IsEditable="True"
-          StaysOpenOnEdit="True"
-          IsTextSearchEnabled="False"
-          SelectionChanged="customerID_SelectionChanged"
-          KeyUp="customerID_TextChanged"
-          HorizontalContentAlignment="Left"
-          FocusVisualStyle="{x:Null}"
-          ToolTip="{Binding SelectedItem.Name, RelativeSource={RelativeSource Self}}">
-                        <ComboBox.Resources>
-                            <Style TargetType="{x:Type TextBox}">
-                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                <Setter Property="AllowDrop" Value="True"/>
-                            </Style>
-                        </ComboBox.Resources>
-                    </ComboBox>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="36"/>
+                        </Grid.ColumnDefinitions>
+
+                        <ComboBox x:Name="customerID"
+                  Grid.Column="0"
+                                                Margin="0,0,6,0"
+
+                  Style="{StaticResource ModernComboBox}"
+                  DisplayMemberPath="Name"
+                  SelectedValuePath="Id"
+                  IsEditable="True"
+                  StaysOpenOnEdit="True"
+                  IsTextSearchEnabled="False"
+                  SelectionChanged="customerID_SelectionChanged"
+                  KeyUp="customerID_TextChanged"
+                  HorizontalContentAlignment="Left"
+                  FocusVisualStyle="{x:Null}"
+                  ToolTip="{Binding SelectedItem.Name, RelativeSource={RelativeSource Self}}">
+                            <ComboBox.Resources>
+                                <Style TargetType="{x:Type TextBox}">
+                                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                    <Setter Property="AllowDrop" Value="True"/>
+                                </Style>
+                            </ComboBox.Resources>
+                        </ComboBox>
+
+                        <Button Grid.Column="1"
+                x:Name="BtnAddCustomer"
+                Content="+"
+                Width="36" Height="36"
+                FontSize="16"
+                FontWeight="Bold"
+                Background="{StaticResource PrimaryBlue}"
+                Foreground="White"
+                BorderThickness="0"
+                Cursor="Hand"
+                Click="BtnAddCustomer_Click">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="6"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+                    </Grid>
+
                     <TextBlock x:Name="CustomerError"
-                               Foreground="Red"
-                               FontSize="11"
-                               Text=""
-                               HorizontalAlignment="Left"/>
+               Foreground="Red"
+               FontSize="11"
+               Text=""
+               HorizontalAlignment="Left"/>
                 </StackPanel>
 
+                <!-- الجهاز -->
                 <StackPanel Grid.Column="1" Margin="10,0,0,10">
                     <TextBlock HorizontalAlignment="Left" Margin="0,0,0,2">
-                        <Run Text=" *" Foreground="Red"/>
-                        <Run Text="الجهاز"/>
+        <Run Text=" *" Foreground="Red"/>
+        <Run Text="الجهاز"/>
                     </TextBlock>
 
-                    <ComboBox x:Name="DeviceID"
-                              SelectedItem="{Binding SelectedDevice}"
-                              DisplayMemberPath="DeviceName"
-                              SelectedValuePath="DeviceId"
-                              Style="{StaticResource ModernComboBox}"
-                              HorizontalAlignment="Stretch"
-                              HorizontalContentAlignment="Left"
-                              ToolTip="{Binding SelectedItem.DeviceName, RelativeSource={RelativeSource Self}}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="36"/>
+                        </Grid.ColumnDefinitions>
+
+                        <ComboBox x:Name="DeviceID"
+                  Grid.Column="0"
+                                                Margin="0,0,6,0"
+
+                  SelectedItem="{Binding SelectedDevice}"
+                  DisplayMemberPath="DeviceName"
+                  SelectedValuePath="DeviceId"
+                  Style="{StaticResource ModernComboBox}"
+                  HorizontalContentAlignment="Left"
+                  ToolTip="{Binding SelectedItem.DeviceName, RelativeSource={RelativeSource Self}}"/>
+
+                        <Button Grid.Column="1"
+                x:Name="BtnAddDevice"
+                Content="+"
+                Width="36" Height="36"
+                FontSize="16"
+                FontWeight="Bold"
+                Background="{StaticResource PrimaryBlue}"
+                Foreground="White"
+                BorderThickness="0"
+                Cursor="Hand"
+                IsEnabled="False"
+                Click="BtnAddDevice_Click">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="6"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+                    </Grid>
+
                     <TextBlock x:Name="DeviceError"
-                               Foreground="Red"
-                               FontSize="11"
-                               Text=""
-                               HorizontalAlignment="Left"/>
+               Foreground="Red"
+               FontSize="11"
+               Text=""
+               HorizontalAlignment="Left"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,0,10">
@@ -144,7 +203,7 @@
                         Content="➕ إنشاء الطلب "
                         Style="{StaticResource ActionButtonStyle}"
                         Height="40"
-                        Margin="0,23,0,0" 
+                        Margin="0,12,0,0" 
                         Background="{StaticResource PrimaryBlue}"
                         Foreground="White"
                         Click="BtnCreateOrder_Click"/>

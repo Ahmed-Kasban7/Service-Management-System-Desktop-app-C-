@@ -1,5 +1,5 @@
-﻿using Application.DTOs.CustomerDTOs;
-using Application.DTOs.DeviceDTOs;
+﻿using Application.DTOs.DeviceDTOs;
+using Application.DTOs.PersonDTOs;
 using Application.Repositories;
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ public class GetCustomersLookupHandler
         _customerRepository = customerRepository;
     }
 
-    public IEnumerable<CustomerLookupDto> Handle()
+    public IEnumerable<PersonLookupDto> Handle()
     {
        return  _customerRepository.GetCustomersLookup();
     }

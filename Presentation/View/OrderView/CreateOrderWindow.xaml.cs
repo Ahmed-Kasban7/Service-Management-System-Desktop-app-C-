@@ -1,8 +1,16 @@
 ﻿using Application.DTOs.OrderDTOs;
+using Application.Features.BrandManagement.Queries;
 using Application.Features.CustomerManagement.Queries;
+using Application.Features.CustomerManagment.Commands;
+using Application.Features.DeviceManagement.Commands;
 using Application.Features.DeviceManagement.Queries;
 using Application.Features.OrderManagement.Commands;
+using Application.Features.OrderManagement.Queries;
 using Application.Features.SpecManagement;
+using Application.Features.SpecManagement.Queries;
+using Application.Features.TypeManagement.Queries;
+using Presentation.View.Customer_View;
+using Presentation.View.MainView;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,27 +35,94 @@ namespace Presentation.View.OrderView
         private readonly GetCustomersLookupHandler _getCustomerLookupHandler;
         private readonly GetCustomerDevicesHandler _getCustomerDevicesHandler;
         private readonly CreateOrderHandler _createOrderHandler;
-        public CreateOrderWindow(GetCustomersLookupHandler customersLookup, GetCustomerDevicesHandler getCustomerDevices , CreateOrderHandler createOrderHandler)
+
+        private readonly CreateCustomerHandler _createCustomerHandler;
+
+        private readonly GetAllBrandsHandler _getAllBrandsHandler;
+        private readonly GetAllTypesHandler _getAllTypesHandler;
+        private readonly GetSpecsByTypeIdHandler _getSpecsByTypeIdHandler;
+
+        private readonly AddDeviceToCustomerHandler _addDeviceHandler;
+        private readonly GetAllBrandsHandler _getBrandsHandler;
+        private readonly GetAllTypesHandler _getTypesHandler;
+        private readonly GetSpecsByTypeIdHandler _getSpecsHandler;
+
+        public CreateOrderWindow(
+                    GetCustomersLookupHandler customersLookup,
+                    GetCustomerDevicesHandler getCustomerDevices,
+                    CreateOrderHandler createOrderHandler,
+                    CreateCustomerHandler createCustomerHandler,
+                    GetAllBrandsHandler getAllBrandsHandler,
+                    GetAllTypesHandler getAllTypesHandler,
+                    GetSpecsByTypeIdHandler getSpecsByTypeIdHandler , AddDeviceToCustomerHandler addDeviceHandler,
+            GetAllBrandsHandler getBrandsHandler, GetAllTypesHandler getTypesHandler,
+            GetSpecsByTypeIdHandler getSpecsHandler )
         {
             InitializeComponent();
+
             _getCustomerLookupHandler = customersLookup;
             _getCustomerDevicesHandler = getCustomerDevices;
             _createOrderHandler = createOrderHandler;
+            _createCustomerHandler = createCustomerHandler;
+            _getAllBrandsHandler = getAllBrandsHandler;
+            _getAllTypesHandler = getAllTypesHandler;
+            _getSpecsByTypeIdHandler = getSpecsByTypeIdHandler;
+            _addDeviceHandler = addDeviceHandler;
+            _getBrandsHandler = getBrandsHandler;
+            _getTypesHandler = getTypesHandler;
+            _getSpecsHandler = getSpecsHandler;
+     
+
             LoadCustomers();
         }
 
         private void LoadCustomers()
         {
-            var customers = _getCustomerLookupHandler.Handle();
-            if (customers == null) return;
+            try
+            {
+                var customers = _getCustomerLookupHandler.Handle();
+                if (customers == null) return;
 
-            customerID.ItemsSource = customers;
+                customerID.ItemsSource = customers;
+            }
+            catch (Exception ex) {
+
+                MessageBox.Show("حدثت مشكله اثناء تحميل العملاء");
+                customerID.ItemsSource = null;
+            }
         }
+        private void BtnAddCustomer_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new CreateCustomerWindow(_createCustomerHandler  , _getAllBrandsHandler , _getAllTypesHandler , _getSpecsByTypeIdHandler);
+            win.Owner = this;
 
+            if (win.ShowDialog() == true)
+            {
+                LoadCustomers();
+
+                customerID.SelectedValue = win._customerId;
+            }
+        }
+        private void BtnAddDevice_Click(object sender, RoutedEventArgs e)
+        {
+            var customerId = (int)customerID.SelectedValue;
+
+            var win = new AddDeviceWindow(customerId, _addDeviceHandler, _getBrandsHandler, _getTypesHandler, _getSpecsHandler);
+            win.Owner = this;
+
+            if (win.ShowDialog() == true)
+            {
+                var result = _getCustomerDevicesHandler.Handle(customerId);
+                if (result?.IsSuccess == true)
+                {
+                    DeviceID.ItemsSource = result.Value;
+                    DeviceID.SelectedValue = win._newDeviceId;
+                }
+            }
+        }
         private void BtnCreateOrder_Click(object sender, RoutedEventArgs e)
         {
             bool isValid = true;
-            // Reset errors
             CustomerError.Text = "";
             DeviceError.Text = "";
             IssueError.Text = "";
@@ -91,7 +166,10 @@ namespace Presentation.View.OrderView
 
                 if (res.IsSuccess)
                 {
-                    MessageBox.Show("تم إنشاء الطلب بنجاح");
+                    var mainWindow = System.Windows.Application.Current.MainWindow as MainWindow;
+                    mainWindow?.OpenOrderDetailsAfterCreate(res.Value);
+
+
                     this.DialogResult = true;
                     this.Close();
                 }
@@ -115,9 +193,10 @@ namespace Presentation.View.OrderView
                 if (customerID.SelectedValue == null)
                 {
                     DeviceID.ItemsSource = null;
+                    BtnAddDevice.IsEnabled = false;
                     return;
                 }
-
+                BtnAddDevice.IsEnabled = true;
                 int customerId = Convert.ToInt32(customerID.SelectedValue);
                 var result = _getCustomerDevicesHandler.Handle(customerId);
 

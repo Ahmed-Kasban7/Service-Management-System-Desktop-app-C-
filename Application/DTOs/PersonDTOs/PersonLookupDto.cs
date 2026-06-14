@@ -4,6 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs.CustomerDTOs;
+namespace Application.DTOs.PersonDTOs;
 
-public record CustomerLookupDto(int Id , string Name );
+public record PersonLookupDto(int Id , string Name );

@@ -1,6 +1,7 @@
 ﻿using Application.Common;
 using Application.DTOs;
 using Application.DTOs.CustomerDTOs;
+using Application.DTOs.PersonDTOs;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -24,5 +25,5 @@ public interface ICustomerRepository  : IQueryRepository<Customer>
     public Result Delete(int id);
     public int Create(Customer customer);
 
-    public IEnumerable<CustomerLookupDto>  GetCustomersLookup();
+    public IEnumerable<PersonLookupDto>  GetCustomersLookup();
 }

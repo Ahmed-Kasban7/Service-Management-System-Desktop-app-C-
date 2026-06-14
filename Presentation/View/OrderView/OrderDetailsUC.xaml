@@ -67,13 +67,13 @@
          FlowDirection="LeftToRight"/>
                         </TextBlock>
                         <Border x:Name="StatusBadge"
-                                Background="#FEF9C3"
-                                CornerRadius="20" Padding="12,4"
-                                Margin="12,0,0,0" VerticalAlignment="Center">
+        Background="{Binding StatusBackground}"
+        CornerRadius="20" Padding="12,4"
+        Margin="12,0,0,0" VerticalAlignment="Center">
                             <TextBlock x:Name="TxtStatus"
-                                       Text="قيد الانتظار"
-                                       FontSize="12" FontWeight="SemiBold"
-                                       Foreground="#CA8A04"/>
+               Text="{Binding State}"
+               FontSize="12" FontWeight="SemiBold"
+               Foreground="{Binding StatusForeground}"/>
                         </Border>
                     </StackPanel>
 
@@ -87,7 +87,9 @@
                 <Button Grid.Column="2" x:Name="BtnEditOrder"
                         Content="✏️ تعديل الطلب"
                         Click="BtnEditOrder_Click"
-                        Padding="16,8"
+                        Padding="16,
+                        
+                        8"
                         Background="White"
                         Foreground="#1E293B"
                         FontSize="13" FontWeight="SemiBold"
@@ -150,8 +152,9 @@
             <Grid Margin="24,20,24,24">
 
                 <!-- TAB: معلومات الطلب -->
-                <Grid x:Name="PanelOrderInfo" Visibility="Visible">
-                    <Grid.ColumnDefinitions>
+                <ScrollViewer x:Name="ScrollOrderInfo" VerticalScrollBarVisibility="Auto" Visibility="Visible">
+                    <Grid x:Name="PanelOrderInfo" Visibility="Visible">
+                        <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="20"/>
                         <ColumnDefinition Width="*"/>
@@ -161,6 +164,7 @@
                         <RowDefinition Height="16"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
+
 
                     <!-- بطاقة بيانات العميل -->
                     <Border Grid.Column="0" Grid.Row="0"
@@ -306,20 +310,380 @@
                         </StackPanel>
                     </Border>
                 </Grid>
+                </ScrollViewer>
+
 
                 <!-- TAB: المواعيد -->
                 <Border x:Name="PanelAppointments" Visibility="Collapsed"
-                        Background="White" CornerRadius="14"
-                        BorderBrush="#E2E8F0" BorderThickness="1" Padding="20">
-                    <StackPanel>
-                        <TextBlock Text="📅 المواعيد" FontSize="15" FontWeight="Bold"
-                                   Foreground="#1E293B" Margin="0,0,0,16"/>
-                        <TextBlock Text="لا توجد مواعيد مسجلة" Foreground="#94A3B8"
-                                   FontSize="13" HorizontalAlignment="Center" Margin="0,40,0,40"/>
-                    </StackPanel>
+        Background="White" CornerRadius="14"
+        BorderBrush="#E2E8F0" BorderThickness="1" Padding="20">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Header -->
+                        <Grid Grid.Row="0" Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="📅 المواعيد"
+                       FontSize="15" FontWeight="Bold"
+                       Foreground="#1E293B" VerticalAlignment="Center"/>
+                            <Button Grid.Column="1" x:Name="BtnAddAppointment"
+                    Content="➕ إضافة موعد"
+                    Click="BtnAddAppointment_Click"
+                    Padding="16,8" Background="#2563EB"
+                    Foreground="White" FontSize="13" FontWeight="SemiBold"
+                    BorderThickness="0" Cursor="Hand">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#1D4ED8"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Grid>
+
+                        <!-- Cards / Empty State -->
+                        <Grid Grid.Row="1">
+
+                            <!-- Empty State -->
+                            <Border x:Name="AppointmentsEmptyState"
+                    Background="#F8FAFC" CornerRadius="10"
+                    BorderBrush="#E2E8F0" BorderThickness="1"
+                    Padding="40" Visibility="Collapsed">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock Text="📅" FontSize="36"
+                               HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                                    <TextBlock Text="لا توجد مواعيد مسجلة حتى الآن"
+                               Foreground="#94A3B8" FontSize="13"
+                               HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Cards List -->
+                            <ItemsControl x:Name="AppointmentsGrid" Visibility="Collapsed">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="White" CornerRadius="12"
+                                BorderBrush="#E2E8F0" BorderThickness="1"
+                                Padding="20" Margin="0,0,0,12">
+                                            <Border.Effect>
+                                                <DropShadowEffect BlurRadius="8" Color="#000"
+                                                  Opacity="0.05" ShadowDepth="1"/>
+                                            </Border.Effect>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+
+                                                <!-- Row 0: التاريخ + الحالة -->
+                                                <Grid Grid.Row="0" Margin="0,0,0,14">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <StackPanel Grid.Column="0" Orientation="Horizontal"
+                                                VerticalAlignment="Center">
+                                                        <Border Background="#EFF6FF" CornerRadius="8"
+                                                Padding="8,6" Margin="0,0,10,0">
+                                                            <TextBlock Text="📅" FontSize="16"/>
+                                                        </Border>
+                                                        <StackPanel VerticalAlignment="Center">
+                                                            <TextBlock Text="تاريخ الموعد"
+                                                       FontSize="10" Foreground="#94A3B8"
+                                                       Margin="0,0,0,2"/>
+                                                            <TextBlock Text="{Binding ScheduledDate, StringFormat={}{0:dd/MM/yyyy}}"
+                                                       FontSize="15" FontWeight="Bold"
+                                                       Foreground="#0F172A"/>
+                                                        </StackPanel>
+                                                    </StackPanel>
+
+                                                    <!-- Badge الحالة -->
+                                                    <Border Grid.Column="1" CornerRadius="20" Padding="14,5"
+                                            VerticalAlignment="Center">
+                                                        <Border.Style>
+                                                            <Style TargetType="Border">
+                                                                <Setter Property="Background" Value="#F1F5F9"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding AppointmentState}" Value="0">
+                                                                        <Setter Property="Background" Value="#FEF9C3"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding AppointmentState}" Value="1">
+                                                                        <Setter Property="Background" Value="#FEE2E2"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding AppointmentState}" Value="2">
+                                                                        <Setter Property="Background" Value="#DCFCE7"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding AppointmentState}" Value="3">
+                                                                        <Setter Property="Background" Value="#F1F5F9"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                        <TextBlock Text="{Binding AppointmentStateName}"
+                                                   FontSize="12" FontWeight="SemiBold">
+                                                            <TextBlock.Style>
+                                                                <Style TargetType="TextBlock">
+                                                                    <Setter Property="Foreground" Value="#64748B"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding AppointmentState}" Value="0">
+                                                                            <Setter Property="Foreground" Value="#CA8A04"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding AppointmentState}" Value="1">
+                                                                            <Setter Property="Foreground" Value="#DC2626"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding AppointmentState}" Value="2">
+                                                                            <Setter Property="Foreground" Value="#16A34A"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding AppointmentState}" Value="3">
+                                                                            <Setter Property="Foreground" Value="#64748B"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBlock.Style>
+                                                        </TextBlock>
+                                                    </Border>
+                                                </Grid>
+                                                <Border Grid.Row="1" Height="1" Background="#F1F5F9" Margin="0,0,0,14"/>
+
+                                                <Grid Grid.Row="2" Margin="0,0,0,16">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="1.2*"/>
+                                                        <ColumnDefinition Width="1.2*"/>
+                                                        <ColumnDefinition Width="1.2*"/>
+                                                        <ColumnDefinition Width="1.5*"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <StackPanel Grid.Column="0">
+                                                        <TextBlock Text="نوع الزيارة" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,6"/>
+                                                        <Border Background="#F8FAFC" CornerRadius="8" Padding="10,6" HorizontalAlignment="Left">
+                                                            <TextBlock Text="{Binding VisitTypeName}" FontSize="13" FontWeight="SemiBold" Foreground="#1E293B"/>
+                                                        </Border>
+                                                    </StackPanel>
+
+                                                    <StackPanel Grid.Column="1">
+                                                        <TextBlock Text="الفني" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,6"/>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Border Width="28" Height="28" CornerRadius="14" Background="#EEF2FF" Margin="0,0,8,0">
+                                                                <TextBlock Text="👤" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                            <TextBlock Text="{Binding TechnicianName}" FontSize="13" FontWeight="SemiBold" Foreground="#1E293B" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </StackPanel>
+
+                                                    <StackPanel Grid.Column="2">
+                                                        <TextBlock Text="مساعد الفني" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,6"/>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Border Width="28" Height="28" CornerRadius="14" Background="#F0FDF4" Margin="0,0,8,0">
+                                                                <TextBlock Text="👤" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                            <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="#1E293B" VerticalAlignment="Center">
+                                                                <TextBlock.Style>
+                                                                    <Style TargetType="TextBlock">
+                                                                        <Setter Property="Text" Value="{Binding AssistantName}"/>
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding AssistantName}" Value="{x:Null}">
+                                                                                <Setter Property="Text" Value="—"/>
+                                                                                <Setter Property="Foreground" Value="#94A3B8"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </TextBlock.Style>
+                                                            </TextBlock>
+                                                        </StackPanel>
+                                                    </StackPanel>
+
+                                                    <StackPanel Grid.Column="3">
+                                                        <TextBlock Text="السائق" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,6"/>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Border Width="28" Height="28" CornerRadius="14" Background="#FFF7ED" Margin="0,0,8,0">
+                                                                <TextBlock Text="🚗" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                            <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="#1E293B" VerticalAlignment="Center">
+                                                                <TextBlock.Style>
+                                                                    <Style TargetType="TextBlock">
+                                                                        <Setter Property="Text" Value="{Binding DriverName}"/>
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding DriverName}" Value="{x:Null}">
+                                                                                <Setter Property="Text" Value="—"/>
+                                                                                <Setter Property="Foreground" Value="#94A3B8"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </TextBlock.Style>
+                                                            </TextBlock>
+                                                        </StackPanel>
+                                                    </StackPanel>
+
+                                                    <StackPanel Grid.Column="4">
+                                                        <TextBlock Text="ملاحظات" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,6"/>
+                                                        <TextBlock FontSize="13" TextWrapping="Wrap" MaxHeight="44">
+                                                            <TextBlock.Style>
+                                                                <Style TargetType="TextBlock">
+                                                                    <Setter Property="Text" Value="{Binding Notes}"/>
+                                                                    <Setter Property="Foreground" Value="#1E293B"/>
+                                                                    <Setter Property="FontStyle" Value="Normal"/>
+                                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Notes}" Value="">
+                                                                            <Setter Property="Text" Value="لا توجد ملاحظات"/>
+                                                                            <Setter Property="Foreground" Value="#CBD5E1"/>
+                                                                            <Setter Property="FontStyle" Value="Italic"/>
+                                                                        </DataTrigger>
+                                                                        <DataTrigger Binding="{Binding Notes}" Value="{x:Null}">
+                                                                            <Setter Property="Text" Value="لا توجد ملاحظات"/>
+                                                                            <Setter Property="Foreground" Value="#CBD5E1"/>
+                                                                            <Setter Property="FontStyle" Value="Italic"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBlock.Style>
+                                                        </TextBlock>
+                                                    </StackPanel>
+                                                </Grid>
+                                                <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,4,0,0">
+
+                                                    <Button Width="100" Height="36"
+            Padding="0" 
+            Background="#EFF6FF" 
+            BorderBrush="#DBEAFE" BorderThickness="1"
+            Cursor="Hand" Margin="0,0,10,0"
+            Tag="{Binding AppointmentId}"
+            Click="BtnEditAppointment_Click">
+                                                        <Button.Style>
+                                                            <Style TargetType="Button">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding AppointmentState}" Value="2">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding AppointmentState}" Value="3">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Button.Style>
+                                                        <Button.Template>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Border Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}" 
+                        CornerRadius="8">
+                                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                        <TextBlock Text="✏️" FontSize="13" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                                                        <TextBlock Text="تعديل" Foreground="#2563EB" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                                                    </StackPanel>
+                                                                </Border>
+                                                                
+                                                            </ControlTemplate>
+                                                        </Button.Template>
+                                                    </Button>
+
+                                                    <Button Width="110" Height="36"
+            Padding="0" 
+            Background="#FEE2E2" 
+            BorderBrush="#FCA5A5" BorderThickness="1"
+            Cursor="Hand" Margin="0,0,10,0"
+            Tag="{Binding AppointmentId}"
+            Click="BtnCancelAppointment_Click">
+                                                        <Button.Style>
+                                                            <Style TargetType="Button">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding AppointmentState}" Value="2">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding AppointmentState}" Value="3">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Button.Style>
+                                                        <Button.Template>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Border Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}" 
+                        CornerRadius="8">
+                                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                        <TextBlock Text="❌" FontSize="11" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                                                        <TextBlock Text="إلغاء الموعد" Foreground="#DC2626" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                                                    </StackPanel>
+                                                                </Border>
+                                                             
+                                                            </ControlTemplate>
+                                                        </Button.Template>
+                                                    </Button>
+
+                                                    <Button Width="150" Height="36"
+            Padding="0" 
+            Background="#DCFCE7" 
+            BorderBrush="#BBF7D0" BorderThickness="1"
+            Cursor="Hand" 
+            Tag="{Binding AppointmentId}"
+            Click="BtnRecordVisit_Click">
+                                                        <Button.Style>
+                                                            <Style TargetType="Button">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding AppointmentState}" Value="2">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding AppointmentState}" Value="3">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Button.Style>
+                                                        <Button.Template>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Border Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}" 
+                        CornerRadius="8">
+                                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                        <TextBlock Text="📝" FontSize="13" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                                                        <TextBlock Text="تسجيل تقرير الزيارة" Foreground="#16A34A" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                                                    </StackPanel>
+                                                                </Border>
+
+                                                            </ControlTemplate>
+                                                        </Button.Template>
+                                                    </Button>
+
+                                                </StackPanel>
+
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                        </Grid>
+                    </Grid>
                 </Border>
 
-                <!-- TAB: الزيارات -->
                 <Border x:Name="PanelVisits" Visibility="Collapsed"
                         Background="White" CornerRadius="14"
                         BorderBrush="#E2E8F0" BorderThickness="1" Padding="20">

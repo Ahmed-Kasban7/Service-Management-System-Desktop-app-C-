@@ -11,7 +11,7 @@ namespace Application.Repositories;
 
 public interface IDeviceRepository
 {
-    bool AddDeviceToCustomer(int customerId, Device device);
+    int AddDeviceToCustomer(int customerId, Device device);
     public IEnumerable<DeviceInfoDTO> GetCustomerDevices(int customerId);
     public bool DeleteCustomerDevice(int deviceId);
     public bool UpdateCustomerDevice(DeviceInfoDTO deviceDto );

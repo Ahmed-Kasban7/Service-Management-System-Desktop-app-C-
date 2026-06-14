@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 namespace Domain.Enums;
 public enum EVisitType
 {
-    DIAGNOSTIC = 0,
-    REPAIR = 1
+    Diagnostic = 0,
+    Repair = 1,
+    PartsReplacement = 2,
+    Pickup = 3,
+    Delivery = 4,
+    FollowingUp = 5
 }

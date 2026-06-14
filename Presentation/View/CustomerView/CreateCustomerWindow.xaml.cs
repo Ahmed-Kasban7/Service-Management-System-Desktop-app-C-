@@ -27,6 +27,7 @@ namespace Presentation.View.Customer_View
         private readonly GetAllBrandsHandler _getAllBrandsHandler;
         private readonly GetAllTypesHandler _getAllTypesHandler;
         private readonly GetSpecsByTypeIdHandler _getSpecsByTypeIdHandler;
+        public  int _customerId;
         
 
         public CreateCustomerWindow(CreateCustomerHandler createCustomer, GetAllBrandsHandler getAllBrands , GetAllTypesHandler getAllTypes , GetSpecsByTypeIdHandler getSpecsByTypeId )
@@ -68,13 +69,14 @@ namespace Presentation.View.Customer_View
 
                 if (res.IsSuccess)
                 {
+                    _customerId = res.Value;
                     this.DialogResult = true;
                     this.Close();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"حدث خطأ أثناء الحفظ برجاء إعادة المحاولة {ex}" );
+                MessageBox.Show($"حدث خطأ أثناء الحفظ برجاء إعادة المحاولة" );
             }
         }
         private bool Validate()

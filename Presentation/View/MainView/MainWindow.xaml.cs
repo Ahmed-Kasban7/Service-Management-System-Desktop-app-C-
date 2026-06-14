@@ -2,17 +2,21 @@
 using Application.DTOs;
 using Application.DTOs.CustomerDTOs;
 using Application.DTOs.DeviceDTOs;
+using Application.Features.AppointmentManagement.Commands;
+using Application.Features.AppointmentManagement.Queries;
 using Application.Features.BrandManagement.Queries;
 using Application.Features.CustomerManagement.Queries;
 using Application.Features.CustomerManagment.Commands;
 using Application.Features.DeviceManagement.Commands;
 using Application.Features.DeviceManagement.Queries;
+using Application.Features.EmployeeManagement.Queries;
 using Application.Features.OrderManagement.Commands;
 using Application.Features.OrderManagement.Queries;
 using Application.Features.PhoneManagement.Commands;
 using Application.Features.PhoneManagement.Queries;
 using Application.Features.SpecManagement.Queries;
 using Application.Features.TypeManagement.Queries;
+using Microsoft.Extensions.Configuration;
 using Presentation.View.Customer_View;
 using Presentation.View.OrderView;
 using Presentation.View.Settings_View;
@@ -25,7 +29,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Microsoft.Extensions.Configuration;
 
 namespace Presentation.View.MainView
 {
@@ -57,6 +60,14 @@ namespace Presentation.View.MainView
         private readonly GetDeviceOrders _getDeviceOrders;
         private readonly GetCustomerOrdersHandler _getCustomerOrdersHandler;
         private readonly DeleteCustomerHandler _deleteCustomerHandler;
+        private readonly GetEmployeesLookupHandler _getEmployeesLookupHandler;
+        private CreateAppointmentHandler _createAppointmentHandler;
+        private GetAppointmentsByOrderIdHandler _getAppointments;
+        private UpdateAppointmentHandler _updateAppointmentHandler;
+        private GetAppointmentByIdHandler _getAppointmentByIdHandler;
+        private readonly CancelAppointmentHandler _cancelAppointmentHandler;
+
+
 
         public MainWindow(GetOrderFullDetailsHandler getOrderFullDetails,
             GetPagedOrderSummariesHandler getPagedOrderSummaries, GetCustomersLookupHandler getCustomersLookup,
@@ -71,7 +82,11 @@ namespace Presentation.View.MainView
             GetCustomerDevicesHandler getCustomerDevices
             , AddDeviceToCustomerHandler addDeviceToCustomer
             , UpdateDeviceHandler updateDevice, DeleteDeviceHandler deleteDevice,
-            GetDeviceOrders getDeviceOrders, GetCustomerOrdersHandler getCustomerOrdersHandler , DeleteCustomerHandler deleteCustomer)
+            GetDeviceOrders getDeviceOrders, GetCustomerOrdersHandler getCustomerOrdersHandler ,
+            DeleteCustomerHandler deleteCustomer ,  GetEmployeesLookupHandler getEmployees , 
+            CreateAppointmentHandler createAppointment , GetAppointmentsByOrderIdHandler getAppointments ,
+            UpdateAppointmentHandler updateAppointment , GetAppointmentByIdHandler 
+            getAppointment , CancelAppointmentHandler cancelAppointment)
         {
             InitializeComponent();
             LoadSavedLogo();
@@ -103,6 +118,14 @@ namespace Presentation.View.MainView
             _getCustomerOrdersHandler = getCustomerOrdersHandler;
             _deleteCustomerHandler = deleteCustomer;
 
+            _getEmployeesLookupHandler = getEmployees;
+            _createAppointmentHandler = createAppointment;
+            _getAppointments = getAppointments;
+            _updateAppointmentHandler   = updateAppointment;
+            _getAppointmentByIdHandler = getAppointment;
+            _cancelAppointmentHandler = cancelAppointment;
+
+
 
             _createOrderHandler.AddOrderToList += OrdersControl.RefreshIfVisible;
         }
@@ -118,7 +141,9 @@ namespace Presentation.View.MainView
 
             SidePanelColumn.Width = new GridLength(0);
 
-            OrdersControl.InitializeServices(_getPagedOrderSummariesHandler, _getOrderFullDetailsHandler, _updateOrderHandler, _SearchOrderPageHandler);
+            OrdersControl.InitializeServices(_getPagedOrderSummariesHandler,
+                _getOrderFullDetailsHandler, _updateOrderHandler, _SearchOrderPageHandler , 
+                _getEmployeesLookupHandler , _createAppointmentHandler , _getAppointments , _updateAppointmentHandler , _getAppointmentByIdHandler , _cancelAppointmentHandler);
 
             OrdersControl.NavigateToOrderDetails(orderId, isComingFromDevices: true);
         }
@@ -150,7 +175,9 @@ namespace Presentation.View.MainView
         {
             if (content == OrdersControl)
             {
-                OrdersControl.InitializeServices(_getPagedOrderSummariesHandler, _getOrderFullDetailsHandler, _updateOrderHandler, _SearchOrderPageHandler);
+                OrdersControl.InitializeServices(_getPagedOrderSummariesHandler, 
+                    _getOrderFullDetailsHandler, _updateOrderHandler, _SearchOrderPageHandler
+                    , _getEmployeesLookupHandler , _createAppointmentHandler , _getAppointments , _updateAppointmentHandler , _getAppointmentByIdHandler , _cancelAppointmentHandler);
 
                 OrdersControl.OrdersListPanel.Visibility = Visibility.Visible;
 
@@ -194,7 +221,10 @@ namespace Presentation.View.MainView
 
         private void BtnCreateOrder_Click(object sender, RoutedEventArgs e)
         {
-            var createOrderWin = new CreateOrderWindow(_getCustomersLookupHandler, _getCustomerDevicesHandler, _createOrderHandler)
+            var createOrderWin = new CreateOrderWindow(_getCustomersLookupHandler,
+                _getCustomerDevicesHandler, _createOrderHandler , _createCustomerHandler 
+                , _getAllBrandsHandler, _getAllTypesHandler  , _getSpecsByTypeIdHandler , _addDeviceHandler , 
+                _getAllBrandsHandler , _getAllTypesHandler  , _getSpecsByTypeIdHandler)
             {
                 Owner = this
             };
@@ -252,5 +282,28 @@ namespace Presentation.View.MainView
                 }
             }
         }
+
+        public void OpenOrderDetailsAfterCreate(int orderId)
+        {
+            TabOrders.IsChecked = true;
+
+            CustomersControl.Visibility = Visibility.Collapsed;
+            SettingsControl.Visibility = Visibility.Collapsed;
+            OrdersControl.Visibility = Visibility.Visible;
+
+            SidePanelColumn.Width = new GridLength(0);
+
+            OrdersControl.InitializeServices(
+                _getPagedOrderSummariesHandler,
+                _getOrderFullDetailsHandler,
+                _updateOrderHandler,
+                _SearchOrderPageHandler
+                , _getEmployeesLookupHandler
+                , _createAppointmentHandler , _getAppointments , _updateAppointmentHandler , _getAppointmentByIdHandler , _cancelAppointmentHandler
+            );
+
+            OrdersControl.NavigateToOrderDetails(orderId, isComingFromDevices: false);
+        }
     }
+
 }

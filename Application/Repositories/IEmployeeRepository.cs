@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Application.DTOs.PersonDTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,4 +10,5 @@ namespace Application.Repositories;
 public interface IEmployeeRepository
 {
     bool IsEmployeeExists(int id);
+    IEnumerable<PersonLookupDto> GetEmployeesLookup(string roleName);
 }

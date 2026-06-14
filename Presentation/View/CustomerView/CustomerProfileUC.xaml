@@ -547,7 +547,7 @@
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
                                     <DataGridTextColumn Header="تاريخ بدء الصيانة"
-                        Binding="{Binding Date, StringFormat={}{0:dd/MM/yyyy}}"
+                        Binding="{Binding Date, StringFormat={}{0:yyyy/MM/dd}}"
                         Width="*"/>
                                     <DataGridTemplateColumn Header="الحالة" Width="*">
                                         <DataGridTemplateColumn.CellTemplate>
@@ -610,7 +610,7 @@
                             <Border Grid.Column="4" Background="#F8FAFC" CornerRadius="10" Padding="12">
                                 <StackPanel HorizontalAlignment="Center">
                                     <TextBlock x:Name="TxtActiveOrders" Text="٠" FontSize="22" FontWeight="Bold" Foreground="#D97706" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="قيد التنفيذ" FontSize="11" Foreground="#94A3B8" HorizontalAlignment="Center" Margin="0,2,0,0"/>
+                                    <TextBlock Text="جارى التنفيذ" FontSize="11" Foreground="#94A3B8" HorizontalAlignment="Center" Margin="0,2,0,0"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
@@ -639,7 +639,7 @@
                                     Binding="{Binding DeviceSummary}"
                                     Width="*"/>
                                 <DataGridTextColumn Header="تاريخ بدء الصيانة"
-                                    Binding="{Binding StartDate, StringFormat={}{0:dd/MM/yyyy}}"
+                                    Binding="{Binding StartDate, StringFormat={}{0:yyyy/MM/dd}}"
                                     Width="*"/>
                                 
                                 <DataGridTemplateColumn Header="الحالة" Width="*">

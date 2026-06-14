@@ -1,6 +1,7 @@
 ﻿using Application.Common;
 using Application.DTOs.AppointmentDTOs;
 using Application.Repositories;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,21 +13,43 @@ namespace Application.Features.AppointmentManagement.Commands
     public class CreateAppointmentHandler
     {
         private readonly IAppointmentRepository _appointmentRepository;
-        private readonly IOrderRepository _orderRepository;
+      
 
-        public CreateAppointmentHandler(IAppointmentRepository appointmentRepository , IOrderRepository orderRepository)
+        public CreateAppointmentHandler(IAppointmentRepository appointmentRepository)
         {
             _appointmentRepository = appointmentRepository;
-            _orderRepository = orderRepository;
         }
-        //public Result<int> Handle(AddAppointmentDto appointmentDto)
-        //{
-        //    if (appointmentDto == null)
-        //        return Result<int>.Failure("بيانات المعاد غير صالحة");
 
-        //    if(!_orderRepository.IsOrderExists(appointmentDto.orderId))
-        //        return Result<int>.Failure("الاوردر غير موجود");
+        public Result<int> Handle(AddAppointmentDto appointmentDto)
+        {
+            if (appointmentDto == null)
+                return Result<int>.Failure("بيانات الموعد غير صالحة");
 
-        //}
+            if (appointmentDto.orderId <= 0)
+                return Result<int>.Failure("الطلب غير صالح");
+
+            if (appointmentDto.TachnicianId <= 0)
+                return Result<int>.Failure("برجاء اختيار الفني");
+
+            if (appointmentDto.ScheduledDate == default || appointmentDto.ScheduledDate < DateTime.Today)
+                return Result<int>.Failure("برجاء اختيار تاريخ صحيح");
+
+            if (appointmentDto.VisitType == null)
+                return Result<int>.Failure("برجاء اختيار نوع الزيارة");
+
+            var appointment = new Appointment(
+                    appointmentDto.orderId,
+                    appointmentDto.TachnicianId,
+                    appointmentDto.AssistanId,
+                    appointmentDto.DriverId,
+                    appointmentDto.ScheduledDate,
+                    appointmentDto.VisitType,
+                    appointmentDto.Notes
+            );
+
+           int appointmentId =_appointmentRepository.Create(appointment);
+
+            return Result<int>.Success(appointmentId);
+        }
     }
 }

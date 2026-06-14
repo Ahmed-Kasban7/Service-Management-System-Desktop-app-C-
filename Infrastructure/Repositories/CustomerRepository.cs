@@ -2,6 +2,7 @@
 using Application.DTOs;
 using Application.DTOs.CustomerDTOs;
 using Application.DTOs.OrderDTOs;
+using Application.DTOs.PersonDTOs;
 using Application.Repositories;
 using Domain.Entities;
 using Domain.Enums;
@@ -251,12 +252,12 @@ public class CustomerRepository : ICustomerRepository
 
         return CustomerBasicInfo;
     }
-    public IEnumerable<CustomerLookupDto> GetCustomersLookup()
+    public IEnumerable<PersonLookupDto> GetCustomersLookup()
     {
         using var conn = DatabaseInitializer.GetConnection();
         using var command = new SqlCommand("SP_GetCustomersLookup", conn);
 
-        var customerLookup = new List<CustomerLookupDto>();
+        var customerLookup = new List<PersonLookupDto>();
         command.CommandType = CommandType.StoredProcedure;
         conn.Open();
 
@@ -264,7 +265,7 @@ public class CustomerRepository : ICustomerRepository
 
         while (reader.Read())
         {
-            customerLookup.Add(new CustomerLookupDto(Convert.ToInt32(reader["Id"]), reader["Name"].ToString()));
+            customerLookup.Add(new PersonLookupDto(Convert.ToInt32(reader["Id"]), reader["Name"].ToString()));
            
         }
         return customerLookup;

@@ -7,6 +7,7 @@
     @modelName NVARCHAR(200)
 AS
 BEGIN
+    SET NOCOUNT ON;
 
     INSERT INTO Devices
     (
@@ -26,4 +27,7 @@ BEGIN
         @serialNumber,
         @modelName
     );
+
+        SELECT CAST(SCOPE_IDENTITY() AS INT) AS DeviceID;
+ 
 END

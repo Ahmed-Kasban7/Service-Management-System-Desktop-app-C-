@@ -71,9 +71,75 @@ public static class DatabaseInitializer
 
     }
 
+    public static void SeedData()
+    {
+        using var connection = CreateConnection(_databaseName);
+        connection.Open();
+
+        string sql = @"
+IF NOT EXISTS (SELECT 1 FROM Departments WHERE DepartmentName = N'الصيانة')
+BEGIN
+    INSERT INTO Departments (DepartmentName)
+    VALUES (N'الصيانة');
+END;
+
+IF NOT EXISTS (SELECT 1 FROM Departments WHERE DepartmentName = N'النقل')
+BEGIN
+    INSERT INTO Departments (DepartmentName)
+    VALUES (N'النقل');
+END;
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM DepartmentRoles
+    WHERE RoleName = N'سائق'
+)
+BEGIN
+    INSERT INTO DepartmentRoles (RoleName, DepartmentID)
+    VALUES (
+        N'سائق',
+        (SELECT DepartmentID
+         FROM Departments
+         WHERE DepartmentName = N'النقل')
+    );
+END;
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM DepartmentRoles
+    WHERE RoleName = N'فنى'
+)
+BEGIN
+    INSERT INTO DepartmentRoles (RoleName, DepartmentID)
+    VALUES (
+        N'فنى',
+        (SELECT DepartmentID
+         FROM Departments
+         WHERE DepartmentName = N'الصيانة')
+    );
+END;
+
+IF NOT EXISTS (
+    SELECT 1
+    FROM DepartmentRoles
+    WHERE RoleName = N'مساعد فنى'
+)
+BEGIN
+    INSERT INTO DepartmentRoles (RoleName, DepartmentID)
+    VALUES (
+        N'مساعد فنى',
+        (SELECT DepartmentID
+         FROM Departments
+         WHERE DepartmentName = N'الصيانة')
+    );
+END;
+";
+
+        using var cmd = new SqlCommand(sql, connection);
+        cmd.ExecuteNonQuery();
+    }
 
 
-    
 
     public static void InitializeDatabase()
     {
@@ -89,8 +155,18 @@ public static class DatabaseInitializer
        ExecuteScript(@"Scripts\Tables\CreateOrdersTable.sql");
        ExecuteScript(@"Scripts\Tables\CreatePhoneListType.sql");
        ExecuteScript(@"Scripts\Tables\CreateDeviceListType.sql");
+       ExecuteScript(@"Scripts\Tables\CreateDepartmentsTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateDepartmentRolesTable.sql");
        ExecuteScript(@"Scripts\Tables\CreateEmployeesTable.sql");
        ExecuteScript(@"Scripts\Tables\CreateAppointmentsTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateVisitsTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateUsedSpareParts.sql");
+       ExecuteScript(@"Scripts\Tables\CreateUsedSparePartsType.sql");
+
+
+        SeedData();
+
+
 
         // Stored Procedure 
         ExecuteScript(@"Scripts\StoredProcedures\Customers\SP_GetPagedCustomerSummaries.sql");
@@ -127,16 +203,27 @@ public static class DatabaseInitializer
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_UpdateOrder.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetOrderById.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetPagedOrderSummaries.sql");
-       ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetOrderFullDetailsById.sql");
-       ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_SearchOrderPage.sql");
-       ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetDeviceOrdersHistory.sql");
-       ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetCustomerOrders.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetOrderFullDetailsById.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_SearchOrderPage.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetDeviceOrdersHistory.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetCustomerOrders.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Employees\SP_GetTechniciansLookup.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Appointments\SP_CreateAppointment.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Appointments\SP_GetAppointmentsByOrderId.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Appointments\SP_UpdateAppointment.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Appointments\SP_GetAppointmentById.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Appointments\SP_CancelAppointment.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Visits\sp_CreateVisitWithParts.sql");
+
+
 
         // Functions 
         ExecuteScript(@"Scripts\Functions\GetFirstPersonPhoneNumber.sql");
 
         // Triggers 
         //ExecuteScript(@"Scripts\Triggers\trg_InsteadOfDeletePerson.sql");
+        ExecuteScript(@"Scripts\Triggers\trg_AfterCreateAppointment.sql");
+        ExecuteScript(@"Scripts\Triggers\trg_AfterCancelAppointment.sql");
 
 
     }

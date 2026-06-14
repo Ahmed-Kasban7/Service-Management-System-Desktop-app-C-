@@ -10,6 +10,7 @@ public enum EAppointmentState
 {
     SCHEDULED = 0,
     COMPLETED = 1,
-    CANCELLED= 2
+    CANCELLED= 2,
+    OVERDUE = 3,
 }
 

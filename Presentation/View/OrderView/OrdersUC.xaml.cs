@@ -1,5 +1,8 @@
 ﻿using Application.Common;
 using Application.DTOs.OrderDTOs;
+using Application.Features.AppointmentManagement.Commands;
+using Application.Features.AppointmentManagement.Queries;
+using Application.Features.EmployeeManagement.Queries;
 using Application.Features.OrderManagement.Commands;
 using Application.Features.OrderManagement.Queries;
 using Presentation.View.MainView;
@@ -19,6 +22,13 @@ namespace Presentation.View.OrderView
         private GetOrderFullDetailsHandler _getOrderFullDetailsHandler;
         private UpdateOrderHandler _updateOrderHandler;
         private SearchOrderPageHandler _searchOrderPageHandler;
+        private GetEmployeesLookupHandler _getEmployeesLookupHandler;
+        private CreateAppointmentHandler _createAppointmentHandler;
+        private GetAppointmentsByOrderIdHandler _getAppointmentsHandler;
+        private UpdateAppointmentHandler _updateAppointmentHandler;
+        private GetAppointmentByIdHandler _getAppointmentByIdHandler;
+        private  CancelAppointmentHandler _cancelAppointmentHandler;
+
 
         private bool IsSearching = false;
         private string CurrentSearchText = "";
@@ -33,12 +43,21 @@ namespace Presentation.View.OrderView
             GetPagedOrderSummariesHandler getPagedOrderSummaries,
             GetOrderFullDetailsHandler getOrderFull,
             UpdateOrderHandler updateOrder,
-            SearchOrderPageHandler searchOrder)
+            SearchOrderPageHandler searchOrder , GetEmployeesLookupHandler getEmployees 
+            , CreateAppointmentHandler createAppointment , GetAppointmentsByOrderIdHandler getAppointments , 
+            UpdateAppointmentHandler updateAppointment  , GetAppointmentByIdHandler getAppointment , CancelAppointmentHandler cancelAppointment)
         {
             _getPagedOrderSummariesHandler = getPagedOrderSummaries;
             _getOrderFullDetailsHandler = getOrderFull;
             _updateOrderHandler = updateOrder;
             _searchOrderPageHandler = searchOrder;
+            _getEmployeesLookupHandler = getEmployees;
+            _createAppointmentHandler = createAppointment;
+            _getAppointmentsHandler = getAppointments;
+            _updateAppointmentHandler = updateAppointment;
+            _getAppointmentByIdHandler = getAppointment;
+            _cancelAppointmentHandler = cancelAppointment;
+
 
             LoadAndBindOrders();
         }
@@ -154,7 +173,8 @@ namespace Presentation.View.OrderView
                 var detailsUC = new OrderDetailsUC(
                     _getOrderFullDetailsHandler,
                     _updateOrderHandler,
-                    selectedOrder.OrderId);
+                    _getEmployeesLookupHandler,
+                    selectedOrder.OrderId , _createAppointmentHandler , _getAppointmentsHandler , _updateAppointmentHandler, _getAppointmentByIdHandler , _cancelAppointmentHandler);
 
                 detailsUC.BackRequested += (s, args) =>
                 {
@@ -171,7 +191,6 @@ namespace Presentation.View.OrderView
             }
         }
 
-        // قمنا بإضافة بارامتر bool اختياري وقيمته الافتراضية false
         public void NavigateToOrderDetails(int orderId, bool isComingFromDevices = false)
         {
             OrdersListPanel.Visibility = Visibility.Collapsed;
@@ -179,8 +198,9 @@ namespace Presentation.View.OrderView
             var detailsUC = new OrderDetailsUC(
                 _getOrderFullDetailsHandler,
                 _updateOrderHandler,
-                orderId);
-
+                _getEmployeesLookupHandler,
+                orderId, _createAppointmentHandler , _getAppointmentsHandler , _updateAppointmentHandler , _getAppointmentByIdHandler, _cancelAppointmentHandler);
+            
             detailsUC.BackRequested += (s, args) =>
             {
                 OrderDetailsHolder.Visibility = Visibility.Collapsed;

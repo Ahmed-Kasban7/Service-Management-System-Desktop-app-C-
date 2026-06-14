@@ -65,7 +65,7 @@ public class DeviceRepository : IDeviceRepository
 
         return customerDevices;
     }
-    public bool AddDeviceToCustomer(int customerId, Device device)
+    public int AddDeviceToCustomer(int customerId, Device device)
     {
         using var conn = DatabaseInitializer.GetConnection();
 
@@ -79,9 +79,9 @@ public class DeviceRepository : IDeviceRepository
         cmd.Parameters.AddWithValue("modelname", device.ModelName ?? (object)DBNull.Value);
 
         conn.Open();
-        int affected = cmd.ExecuteNonQuery();
+        int deviceId = Convert.ToInt32(cmd.ExecuteScalar());
 
-        return affected>0;
+        return deviceId;
 
     }
 

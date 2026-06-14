@@ -31,4 +31,7 @@ public record  DeviceInfoDTO
     public int SpecID { get; set; }
     public string Model { get; set; } = string.Empty;
     public string SerialNumber { get; set; } = string.Empty;
+    public string DeviceName =>
+    $"{TypeName} {BrandName} {SpecName}"
+    + (string.IsNullOrWhiteSpace(Model) ? "" : $" \u2014 {Model}");
 }

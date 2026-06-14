@@ -1,6 +1,12 @@
 ﻿using Application.DTOs.OrderDTOs;
+using Application.Features.AppointmentManagement.Commands;
+using Application.Features.AppointmentManagement.Queries;
+using Application.Features.EmployeeManagement.Queries;
 using Application.Features.OrderManagement.Commands;
 using Application.Features.OrderManagement.Queries;
+using Application.Features.PhoneManagement.Commands;
+using Domain.Entities;
+using Presentation.View.Customer_View;
 using System;
 using System.Reflection.Metadata;
 using System.Windows;
@@ -14,21 +20,41 @@ namespace Presentation.View.OrderView
     {
         public event EventHandler BackRequested;
         private string _selectedState;
+        
 
         private readonly GetOrderFullDetailsHandler _getOrderFullDetailsHandler;
         private readonly UpdateOrderHandler _updateOrderHandler;
         private  OrderDetailsDto _currentOrder;
-        public OrderDetailsUC(GetOrderFullDetailsHandler getOrderFull, UpdateOrderHandler updateOrder, int orderId)
+        private GetEmployeesLookupHandler _getEmployeesLookup;
+        private int _orderId;
+        private readonly CreateAppointmentHandler _createAppointmentHandler;
+        private readonly GetAppointmentsByOrderIdHandler _getAppointments;
+        private readonly UpdateAppointmentHandler _updateAppointmentHandler;
+        private readonly GetAppointmentByIdHandler _getAppointmentByIdHandler;
+        private readonly CancelAppointmentHandler _cancelAppointmentHandler;
+
+        public OrderDetailsUC(GetOrderFullDetailsHandler getOrderFull, UpdateOrderHandler updateOrder 
+            ,GetEmployeesLookupHandler getEmployees, int orderId , CreateAppointmentHandler createAppointment , 
+            GetAppointmentsByOrderIdHandler getAppointments , UpdateAppointmentHandler updateAppointment , GetAppointmentByIdHandler getAppointment , CancelAppointmentHandler cancelAppointment)
         {
             InitializeComponent();
             _getOrderFullDetailsHandler = getOrderFull;
             _updateOrderHandler = updateOrder;
-            LoadOrder(orderId);
+            _getEmployeesLookup = getEmployees;
+            _orderId = orderId;
+            _createAppointmentHandler = createAppointment;
+            _getAppointments = getAppointments;
+            _updateAppointmentHandler = updateAppointment;
+            _getAppointmentByIdHandler = getAppointment;
+            _cancelAppointmentHandler = cancelAppointment;
+
+            LoadOrder();
+            
         }
 
-        public void LoadOrder(int orderId)
+        public void LoadOrder()
         {
-            var result = _getOrderFullDetailsHandler.Handle(orderId);
+            var result = _getOrderFullDetailsHandler.Handle(_orderId);
 
             if (result.IsSuccess)
             {
@@ -45,10 +71,32 @@ namespace Presentation.View.OrderView
                 MessageBox.Show(result.Error);
             }
         }
+        private void LoadAppointments()
+        {
+            try
+            {
+                var result = _getAppointments.Handle(_orderId);
 
+                if (result.IsSuccess && result.Value.Any())
+                {
+                    AppointmentsGrid.ItemsSource = result.Value;
+                    AppointmentsGrid.Visibility = Visibility.Visible;
+                    AppointmentsEmptyState.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    AppointmentsGrid.Visibility = Visibility.Collapsed;
+                    AppointmentsEmptyState.Visibility = Visibility.Visible;
+                }
+            }
+            catch
+            {
+                MessageBox.Show("حدثت مشكلة أثناء تحميل المواعيد");
+            }
+        }
         private void SwitchTab(string active)
         {
-            PanelOrderInfo.Visibility = Visibility.Collapsed;
+            ScrollOrderInfo.Visibility = Visibility.Collapsed;  
             PanelAppointments.Visibility = Visibility.Collapsed;
             PanelVisits.Visibility = Visibility.Collapsed;
             PanelInvoice.Visibility = Visibility.Collapsed;
@@ -67,7 +115,7 @@ namespace Presentation.View.OrderView
             switch (active)
             {
                 case "info":
-                    PanelOrderInfo.Visibility = Visibility.Visible;
+                    ScrollOrderInfo.Visibility = Visibility.Visible;  
                     TabOrderInfo.BorderBrush = blue;
                     TabOrderInfo.Foreground = blue;
                     TabOrderInfo.FontWeight = FontWeights.SemiBold;
@@ -92,11 +140,15 @@ namespace Presentation.View.OrderView
                     break;
             }
         }
- 
 
-   
+
         private void TabOrderInfo_Click(object sender, RoutedEventArgs e) => SwitchTab("info");
-        private void TabAppointments_Click(object sender, RoutedEventArgs e) => SwitchTab("appointments");
+        private void TabAppointments_Click(object sender, RoutedEventArgs e)
+        {
+            SwitchTab("appointments");
+            LoadAppointments();
+        }
+
         private void TabVisits_Click(object sender, RoutedEventArgs e) => SwitchTab("visits");
         private void TabInvoice_Click(object sender, RoutedEventArgs e) => SwitchTab("invoice");
 
@@ -104,7 +156,73 @@ namespace Presentation.View.OrderView
 
         private void BtnEditOrder_Click(object sender, RoutedEventArgs e)
         {
+            
+        }
 
+        private void BtnAddAppointment_Click(object sender, RoutedEventArgs e)
+        {
+            var addAppointmentWindow = new AddAppointmentWindow(_orderId, _getEmployeesLookup , _createAppointmentHandler)
+            {
+                Owner = Window.GetWindow(this)
+            };
+
+            if (addAppointmentWindow.ShowDialog() == true)
+            {
+                LoadAppointments();
+                LoadOrder();
+            }
+        }
+
+
+        private void BtnEditAppointment_Click(object sender, RoutedEventArgs e)
+        {
+            var appointmentId = (int)((Button)sender).Tag;
+            var updateAppointmentWindow = new UpdateAppointmentWindow(appointmentId , _getEmployeesLookup ,_getAppointmentByIdHandler , _updateAppointmentHandler )
+            {
+                Owner = Window.GetWindow(this)
+            };
+
+            if (updateAppointmentWindow.ShowDialog() == true)
+            {
+                LoadAppointments();
+                LoadOrder();
+            }
+        }
+
+        private void BtnCancelAppointment_Click(object sender, RoutedEventArgs e)
+        {
+            var appointmentId = (int)((Button)sender).Tag;
+
+            var confirm = MessageBox.Show(
+                "هل أنت متأكد من إلغاء هذا الموعد؟",
+                "تأكيد الإلغاء",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (confirm != MessageBoxResult.Yes) return;
+
+            var result = _cancelAppointmentHandler.Handle(appointmentId);
+
+            if (result.IsSuccess)
+            {
+                LoadAppointments();
+                LoadOrder();
+            }
+            else
+                MessageBox.Show(result.Error);
+        }
+
+        private void BtnRecordVisit_Click(object sender, RoutedEventArgs e)
+        {
+            var recordVisitWindow = new RecordVisitWindow()
+            {
+                Owner = Window.GetWindow(this)
+            };
+
+            if (recordVisitWindow.ShowDialog() == true)
+            {
+                
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿CREATE OR ALTER PROCEDURE SP_CreateCustomer
     @Name NVARCHAR(200),
-    @Age INT,
+    @Age INT = NULL,
     @Sex TINYINT,
     @Discount INT,
     @Address NVARCHAR(500),
@@ -27,7 +27,6 @@ BEGIN
 
         SET @CustomerId = SCOPE_IDENTITY();
 
-        -- 3. Add Phones
         INSERT INTO Phones (PersonID, PhoneNumber)
         SELECT @personId, Phone
         FROM @Phones;

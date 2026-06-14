@@ -28,6 +28,8 @@ namespace Presentation.View.Customer_View
         private readonly GetAllBrandsHandler _getBrandsHandler;
         private readonly GetAllTypesHandler _getTypesHandler;
         private readonly GetSpecsByTypeIdHandler _getSpecsHandler;
+        public int _newDeviceId;
+
 
         public AddDeviceWindow(int customerId, AddDeviceToCustomerHandler addDeviceHandler,
             GetAllBrandsHandler getBrandsHandler, GetAllTypesHandler getTypesHandler,
@@ -96,16 +98,17 @@ namespace Presentation.View.Customer_View
                     SerialNumber = TxtSerial.Text?.Trim()
                 };
 
-                bool added = _addDeviceHandler.AddDeviceToCustomer(_customerId, dto);
-                if (added)
+                var result  = _addDeviceHandler.AddDeviceToCustomer(_customerId, dto);
+                if (result.IsSuccess)
                 {
                     MessageBox.Show("تم إضافة الجهاز بنجاح", "نجاح",
                         MessageBoxButton.OK, MessageBoxImage.Information);
+                    _newDeviceId = result.Value;
                     DialogResult = true;
                 }
                 else
                 {
-                    MessageBox.Show("فشل في إضافة الجهاز", "خطأ",
+                    MessageBox.Show(result.Error, "خطأ",
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }

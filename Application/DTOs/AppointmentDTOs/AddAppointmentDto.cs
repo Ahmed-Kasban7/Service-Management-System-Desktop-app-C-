@@ -7,4 +7,4 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.AppointmentDTOs;
 
-public record AddAppointmentDto(int orderId , int TachnicianId,int AssistanId, DateTime ScheduledDate , string Notes , EVisitType VisitType , EAppointmentState AppointmentState  );
+public record AddAppointmentDto(int orderId , int TachnicianId,int? AssistanId, int? DriverId, DateTime ScheduledDate , string Notes , EVisitType VisitType );

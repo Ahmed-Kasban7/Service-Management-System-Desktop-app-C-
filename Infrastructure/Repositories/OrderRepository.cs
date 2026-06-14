@@ -90,7 +90,7 @@ public class OrderRepository:IOrderRepository
                 reader["Notes"]?.ToString(),
                 (int)reader["CustomerId"],
                 (int)reader["DeviceId"],
-                (EOrderState)Convert.ToByte(reader["OrderState"])
+                (EOrderState)Convert.ToByte(reader["state"])
             );
         }
 
@@ -178,27 +178,25 @@ public class OrderRepository:IOrderRepository
             );
 
             return new OrderDetailsDto(
-                OrderId: reader["OrderID"] != DBNull.Value ? (int)reader["OrderID"] : 0,
-                OrderNumber: reader["OrderNumber"]?.ToString(),
-                Problem: reader["Problem"]?.ToString(),
-                Notes: reader["Notes"] == DBNull.Value ? null : reader["Notes"]?.ToString(),
-
-                StartDate: reader["StartDate"] != DBNull.Value
-                    ? (DateTime)reader["StartDate"]
-                    : DateTime.MinValue,
-
-                EndDate: reader["EndedDate"] == DBNull.Value
-                    ? null
-                    : (DateTime?)reader["EndedDate"],
-
-                State: (reader["OrderState"].ToString()),
-
-                CustomerName: reader["Name"]?.ToString(),
-                Address: reader["Address"]?.ToString(),
-                CustomerPhones: reader["PhoneNumbers"]?.ToString() ?? "",
-
-                CustomerDevice: device
-            );
+     OrderId: reader["OrderID"] != DBNull.Value ? (int)reader["OrderID"] : 0,
+     OrderNumber: reader["OrderNumber"]?.ToString(),
+     Problem: reader["Problem"]?.ToString(),
+     Notes: reader["Notes"] == DBNull.Value ? null : reader["Notes"]?.ToString(),
+     StartDate: reader["StartDate"] != DBNull.Value
+         ? (DateTime)reader["StartDate"]
+         : DateTime.MinValue,
+     EndDate: reader["EndedDate"] == DBNull.Value
+         ? null
+         : (DateTime?)reader["EndedDate"],
+     OrderState: reader["OrderState"] != DBNull.Value      
+         ? Convert.ToByte(reader["OrderState"])
+         : (byte)0,
+     State: reader["State"]?.ToString(),                     
+     CustomerName: reader["Name"]?.ToString(),
+     Address: reader["Address"]?.ToString(),
+     CustomerPhones: reader["PhoneNumbers"]?.ToString() ?? "",
+     CustomerDevice: device
+ );
         }
 
         return null;

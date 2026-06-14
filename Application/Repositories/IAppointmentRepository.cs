@@ -1,4 +1,5 @@
 ﻿using Application.Common;
+using Application.DTOs.AppointmentDTOs;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -8,8 +9,12 @@ using System.Threading.Tasks;
 
 namespace Application.Repositories;
 
-public interface IAppointmentRepository:ICommandRepository<Appointment>
+public interface IAppointmentRepository
 {
     int Create(Appointment entity);
-    int Update(Appointment entity);
+    bool Update(UpdateAppointmentDto entity);
+    public IEnumerable<AppointmentSummaryDto> GetAppointmentByOrderId(int orderId);
+    public AppointmentDetailsDto? GetById(int appointmentId);
+    public bool Cancel(int appointmentId);
+
 }

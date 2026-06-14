@@ -1,4 +1,5 @@
-﻿using Application.DTOs.DeviceDTOs;
+﻿using Application.Common;
+using Application.DTOs.DeviceDTOs;
 using Application.Repositories;
 using Domain.Entities;
 using System;
@@ -18,13 +19,15 @@ public class AddDeviceToCustomerHandler
         _deviceRepository = deviceRepository;
     }
 
-    public bool AddDeviceToCustomer(int customerId, DeviceAddDTO deviceDto)
+    public Result<int> AddDeviceToCustomer(int customerId, DeviceAddDTO deviceDto)
     {
         if (deviceDto.BrandID <= 0 || deviceDto.TypeID <= 0 || deviceDto.SpecID <= 0)
-            throw new ArgumentException("برجاء اختيار النوع والماركة والموصفات.");
+            return Result<int>.Failure( "برجاء اختيار النوع والماركة والموصفات.");
 
         var device = new Device(deviceDto.SerialNumber, deviceDto.Model, deviceDto.BrandID, deviceDto.TypeID, deviceDto.SpecID);
 
-        return _deviceRepository.AddDeviceToCustomer(customerId, device);
+        int deviceId = _deviceRepository.AddDeviceToCustomer(customerId, device);
+
+        return Result<int>.Success(deviceId);
     }
 }

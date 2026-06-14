@@ -9,14 +9,14 @@ BEGIN
         ord.OrderNumber,
         ord.Problem,
         ord.Notes,
-
+        ord.OrderState,
         CASE 
             WHEN ord.OrderState = 0 THEN N'قيد الانتظار'
             WHEN ord.OrderState = 1 THEN N'مجدول'
             WHEN ord.OrderState = 2 THEN N'جاري التنفيذ'
             WHEN ord.OrderState = 3 THEN N'مكتمل'
             WHEN ord.OrderState = 4 THEN N'ملغي'
-        END AS OrderState,
+        END AS State,
 
         ord.StartDate,
         ord.EndedDate,
