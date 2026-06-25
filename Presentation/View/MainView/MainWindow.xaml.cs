@@ -4,7 +4,10 @@ using Application.DTOs.CustomerDTOs;
 using Application.DTOs.DeviceDTOs;
 using Application.Features.AppointmentManagement.Commands;
 using Application.Features.AppointmentManagement.Queries;
+using Application.Features.BrandManagement.Commands;
 using Application.Features.BrandManagement.Queries;
+using Application.Features.CampaignManagement.Command;
+using Application.Features.CampaignManagement.Queries;
 using Application.Features.CustomerManagement.Queries;
 using Application.Features.CustomerManagment.Commands;
 using Application.Features.DeviceManagement.Commands;
@@ -14,8 +17,12 @@ using Application.Features.OrderManagement.Commands;
 using Application.Features.OrderManagement.Queries;
 using Application.Features.PhoneManagement.Commands;
 using Application.Features.PhoneManagement.Queries;
+using Application.Features.SourceManagement;
+using Application.Features.SpecManagement.Commands;
 using Application.Features.SpecManagement.Queries;
+using Application.Features.TypeManagement.Commands;
 using Application.Features.TypeManagement.Queries;
+using Application.Features.VisitManagement;
 using Microsoft.Extensions.Configuration;
 using Presentation.View.Customer_View;
 using Presentation.View.OrderView;
@@ -65,7 +72,32 @@ namespace Presentation.View.MainView
         private GetAppointmentsByOrderIdHandler _getAppointments;
         private UpdateAppointmentHandler _updateAppointmentHandler;
         private GetAppointmentByIdHandler _getAppointmentByIdHandler;
-        private readonly CancelAppointmentHandler _cancelAppointmentHandler;
+        private readonly CancelAppointmentHandler _cancelAppointmentHandler; 
+        private readonly CreateVisitHandler _createVisitHandler;
+        private readonly GetAllEmployeesLookupHandler _getAllEmployees;
+        private readonly GetVisitDetailsHandler _getVisitDetails;
+        private readonly CreateCampaignHandler _createCampaignHandler;
+        private readonly GetAllSourcesHandler _getAllSources;
+        private readonly GetPagedCampaignSummariesHandler _getPagedCampaignSummaries;
+        private readonly SearchCampaignsPaged _searchCampaignsPaged;
+        private readonly GetCampaignDetailsHandler _getCampaignDetails;
+        private readonly DeleteCampaignHandler _deleteCampaign;
+        private readonly UpdateCampaignHandler _updateCampaign;
+        private readonly GetCampaignLookupHandler _getCampaignLookup;
+        private readonly CreateBrandHandler _createBrandHandler;
+        private readonly DeleteBrandHandler _deleteBrand;
+        private readonly UpdateBrandHandler _updateBrandHandler;
+        private readonly AddTypeHandler _addTypeHandler;
+        private readonly DeleteTypeHandler deleteTypeHandler;
+        private readonly UpdateTypeHandler _updateTypeHandler;
+        private readonly GetAllSpecsHandler _getAllSpecs;
+
+        private readonly AddSpecHandler _addSpecHandler;
+        private readonly DeleteSpecHandler _deleteSpecHandler;
+
+        private readonly UpdateSpecHandler _updateSpecHandler;
+
+
 
 
 
@@ -86,9 +118,18 @@ namespace Presentation.View.MainView
             DeleteCustomerHandler deleteCustomer ,  GetEmployeesLookupHandler getEmployees , 
             CreateAppointmentHandler createAppointment , GetAppointmentsByOrderIdHandler getAppointments ,
             UpdateAppointmentHandler updateAppointment , GetAppointmentByIdHandler 
-            getAppointment , CancelAppointmentHandler cancelAppointment)
-        {
-            InitializeComponent();
+            getAppointment , CancelAppointmentHandler cancelAppointment  , CreateVisitHandler createVisit ,
+            GetAllEmployeesLookupHandler getAllEmployees , GetVisitDetailsHandler getVisitDetails ,
+            CreateCampaignHandler createCampaign , GetAllSourcesHandler getAllSources ,
+            GetPagedCampaignSummariesHandler getPagedCampaign , SearchCampaignsPaged searchCampaigns 
+            , GetCampaignDetailsHandler detailsHandler , DeleteCampaignHandler deleteCampaign ,
+            UpdateCampaignHandler updateCampaign , GetCampaignLookupHandler getCampaignLookup, 
+            CreateBrandHandler createBrandHandler , DeleteBrandHandler deleteBrand , 
+            UpdateBrandHandler updateBrand , AddTypeHandler addTypeHandler , 
+            DeleteTypeHandler deleteType  , UpdateTypeHandler updateType , 
+            GetAllSpecsHandler getAllSpecs , AddSpecHandler addSpecHandler , DeleteSpecHandler deleteSpec , UpdateSpecHandler updateSpecHandler)
+        { 
+           InitializeComponent();
             LoadSavedLogo();
             TxtTodayDate.Text = DateTime.Now.ToString("dddd، dd MMMM yyyy", new CultureInfo("ar-EG"));
             _getOrderFullDetailsHandler = getOrderFullDetails;
@@ -124,8 +165,30 @@ namespace Presentation.View.MainView
             _updateAppointmentHandler   = updateAppointment;
             _getAppointmentByIdHandler = getAppointment;
             _cancelAppointmentHandler = cancelAppointment;
+            _createVisitHandler = createVisit;
+            _getAllEmployees = getAllEmployees;
+            _getVisitDetails = getVisitDetails;
 
+            _createCampaignHandler = createCampaign;
+            _getAllSources = getAllSources;
+            _getPagedCampaignSummaries = getPagedCampaign;
+            _searchCampaignsPaged = searchCampaigns;
+            _getCampaignDetails = detailsHandler;
+            _deleteCampaign = deleteCampaign;
+            _updateCampaign = updateCampaign;
+            _getCampaignLookup = getCampaignLookup;
+            _createBrandHandler = createBrandHandler;
+            _deleteBrand = deleteBrand;
+            _updateBrandHandler = updateBrand;
+            _addTypeHandler = addTypeHandler;
+            deleteTypeHandler = deleteType;
+            _updateTypeHandler = updateType;
+            _getAllSpecs = getAllSpecs;
 
+            _addSpecHandler = addSpecHandler;
+            _deleteSpecHandler = deleteSpec;
+
+            _updateSpecHandler = updateSpecHandler;
 
             _createOrderHandler.AddOrderToList += OrdersControl.RefreshIfVisible;
         }
@@ -143,7 +206,8 @@ namespace Presentation.View.MainView
 
             OrdersControl.InitializeServices(_getPagedOrderSummariesHandler,
                 _getOrderFullDetailsHandler, _updateOrderHandler, _SearchOrderPageHandler , 
-                _getEmployeesLookupHandler , _createAppointmentHandler , _getAppointments , _updateAppointmentHandler , _getAppointmentByIdHandler , _cancelAppointmentHandler);
+                _getEmployeesLookupHandler , _createAppointmentHandler , _getAppointments ,
+                _updateAppointmentHandler , _getAppointmentByIdHandler , _cancelAppointmentHandler , _createVisitHandler , _getAllEmployees , _getVisitDetails);
 
             OrdersControl.NavigateToOrderDetails(orderId, isComingFromDevices: true);
         }
@@ -164,6 +228,7 @@ namespace Presentation.View.MainView
             CustomersControl.Visibility = Visibility.Collapsed;
             OrdersControl.Visibility = Visibility.Collapsed;
             SettingsControl.Visibility = Visibility.Collapsed;
+            CampaignsControl.Visibility = Visibility.Collapsed;
 
             selectedContent.Visibility = Visibility.Visible;
             SidePanelColumn.Width = new GridLength(0);
@@ -177,7 +242,8 @@ namespace Presentation.View.MainView
             {
                 OrdersControl.InitializeServices(_getPagedOrderSummariesHandler, 
                     _getOrderFullDetailsHandler, _updateOrderHandler, _SearchOrderPageHandler
-                    , _getEmployeesLookupHandler , _createAppointmentHandler , _getAppointments , _updateAppointmentHandler , _getAppointmentByIdHandler , _cancelAppointmentHandler);
+                    , _getEmployeesLookupHandler , _createAppointmentHandler , _getAppointments ,
+                    _updateAppointmentHandler , _getAppointmentByIdHandler , _cancelAppointmentHandler, _createVisitHandler , _getAllEmployees , _getVisitDetails);
 
                 OrdersControl.OrdersListPanel.Visibility = Visibility.Visible;
 
@@ -196,7 +262,21 @@ namespace Presentation.View.MainView
                     _getCustomerPhonesHandler, _addPhoneToCustomer, _deletePhoneHandler
                     , _updatePhoneHandler, customerDevicesHandler, _addDeviceHandler, 
                     _updateDeviceHandler, _deleteDeviceHandler, _getDeviceOrders ,
-                    _getCustomerOrdersHandler , _deleteCustomerHandler);
+                    _getCustomerOrdersHandler , _deleteCustomerHandler , _getAllSources , _getCampaignLookup);
+            }
+
+            if(content == CampaignsControl)
+            {
+                CampaignsControl.InitializeServices(_createCampaignHandler , _getAllSources , 
+                    _getPagedCampaignSummaries , _searchCampaignsPaged , _getCampaignDetails , _deleteCampaign , _updateCampaign );
+            }
+
+            if(content == SettingsControl)
+            {
+                SettingsControl.InitializeServices(_getAllTypesHandler , _getAllBrandsHandler ,
+                    _getSpecsByTypeIdHandler , _createBrandHandler , _deleteBrand , _updateBrandHandler ,
+                    _addTypeHandler , deleteTypeHandler , _updateTypeHandler , _getAllSpecs , _addSpecHandler 
+                    , _deleteSpecHandler , _updateSpecHandler);
             }
         }
 
@@ -216,6 +296,11 @@ namespace Presentation.View.MainView
                 case "Settings":
                     SwitchToTab(SettingsControl, btn);
                     break;
+                case "Campaign":
+                    SwitchToTab(CampaignsControl, btn);
+                    break;
+
+
             }
         }
 
@@ -224,7 +309,7 @@ namespace Presentation.View.MainView
             var createOrderWin = new CreateOrderWindow(_getCustomersLookupHandler,
                 _getCustomerDevicesHandler, _createOrderHandler , _createCustomerHandler 
                 , _getAllBrandsHandler, _getAllTypesHandler  , _getSpecsByTypeIdHandler , _addDeviceHandler , 
-                _getAllBrandsHandler , _getAllTypesHandler  , _getSpecsByTypeIdHandler)
+                _getAllBrandsHandler , _getAllTypesHandler  , _getSpecsByTypeIdHandler , _getAllSources , _getCampaignLookup)
             {
                 Owner = this
             };
@@ -299,7 +384,8 @@ namespace Presentation.View.MainView
                 _updateOrderHandler,
                 _SearchOrderPageHandler
                 , _getEmployeesLookupHandler
-                , _createAppointmentHandler , _getAppointments , _updateAppointmentHandler , _getAppointmentByIdHandler , _cancelAppointmentHandler
+                , _createAppointmentHandler , _getAppointments , _updateAppointmentHandler , 
+                _getAppointmentByIdHandler , _cancelAppointmentHandler , _createVisitHandler , _getAllEmployees , _getVisitDetails
             );
 
             OrdersControl.NavigateToOrderDetails(orderId, isComingFromDevices: false);

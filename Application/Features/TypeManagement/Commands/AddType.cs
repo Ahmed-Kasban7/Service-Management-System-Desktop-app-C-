@@ -6,29 +6,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Features.TypeManagement;
+namespace Application.Features.TypeManagement.Commands;
 
-public class DeviceTypeService
+public class AddTypeHandler
 {
+
     private readonly IDeviceTypeRepository _typeRepository;
 
-    public DeviceTypeService(IDeviceTypeRepository typeRepository)
+    public AddTypeHandler(IDeviceTypeRepository typeRepository)
     {
         _typeRepository = typeRepository;
     }
 
-    public IEnumerable<TypeDto> GetAllTypes()
-    {
-        return _typeRepository.GetAllTypes();
-    }
-
-    public bool AddType(string type)
+    public bool Handle(string type)
     {
         if (string.IsNullOrWhiteSpace(type))
             throw new ArgumentNullException("لا يمكن أن يكون النوع فارغًا.");
 
-        if(type.Length >100)
-            throw new ArgumentException("لا يمكن أن يتجاوز طول النوع 100 حرف.");
+        if (type.Length > 100)
+            throw new ArgumentException("لا يمكن أن يتجاوز طول النوع 200 حرف.");
 
 
         return _typeRepository.AddType(type);

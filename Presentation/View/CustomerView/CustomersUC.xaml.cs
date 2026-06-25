@@ -3,6 +3,7 @@ using Application.DTOs;
 using Application.DTOs.CustomerDTOs;
 using Application.DTOs.OrderDTOs;
 using Application.Features.BrandManagement.Queries;
+using Application.Features.CampaignManagement.Queries;
 using Application.Features.CustomerManagement.Queries;
 using Application.Features.CustomerManagment.Commands;
 using Application.Features.DeviceManagement.Commands;
@@ -11,10 +12,11 @@ using Application.Features.OrderManagement.Commands;
 using Application.Features.OrderManagement.Queries;
 using Application.Features.PhoneManagement.Commands;
 using Application.Features.PhoneManagement.Queries;
+using Application.Features.SourceManagement;
 using Application.Features.SpecManagement.Queries;
 using Application.Features.TypeManagement.Queries;
 using Presentation.View.Customer_View;
-using Presentation.View.MainView; // تأكد من Namespace الخاص بـ MainWindow
+using Presentation.View.MainView; 
 using Presentation.View.OrderView;
 using System;
 using System.Collections.Generic;
@@ -56,6 +58,8 @@ namespace Presentation.View.CustomerView
         private GetDeviceOrders _getDeviceOrders;
         private  GetCustomerOrdersHandler _getCustomerOrdersHandler;
         private DeleteCustomerHandler _deleteCustomerHandler;
+        private GetAllSourcesHandler _getAllSourcesHandler;
+        private GetCampaignLookupHandler _getCampaignLookup;
 
         public event EventHandler<int> OrderDetailsRequested;
 
@@ -73,7 +77,8 @@ namespace Presentation.View.CustomerView
             , GetCustomerDevicesHandler getCustomerDevices,
             AddDeviceToCustomerHandler addDeviceToCustomer
             , UpdateDeviceHandler updateDevice, DeleteDeviceHandler deleteDevice, 
-            GetDeviceOrders getDeviceOrders, GetCustomerOrdersHandler getCustomerOrdersHandler , DeleteCustomerHandler deleteCustomer)
+            GetDeviceOrders getDeviceOrders, GetCustomerOrdersHandler getCustomerOrdersHandler ,
+            DeleteCustomerHandler deleteCustomer , GetAllSourcesHandler  getAllSources , GetCampaignLookupHandler getCampaignLookup)
         {
             _createCustomerHandler = createCustomer;
             _getAllBrandsHandler = getAllBrands;
@@ -94,6 +99,9 @@ namespace Presentation.View.CustomerView
             _getDeviceOrders = getDeviceOrders; 
             _getCustomerOrdersHandler = getCustomerOrdersHandler;
             _deleteCustomerHandler = deleteCustomer;
+            _getAllSourcesHandler = getAllSources;
+            _getCampaignLookup = getCampaignLookup;
+
 
 
             createCustomer.CustomerCreated += LoadAndBindOrders;
@@ -107,7 +115,7 @@ namespace Presentation.View.CustomerView
                 _createCustomerHandler,
                 _getAllBrandsHandler,
                 _getAllTypesHandler,
-                _getSpecsByTypeIdHandler)
+                _getSpecsByTypeIdHandler , _getAllSourcesHandler , _getCampaignLookup)
             {
                 Owner = Window.GetWindow(this)
             };

@@ -1,0 +1,380 @@
+﻿<UserControl x:Class="Presentation.View.OrderView.PrintableInvoiceUC"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Width="794" Background="White"
+             FlowDirection="RightToLeft">
+
+    <UserControl.Resources>
+        <Style x:Key="HeaderGold" TargetType="Border">
+            <Setter Property="Background" Value="#C8A96E"/>
+            <Setter Property="Padding" Value="10,8"/>
+        </Style>
+
+        <Style x:Key="TableHeader" TargetType="Border">
+            <Setter Property="Background" Value="#C8A96E"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+
+        <Style x:Key="TableRow" TargetType="Border">
+            <Setter Property="BorderBrush" Value="#DDDDDD"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Border Padding="40,30" Background="White">
+        <StackPanel>
+
+            <!-- ===== HEADER ===== -->
+            <Grid Margin="0,0,0,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- عنوان + معلومات -->
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock Text="فاتورة صيانة"
+                               FontSize="26" FontWeight="Bold"
+                               Foreground="#1A1A1A"
+                               Margin="0,0,0,8"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="رقم الفاتورة: " 
+                                   FontWeight="Bold" Foreground="#C8A96E" FontSize="13"/>
+                        <TextBlock Grid.Column="1" x:Name="TxtInvoiceNumber" Text="2210"
+                                   FontWeight="Bold" FontSize="13" Foreground="#1A1A1A"/>
+                    </Grid>
+
+                    <Grid Margin="0,2,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="التاريخ: " 
+                                   FontWeight="Bold" Foreground="#C8A96E" FontSize="13"/>
+                        <TextBlock Grid.Column="1" x:Name="TxtDate" Text="13 يونيو 2026"
+                                   FontWeight="Bold" FontSize="13" Foreground="#1A1A1A"/>
+                    </Grid>
+
+                    <Grid Margin="0,2,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="فترة الضمان: " 
+                                   FontWeight="Bold" Foreground="#C8A96E" FontSize="13"/>
+                        <TextBlock Grid.Column="1" x:Name="TxtWarranty" Text="6 شهور"
+                                   FontWeight="Bold" FontSize="13" Foreground="#1A1A1A"/>
+                    </Grid>
+                </StackPanel>
+
+                <!-- لوجو -->
+                <Border Grid.Column="1" Width="90" Height="90"
+                        VerticalAlignment="Top" BorderBrush="#E0E0E0" BorderThickness="1">
+                    <Image x:Name="ImgLogo" Stretch="UniformToFill"/>
+                </Border>
+            </Grid>
+
+            <!-- خط فاصل ذهبي -->
+            <Border Height="2" Background="#C8A96E" Margin="0,0,0,16"/>
+
+            <!-- ===== بيانات العميل ===== -->
+            <Border Background="#F9F6F0" Padding="12,10" Margin="0,0,0,16">
+                <StackPanel>
+                    <Grid Margin="0,0,0,3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="الاسم : " 
+                                   FontWeight="Bold" FontSize="13" Foreground="#1A1A1A"/>
+                        <TextBlock Grid.Column="1" x:Name="TxtCustomerName" Text="أ/ حسن اسماعيل"
+                                   FontSize="13" Foreground="#1A1A1A"/>
+                    </Grid>
+                    <Grid Margin="0,0,0,3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="العنوان : " 
+                                   FontWeight="Bold" FontSize="13" Foreground="#1A1A1A"/>
+                        <TextBlock Grid.Column="1" x:Name="TxtCustomerAddress" Text="البراجيل / الجيزة"
+                                   FontSize="13" Foreground="#1A1A1A"/>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="رقم الهاتف : " 
+                                   FontWeight="Bold" FontSize="13" Foreground="#1A1A1A"/>
+                        <TextBlock Grid.Column="1" x:Name="TxtCustomerPhone" Text="01116327915"
+                                   FontSize="13" Foreground="#1A1A1A"
+                                   FlowDirection="RightToLeft"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- ===== التشخيص ===== -->
+            <Border Style="{StaticResource HeaderGold}" Margin="0,0,0,0">
+                <TextBlock Text="التشخيص" FontWeight="Bold" FontSize="14"
+                           Foreground="White" HorizontalAlignment="Center"/>
+            </Border>
+
+            <Border BorderBrush="#CCCCCC" BorderThickness="1,0,1,1" Margin="0,0,0,16">
+                <StackPanel Margin="10">
+                    <TextBlock x:Name="TxtDeviceName"
+                               Text="White Point / TopLoad"
+                               FontWeight="Bold" FontSize="14"
+                               HorizontalAlignment="Center"
+                               Margin="0,6,0,4"/>
+                    <TextBlock x:Name="TxtProblem"
+                               Text="لا تعمل"
+                               FontSize="13"
+                               HorizontalAlignment="Center"
+                               Foreground="#444444"
+                               Margin="0,0,0,6"/>
+                </StackPanel>
+            </Border>
+
+            <!-- ===== جدول القطع ===== -->
+            <Grid Margin="0,0,0,12">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- هيدر الجدول -->
+                <Border Grid.Row="0" Background="#C8A96E">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="70"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="م"
+                                   FontWeight="Bold" Foreground="White"
+                                   FontSize="13" Padding="8,6"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="البيـــان"
+                                   FontWeight="Bold" Foreground="White"
+                                   FontSize="13" Padding="8,6"/>
+                        <TextBlock Grid.Column="2" Text="الكمية"
+                                   FontWeight="Bold" Foreground="White"
+                                   FontSize="13" Padding="8,6"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Column="3" Text="السعر"
+                                   FontWeight="Bold" Foreground="White"
+                                   FontSize="13" Padding="8,6"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Column="4" Text="الاجمالي"
+                                   FontWeight="Bold" Foreground="White"
+                                   FontSize="13" Padding="8,6"
+                                   HorizontalAlignment="Center"/>
+                    </Grid>
+                </Border>
+
+                <!-- صفوف القطع -->
+                <ItemsControl Grid.Row="1" x:Name="PartsItemsControl">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="#DDDDDD" BorderThickness="0,0,0,1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="70"/>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="80"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0"
+                                               Text="{Binding RowNumber}"
+                                               FontSize="13" Padding="8,6"
+                                               HorizontalAlignment="Center"
+                                               Foreground="#333333"/>
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding PartName}"
+                                               FontSize="13" Padding="8,6"
+                                               Foreground="#333333"/>
+                                    <TextBlock Grid.Column="2"
+                                               Text="{Binding Quantity}"
+                                               FontSize="13" Padding="8,6"
+                                               HorizontalAlignment="Center"
+                                               Foreground="#333333"/>
+                                    <TextBlock Grid.Column="3"
+                                               Text="{Binding UnitPrice, StringFormat={}{0:N2}}"
+                                               FontSize="13" Padding="8,6"
+                                               HorizontalAlignment="Center"
+                                               Foreground="#333333"
+                                               FlowDirection="LeftToRight"/>
+                                    <TextBlock Grid.Column="4"
+                                               Text="{Binding TotalPrice, StringFormat={}{0:N2}}"
+                                               FontSize="13" Padding="8,6"
+                                               HorizontalAlignment="Center"
+                                               Foreground="#333333"
+                                               FlowDirection="LeftToRight"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+
+            <!-- ===== الإجماليات ===== -->
+            <Grid Margin="0,0,0,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="220"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ملاحظات -->
+                <!-- ===== الملاحظات ===== -->
+                <StackPanel Margin="0,0,0,12">
+                    <TextBlock Text="ملاحظات:" FontWeight="Bold" FontSize="15" 
+               Foreground="#1A1A1A" Margin="0,0,0,8"/>
+
+                    <Border Background="#FAFAFA" CornerRadius="6" 
+            BorderBrush="#E8E8E8" BorderThickness="1"
+            Padding="14,12">
+                        <StackPanel>
+                            <!-- النقاط الرئيسية -->
+                            <TextBlock Text="• الضمان ساري على الجزء الذي تم إصلاحه أو تغييره فقط. ولا يشمل باقي أجزاء الجهاز."
+                       TextWrapping="Wrap" Margin="0,2" FontSize="12" Foreground="#444444"/>
+
+                            <TextBlock Text="• مدة الضمان يتم تحديدها حسب نوع العطل وطبيعة الغيار المثبتة."
+                       TextWrapping="Wrap" Margin="0,2" FontSize="12" Foreground="#444444"/>
+
+                            <TextBlock Text="• الضمان يشمل عيوب الصيانة أو التركيب فقط. ولا يشمل سوء الاستخدام أو الإهمال."
+                       TextWrapping="Wrap" Margin="0,2" FontSize="12" Foreground="#444444"/>
+
+                            <!-- حالات سقوط الضمان -->
+                            <TextBlock Text="• يسقط الضمان في حالة:" FontWeight="Bold" 
+                       Margin="0,8,0,3" FontSize="12" Foreground="#1A1A1A"/>
+
+                            <TextBlock Text="  - العبث بالجهاز أو فتحه بواسطة فني آخر" 
+                       Margin="0,1" FontSize="12" Foreground="#444444"/>
+
+                            <TextBlock Text="  - تعرض الجهاز لكسر حريق. مياه زائدة. أو تيار كهربائي غير منتظم." 
+                       Margin="0,1" FontSize="12" Foreground="#444444" TextWrapping="Wrap"/>
+
+                            <TextBlock Text="  - استخدام قطعة غيار غير التي تم تركيبها من خلالنا" 
+                       Margin="0,1" FontSize="12" Foreground="#444444" TextWrapping="Wrap"/>
+
+                            <TextBlock Text="  - وجود فاتورة أو مبلغ مستحق لم يتم دفعه." 
+                       Margin="0,1" FontSize="12" Foreground="#444444"/>
+
+                            <!-- الأعطال غير المشمولة -->
+                            <TextBlock Text="• لا يشمل الضمان الأعطال الناتجة عن:" FontWeight="Bold" 
+                       Margin="0,8,0,3" FontSize="12" Foreground="#1A1A1A"/>
+
+                            <TextBlock Text="  - زيادة أو نقص الكهرباء." 
+                       Margin="0,1" FontSize="12" Foreground="#444444"/>
+
+                            <TextBlock Text="  - انسداد المياه أو مشاكل السباكة." 
+                       Margin="0,1" FontSize="12" Foreground="#444444"/>
+
+                            <TextBlock Text="  - سوء التشغيل أو التحميل الزائد عن المسموح به." 
+                       Margin="0,1" FontSize="12" Foreground="#444444" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- أرقام -->
+                <Border Grid.Column="1" BorderBrush="#DDDDDD"
+                        BorderThickness="1" Margin="0,0,0,16">
+                    <StackPanel Margin="0,0,0,12">
+                        <!-- التكلفة -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="90"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="التكلفة"
+                                       FontWeight="Bold" FontSize="13"
+                                       Padding="8,6" Background="#F9F9F9"/>
+                            <TextBlock Grid.Column="1"
+                                       x:Name="TxtSubtotal"
+                                       Text="2,490.00"
+                                       FontSize="13" Padding="8,6"
+                                       HorizontalAlignment="Center"
+                                       Foreground="#1A1A1A"
+                                       FlowDirection="LeftToRight"/>
+                        </Grid>
+
+                        <Border Height="0.5" Background="#DDDDDD"/>
+
+                        <!-- الخصم -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="90"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="الخصم"
+                                       FontWeight="Bold" FontSize="13"
+                                       Padding="8,6" Background="#F9F9F9"/>
+                            <TextBlock Grid.Column="1"
+                                       x:Name="TxtDiscount"
+                                       Text="0.00"
+                                       FontSize="13" Padding="8,6"
+                                       HorizontalAlignment="Center"
+                                       Foreground="#1A1A1A"
+                                       FlowDirection="LeftToRight"/>
+                        </Grid>
+
+                        <Border Height="0.5" Background="#DDDDDD"/>
+
+                        <!-- الإجمالي -->
+                        <Grid Background="#C8A96E">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="90"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="الإجمالي"
+                                       FontWeight="Bold" FontSize="14"
+                                       Foreground="White" Padding="8,8"/>
+                            <TextBlock Grid.Column="1"
+                                       x:Name="TxtTotal"
+                                       Text="2,490.00"
+                                       FontSize="14" FontWeight="Bold"
+                                       Foreground="White" Padding="8,8"
+                                       HorizontalAlignment="Center"
+                                       FlowDirection="LeftToRight"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- ===== عرض الشكر ===== -->
+            <Border Background="#F9F6F0" 
+                    BorderBrush="#C8A96E" BorderThickness="0,2,0,0"
+                    Padding="12,10" Margin="0,8,0,0">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock FontSize="12" Foreground="#1A1A1A"
+                               TextAlignment="Center" LineHeight="22">
+                        <Run Text='"شكراً على ثقتك!"' FontWeight="Bold" Foreground="#C8A96E"/>
+                        <LineBreak/>
+                        <Run Text="قم بدعوة أصدقائك وأقاربك"/>
+                        <LineBreak/>
+                        <Run Text="ولك خصم " FontWeight="Bold"/>
+                        <Run Text="15% " FontWeight="Bold" Foreground="#C8A96E"/>
+                        <Run Text="في الصيانة القادمة وللمدعو خصم "/>
+                        <Run Text="10%" FontWeight="Bold" Foreground="#C8A96E"/>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </Border>
+</UserControl>

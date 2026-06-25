@@ -79,6 +79,8 @@ public class CreateCustomerHandler
             newCustomer.Sex,
             newCustomer.Address,
             newCustomer.Discount,
+            newCustomer.SourceId,
+            newCustomer.CampaignId,
             customerDevices.ToHashSet(),
             customerPhones.ToHashSet()
         );

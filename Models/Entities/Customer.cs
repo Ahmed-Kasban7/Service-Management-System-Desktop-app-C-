@@ -7,6 +7,8 @@ public class Customer : Person
 {
     public string Address { get; private set; }
     public int Discount { get; private set; }
+    public int SourceId { get; private set; }
+    public int ? CampaignId { get; private set; }
     public string CustomerNumber { get; init; }
     public int CustomerId { get; init; }
 
@@ -15,10 +17,12 @@ public class Customer : Person
     public IReadOnlySet<Device> Devices => _customerDevice;
 
     public Customer() { }
-    public Customer(string name , int ?age , ESex sex , string address , int discount , HashSet<Device> devices , HashSet<Phone> phones): base(name , age , sex , phones)
+    public Customer(string name , int ?age , ESex sex , string address , int discount , int sourceId  , int? campaignId , HashSet<Device> devices , HashSet<Phone> phones): base(name , age , sex , phones)
     {
         SetAddress(address);
         SetDiscount(discount);
+        SourceId = sourceId;
+        CampaignId = campaignId; 
 
         if (devices == null || devices.Count == 0)
             throw new InvalidOperationException("يجب اضافه جهاز واحد على الاقل ");

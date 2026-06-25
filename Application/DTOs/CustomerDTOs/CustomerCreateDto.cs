@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs;
 
- public record CustomerCreateDto(string Name,string Address, int Discount, int? Age,
+ public record CustomerCreateDto(string Name,string Address, int Discount, int? Age, int SourceId , int ? CampaignId ,
                                     ESex Sex, IEnumerable<DeviceCreateDto> Devices, IEnumerable<string> Phones);

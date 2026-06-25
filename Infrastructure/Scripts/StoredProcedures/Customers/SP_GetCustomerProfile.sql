@@ -2,7 +2,6 @@
     @id INT
 AS
 BEGIN
-
     SET NOCOUNT ON;
 
     SELECT 
@@ -12,10 +11,15 @@ BEGIN
         p.Sex,
         p.Age,
         c.Address,
-        c.Discount , 
-        p.DateCreated
+        c.Discount, 
+        p.DateCreated,
+        
+        s.SourceName,
+        cam.CampaignName
     FROM Customers c
     INNER JOIN Persons p ON p.PersonID = c.PersonID
+    LEFT JOIN Sources s ON s.SourceID = c.SourceID        
+    LEFT JOIN Campaigns cam ON cam.CampaignID = c.CampaignID  
     WHERE c.CustomerID = @id;
 
 END

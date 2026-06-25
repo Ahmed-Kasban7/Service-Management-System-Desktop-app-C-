@@ -11,10 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\BrandManagement\Commands\" />
     <Folder Include="Features\EmployeeManagement\Commands\" />
-    <Folder Include="Features\SpecManagement\Commands\" />
-    <Folder Include="Features\TypeManagement\Commands\" />
   </ItemGroup>
 
 </Project>

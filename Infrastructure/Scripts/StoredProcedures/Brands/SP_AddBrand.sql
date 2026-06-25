@@ -1,8 +1,17 @@
-﻿create or alter Procedure SP_AddBrand @brandName nvarchar(100)
-as
+﻿CREATE OR ALTER PROCEDURE SP_AddBrand
+    @BrandName NVARCHAR(200)
+AS
+BEGIN
+    SET NOCOUNT ON;
 
-begin 
+    IF EXISTS (SELECT 1 FROM Brands WHERE TRIM(BrandName) = TRIM(@BrandName))
+    BEGIN
+        SELECT 0 AS Result;
+        RETURN;
+    END
 
-insert into Brands (BrandName)
-values (@brandName)
-end 
+    INSERT INTO Brands (BrandName)
+    VALUES (TRIM(@BrandName));
+
+    SELECT 1 AS Result;
+END

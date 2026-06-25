@@ -3,7 +3,10 @@ using Application.DTOs;
 using Application.Features.AppointmentManagement.Commands;
 using Application.Features.AppointmentManagement.Queries;
 using Application.Features.BrandManagement;
+using Application.Features.BrandManagement.Commands;
 using Application.Features.BrandManagement.Queries;
+using Application.Features.CampaignManagement.Command;
+using Application.Features.CampaignManagement.Queries;
 using Application.Features.CustomerManagement.Queries;
 using Application.Features.CustomerManagment;
 using Application.Features.CustomerManagment.Commands;
@@ -16,10 +19,14 @@ using Application.Features.OrderManagement.Queries;
 using Application.Features.PhoneManagement;
 using Application.Features.PhoneManagement.Commands;
 using Application.Features.PhoneManagement.Queries;
+using Application.Features.SourceManagement;
 using Application.Features.SpecManagement;
+using Application.Features.SpecManagement.Commands;
 using Application.Features.SpecManagement.Queries;
 using Application.Features.TypeManagement;
+using Application.Features.TypeManagement.Commands;
 using Application.Features.TypeManagement.Queries;
+using Application.Features.VisitManagement;
 using Application.Repositories;
 using Application.Repositories;
 using Infrastructure;
@@ -52,10 +59,12 @@ public partial class App : System.Windows.Application
             var orderRepo = new OrderRepository();
             var employeeRepo = new EmployeeRepository();
             var appointmentRepo = new AppointmentRepository();
+            var visitRepo = new VisitRepository();
+            var campaignRepo = new CampaignRepository();
+            var sourcesRepo = new SourceRepository();
 
             var phoneService = new PhoneService(phoneRepo);
-            var BrandService = new DeviceBrandService(brandRepo);
-            var TypeService = new DeviceTypeService(typeRepo);
+           
             var SpecService = new DeviceSpecService(specRepo);
             var createOrderHandler = new CreateOrderHandler(orderRepo, customerRepo, deviceRepo);
             var  getCustomerDeviceHandler= new GetCustomerDevicesHandler(deviceRepo);
@@ -90,6 +99,30 @@ public partial class App : System.Windows.Application
             var updateAppointment = new UpdateAppointmentHandler (appointmentRepo);
             var getAppointment = new GetAppointmentByIdHandler(appointmentRepo);
             var cancleAppointment = new CancelAppointmentHandler(appointmentRepo);
+            var createVisit = new CreateVisitHandler(visitRepo );
+            var getAllEmployees = new GetAllEmployeesLookupHandler (employeeRepo);
+            var getVisitDetatils = new GetVisitDetailsHandler (visitRepo);
+            var createCampaign = new CreateCampaignHandler(campaignRepo);
+            var getAllSources = new GetAllSourcesHandler(sourcesRepo);
+            var getCampaignPage = new GetPagedCampaignSummariesHandler(campaignRepo);
+            var searchCampaign = new SearchCampaignsPaged(campaignRepo);
+            var CampaignDetails = new GetCampaignDetailsHandler(campaignRepo);
+            var deleteCampaign = new DeleteCampaignHandler (campaignRepo);
+            var updateCampaign = new UpdateCampaignHandler(campaignRepo);
+            var getCampaignLookup = new GetCampaignLookupHandler(campaignRepo);
+            var createBrand = new CreateBrandHandler (brandRepo);
+            var deleteBrand = new DeleteBrandHandler(brandRepo);
+            var updateBrand = new UpdateBrandHandler(brandRepo);
+            var addType = new AddTypeHandler(typeRepo);
+            var deleteType = new DeleteTypeHandler(typeRepo);
+            var updateType = new UpdateTypeHandler(typeRepo);
+            var getAllSpecs = new GetAllSpecsHandler(specRepo);
+
+            var addSpec = new AddSpecHandler(specRepo);
+
+            var DeleteSpec = new DeleteSpecHandler(specRepo);
+
+            var updateSpec = new UpdateSpecHandler(specRepo);
 
             var mainWindow = new MainWindow(getOrderDetails , getorderPaged  , getCustomerLookupHandler ,
                 getCustomerDeviceHandler , createOrderHandler , updateOrder
@@ -97,7 +130,11 @@ public partial class App : System.Windows.Application
                 , getPagedCustomerHandler , SearchOrderPage , SearchCustomerPage , GetCustomerBasicInfo , updateCusotmer , getCustomerPhones 
                 , addPhone , deletePhone , UpdatePhone  , customerDevices , addDevice ,
                 updateDevice , deleteDevice , getDeviceOrders , GetCustomerOrders , deleteCustomer , getEmployeesLookup , createAppointment , 
-                getAppointments , updateAppointment , getAppointment , cancleAppointment);
+                getAppointments , updateAppointment , getAppointment , cancleAppointment , createVisit , getAllEmployees 
+                , getVisitDetatils , createCampaign , getAllSources , getCampaignPage , 
+                searchCampaign , CampaignDetails , deleteCampaign , updateCampaign
+                , getCampaignLookup , createBrand , deleteBrand , updateBrand , addType , deleteType , updateType
+                , getAllSpecs , addSpec , DeleteSpec , updateSpec);
             mainWindow.Show();
         }
         catch (Exception ex)

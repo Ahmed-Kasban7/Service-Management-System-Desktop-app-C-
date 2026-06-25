@@ -5,7 +5,31 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              Background="#EEF2F7"
              FlowDirection="RightToLeft">
+    
+    <UserControl.Resources>
+        <!-- ... موارد أخرى ... -->
 
+        <!-- =====  قالب زر الإجراءات الموحد  ===== -->
+        <ControlTemplate x:Key="ActionButtonTemplate" TargetType="Button">
+            <Border Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="9" 
+                Padding="{TemplateBinding Padding}">
+                <ContentPresenter HorizontalAlignment="Center" 
+                              VerticalAlignment="Center" />
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Tag}" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.5" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </UserControl.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -70,64 +94,46 @@
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
 
                     <!-- زر حذف العميل -->
-                    <Button x:Name="BtnDeleteCustomer"
-            Content="🗑️ حذف العميل"
-            Click="BtnDeleteCustomer_Click"
-            Padding="16,8" Margin="0,0,8,0"
-            Background="White" Foreground="#EF4444"
-            FontSize="13" FontWeight="SemiBold"
-            BorderBrush="#FCA5A5" BorderThickness="1.5"
-            Cursor="Hand" VerticalAlignment="Center">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="9" Padding="{TemplateBinding Padding}">
-                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#FEF2F2"/>
-                                        <Setter Property="BorderBrush" Value="#EF4444"/>
-                                    </Trigger>
-                                    <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="Opacity" Value="0.5"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
-
+                  
                     <!-- زر تعديل البيانات -->
-                    <Button x:Name="BtnEditCustomer"
-            Content="✏️ تعديل البيانات"
-            Click="BtnEditCustomer_Click"
-            Padding="16,8"
-            Background="White" Foreground="#1E293B"
-            FontSize="13" FontWeight="SemiBold"
-            BorderBrush="#E2E8F0" BorderThickness="1.5"
-            Cursor="Hand" VerticalAlignment="Center">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="9" Padding="{TemplateBinding Padding}">
-                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#F8FAFC"/>
-                                        <Setter Property="BorderBrush" Value="#2563EB"/>
-                                    </Trigger>
-                                    <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="Opacity" Value="0.5"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
+                    <StackPanel Grid.Column="2" 
+              Orientation="Horizontal" 
+              VerticalAlignment="Center">
+
+                        <!-- زر التعديل -->
+                        <Button x:Name="BtnEdit"
+              Click="BtnEditCustomer_Click"
+              Content="✏️ تعديل البيانات"
+              Padding="16,8"
+              Margin="0,0,8,0"
+              Background="White"
+              Foreground="#1E293B"
+              FontSize="13" 
+              FontWeight="SemiBold"
+              BorderBrush="#E2E8F0" 
+              BorderThickness="1.5"
+              Cursor="Hand" 
+              VerticalAlignment="Center"
+              Tag="#F8FAFC"
+              Template="{StaticResource ActionButtonTemplate}" />
+
+                        <!-- زر الحذف -->
+                        <Button x:Name="BtnDelete"
+              Click="BtnDeleteCustomer_Click"
+              Content="🗑️ حذف العميل"
+              Padding="16,8"
+              Background="White" 
+              Foreground="#EF4444"
+              FontSize="13" 
+              FontWeight="SemiBold"
+              BorderBrush="#FCA5A5" 
+              BorderThickness="1.5"
+              Cursor="Hand" 
+              VerticalAlignment="Center"
+              Tag="#FEF2F2"
+              Template="{StaticResource ActionButtonTemplate}" />
+                    </StackPanel>
+
 
                 </StackPanel>
             </Grid>
@@ -166,55 +172,177 @@
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
             <Grid Margin="24,20,24,24">
 
-                <Border x:Name="PanelBasicInfo" Visibility="Visible"
-                        Background="White" CornerRadius="14"
-                        BorderBrush="#E2E8F0" BorderThickness="1" Padding="20">
+                <!-- ============================================ -->
+                <!--   بطاقة البيانات الأساسية (عرض)              -->
+                <!-- ============================================ -->
+                <Border x:Name="PanelBasicInfo" 
+        Visibility="Visible"
+        Background="White" 
+        CornerRadius="14"
+        BorderBrush="#E2E8F0" 
+        BorderThickness="1" 
+        Padding="22,20">
+
                     <Border.Effect>
-                        <DropShadowEffect BlurRadius="8" Color="#000" Opacity="0.03" ShadowDepth="1"/>
+                        <DropShadowEffect BlurRadius="8" 
+                          Color="#000" 
+                          Opacity="0.04" 
+                          ShadowDepth="1" />
                     </Border.Effect>
+
                     <StackPanel FlowDirection="RightToLeft">
+
+                        <!-- =====  العنوان  ===== -->
                         <TextBlock Text="📋 البيانات الأساسية"
-                                   FontSize="15" FontWeight="Bold"
-                                   Foreground="#1E293B" Margin="0,0,0,16"/>
-                        <Grid Margin="0,0,0,14">
+                   FontSize="16" 
+                   FontWeight="Bold"
+                   Foreground="#0F172A" 
+                   Margin="0,0,0,18" />
+
+                        <!-- =====  الصف الأول: كود العميل + الاسم  ===== -->
+                        <Grid Margin="0,0,0,16">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
+
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="كود العميل" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,4"/>
-                                <TextBlock x:Name="TxtProfileID" Text="---" FontSize="15" FontWeight="SemiBold" Foreground="#0F172A"/>
+                                <TextBlock Text="كود العميل" 
+                           FontSize="11" 
+                           Foreground="#94A3B8" 
+                           Margin="0,0,0,4" />
+                                <TextBlock x:Name="TxtProfileID" 
+                           Text="---" 
+                           FontSize="15" 
+                           FontWeight="SemiBold" 
+                           Foreground="#0F172A" />
                             </StackPanel>
-                            <StackPanel Grid.Column="1">
-                                <TextBlock Text="الاسم الكامل" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,4"/>
-                                <TextBlock x:Name="TxtProfileName" Text="---" FontSize="15" FontWeight="SemiBold" Foreground="#0F172A" TextWrapping="Wrap"/>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="الاسم الكامل" 
+                           FontSize="11" 
+                           Foreground="#94A3B8" 
+                           Margin="0,0,0,4" />
+                                <TextBlock x:Name="TxtProfileName" 
+                           Text="---" 
+                           FontSize="15" 
+                           FontWeight="SemiBold" 
+                           Foreground="#0F172A" 
+                           TextWrapping="Wrap" />
                             </StackPanel>
                         </Grid>
-                        <Border Height="1" Background="#F1F5F9" Margin="0,0,0,14"/>
-                        <Grid Margin="0,0,0,14">
+
+                        <Rectangle Height="1" 
+                   Fill="#F1F5F9" 
+                   Margin="0,0,0,16" />
+
+                        <!-- =====  الصف الثاني: الجنس + العمر  ===== -->
+                        <Grid Margin="0,0,0,16">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
+
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="الجنس" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,4"/>
-                                <TextBlock x:Name="TxtProfileSex" Text="---" FontSize="15" FontWeight="SemiBold" Foreground="#0F172A"/>
+                                <TextBlock Text="الجنس" 
+                           FontSize="11" 
+                           Foreground="#94A3B8" 
+                           Margin="0,0,0,4" />
+                                <TextBlock x:Name="TxtProfileSex" 
+                           Text="---" 
+                           FontSize="15" 
+                           FontWeight="SemiBold" 
+                           Foreground="#0F172A" />
                             </StackPanel>
-                            <StackPanel Grid.Column="1">
-                                <TextBlock Text="العمر" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,4"/>
-                                <TextBlock x:Name="TxtProfileAge" Text="---" FontSize="15" FontWeight="SemiBold" Foreground="#0F172A"/>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="العمر" 
+                           FontSize="11" 
+                           Foreground="#94A3B8" 
+                           Margin="0,0,0,4" />
+                                <TextBlock x:Name="TxtProfileAge" 
+                           Text="---" 
+                           FontSize="15" 
+                           FontWeight="SemiBold" 
+                           Foreground="#0F172A" />
                             </StackPanel>
                         </Grid>
-                        <Border Height="1" Background="#F1F5F9" Margin="0,0,0,14"/>
-                        <StackPanel Margin="0,0,0,14">
-                            <TextBlock Text="العنوان" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,4"/>
-                            <TextBlock x:Name="TxtProfileAddress" Text="---" FontSize="14" FontWeight="SemiBold" Foreground="#374151" TextWrapping="Wrap"/>
+
+                        <Rectangle Height="1" 
+                   Fill="#F1F5F9" 
+                   Margin="0,0,0,16" />
+
+                        <!-- =====  الصف الثالث: مصدر العميل + الحملة  ===== -->
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="مصدر العميل" 
+                           FontSize="11" 
+                           Foreground="#94A3B8" 
+                           Margin="0,0,0,4" />
+                                <TextBlock x:Name="TxtProfileSource" 
+                           Text="---" 
+                           FontSize="15" 
+                           FontWeight="SemiBold" 
+                           Foreground="#0F172A" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="الحملة" 
+                           FontSize="11" 
+                           Foreground="#94A3B8" 
+                           Margin="0,0,0,4" />
+                                <TextBlock x:Name="TxtProfileCampaign" 
+                           Text="---" 
+                           FontSize="15" 
+                           FontWeight="SemiBold" 
+                           Foreground="#374151" 
+                           TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Rectangle Height="1" 
+                   Fill="#F1F5F9" 
+                   Margin="0,0,0,16" />
+
+                        <!-- =====  الصف الرابع: العنوان (صف كامل)  ===== -->
+                        <StackPanel Margin="0,0,0,16">
+                            <TextBlock Text="العنوان" 
+                       FontSize="11" 
+                       Foreground="#94A3B8" 
+                       Margin="0,0,0,4" />
+                            <TextBlock x:Name="TxtProfileAddress" 
+                       Text="---" 
+                       FontSize="14" 
+                       FontWeight="SemiBold" 
+                       Foreground="#374151" 
+                       TextWrapping="Wrap" />
                         </StackPanel>
-                        <Border Height="1" Background="#F1F5F9" Margin="0,0,0,14"/>
+
+                        <Rectangle Height="1" 
+                   Fill="#F1F5F9" 
+                   Margin="0,0,0,16" />
+
+                        <!-- =====  الصف الخامس: نسبة الخصم  ===== -->
                         <StackPanel>
-                            <TextBlock Text="نسبة الخصم (%)" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,4"/>
-                            <TextBlock x:Name="TxtProfileDiscount" Text="---" FontSize="15" FontWeight="SemiBold" Foreground="#059669"/>
+                            <TextBlock Text="نسبة الخصم (%)" 
+                       FontSize="11" 
+                       Foreground="#94A3B8" 
+                       Margin="0,0,0,4" />
+                            <TextBlock x:Name="TxtProfileDiscount" 
+                       Text="---" 
+                       FontSize="15" 
+                       FontWeight="SemiBold" 
+                       Foreground="#059669" />
                         </StackPanel>
+
                     </StackPanel>
                 </Border>
 
@@ -492,10 +620,7 @@
                                     <Border Height="1" Background="#F3F4F6" Margin="52,8,0,8"/>
 
                                     <WrapPanel Margin="52,0,0,0" x:Name="HistoryDeviceSpecsPanel" FlowDirection="RightToLeft">
-                                        <StackPanel Orientation="Horizontal" Margin="0,0,20,0" FlowDirection="RightToLeft">
-                                            <TextBlock Text="رقم الجهاز: " FontSize="11" Foreground="#9CA3AF" VerticalAlignment="Center"/>
-                                            <TextBlock x:Name="TxtHistoryDeviceId" FontSize="12" FontWeight="SemiBold" Foreground="#374151" VerticalAlignment="Center"/>
-                                        </StackPanel>
+                            
 
                                         <StackPanel x:Name="HistorySerialPanel" Orientation="Horizontal" Margin="0,0,20,0" FlowDirection="LeftToRight">
                                             <TextBlock Text="S/N: " FontSize="11" Foreground="#9CA3AF" VerticalAlignment="Center"/>

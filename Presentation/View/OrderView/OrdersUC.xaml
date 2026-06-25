@@ -84,52 +84,22 @@
                         <DataGridTemplateColumn Header="حالة الطلب" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Border CornerRadius="20" Padding="10,4" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <Border.Style>
-                                            <Style TargetType="Border">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding State}" Value="قيد الانتظار">
-                                                        <Setter Property="Background" Value="#FEF9C3"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding State}" Value="مجدول">
-                                                        <Setter Property="Background" Value="#EFF6FF"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding State}" Value="جارى التنفيذ">
-                                                        <Setter Property="Background" Value="#FFF7ED"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding State}" Value="مكتمل">
-                                                        <Setter Property="Background" Value="#F0FDF4"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding State}" Value="ملغى">
-                                                        <Setter Property="Background" Value="#FEF2F2"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
-                                        <TextBlock Text="{Binding State}" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding State}" Value="قيد الانتظار">
-                                                            <Setter Property="Foreground" Value="#CA8A04"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding State}" Value="مجدول">
-                                                            <Setter Property="Foreground" Value="#2563EB"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding State}" Value="جارى التنفيذ">
-                                                            <Setter Property="Foreground" Value="#EA580C"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding State}" Value="مكتمل">
-                                                            <Setter Property="Foreground" Value="#16A34A"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding State}" Value="ملغى">
-                                                            <Setter Property="Foreground" Value="#DC2626"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
+
+                                    <Border CornerRadius="20"
+                    Padding="10,4"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="{Binding StatusBackground}">
+
+                                        <TextBlock Text="{Binding StateName}"
+                           FontSize="12"
+                           FontWeight="SemiBold"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="{Binding StatusForeground}"/>
+
                                     </Border>
+
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

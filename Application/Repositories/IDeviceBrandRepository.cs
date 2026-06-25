@@ -11,5 +11,9 @@ public interface IDeviceBrandRepository
 {
     IEnumerable<BrandDto> GetAllBrands();
     BrandDto GetBrandBy(int id);
-    public bool AddBrand(string brandName);
+    bool AddBrand(string brandName);
+    bool DeleteBrand(int id);
+    bool UpdateBrand(int id, string brandName);
+
+
 }

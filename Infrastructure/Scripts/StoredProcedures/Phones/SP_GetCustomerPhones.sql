@@ -2,8 +2,12 @@
     @customerId INT
 AS
 BEGIN
+    SET NOCOUNT ON;
 
-    SELECT PhoneNumber
-    FROM Phones
-    WHERE PersonID = @customerId;
-END
+    SELECT P.PhoneNumber
+    FROM Phones P
+    INNER JOIN Customers C
+        ON P.PersonID = C.PersonID
+    WHERE C.CustomerID = @customerId;
+
+END;

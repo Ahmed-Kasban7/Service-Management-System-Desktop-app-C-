@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.SparePartDtos;
+using Application.DTOs.VisitDTOs;
 using Application.Features.VisitManagement;
 using System;
 using System.Collections.Generic;
@@ -6,10 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Repositories
+namespace Application.Repositories;
+
+public interface  IVisitRepository
 {
-    interface  IVisitRepository
-    {
-        public bool CreateVisitWithParts(int appointmentId, string notes, string actionsTaken, string diagnosis, decimal totalCost, List<SparePartDTO> spareParts);
-    }
+    public int CreateVisitWithParts(CreateVisistDto newVisit);
+    public VisitDetailsDto GetVisitDetailsByAppointmentId(int appointmentId);
+
 }

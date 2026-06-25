@@ -1,11 +1,13 @@
 ﻿using Application.DTOs.OrderDTOs;
 using Application.Features.BrandManagement.Queries;
+using Application.Features.CampaignManagement.Queries;
 using Application.Features.CustomerManagement.Queries;
 using Application.Features.CustomerManagment.Commands;
 using Application.Features.DeviceManagement.Commands;
 using Application.Features.DeviceManagement.Queries;
 using Application.Features.OrderManagement.Commands;
 using Application.Features.OrderManagement.Queries;
+using Application.Features.SourceManagement;
 using Application.Features.SpecManagement;
 using Application.Features.SpecManagement.Queries;
 using Application.Features.TypeManagement.Queries;
@@ -46,7 +48,8 @@ namespace Presentation.View.OrderView
         private readonly GetAllBrandsHandler _getBrandsHandler;
         private readonly GetAllTypesHandler _getTypesHandler;
         private readonly GetSpecsByTypeIdHandler _getSpecsHandler;
-
+        private readonly GetAllSourcesHandler _getAllSources;
+        private readonly GetCampaignLookupHandler _getCampaignLookup;
         public CreateOrderWindow(
                     GetCustomersLookupHandler customersLookup,
                     GetCustomerDevicesHandler getCustomerDevices,
@@ -56,7 +59,7 @@ namespace Presentation.View.OrderView
                     GetAllTypesHandler getAllTypesHandler,
                     GetSpecsByTypeIdHandler getSpecsByTypeIdHandler , AddDeviceToCustomerHandler addDeviceHandler,
             GetAllBrandsHandler getBrandsHandler, GetAllTypesHandler getTypesHandler,
-            GetSpecsByTypeIdHandler getSpecsHandler )
+            GetSpecsByTypeIdHandler getSpecsHandler  , GetAllSourcesHandler getAllSources , GetCampaignLookupHandler getCampaignLookup)
         {
             InitializeComponent();
 
@@ -71,8 +74,8 @@ namespace Presentation.View.OrderView
             _getBrandsHandler = getBrandsHandler;
             _getTypesHandler = getTypesHandler;
             _getSpecsHandler = getSpecsHandler;
-     
-
+            _getAllSources = getAllSources;
+            _getCampaignLookup = getCampaignLookup;
             LoadCustomers();
         }
 
@@ -93,7 +96,7 @@ namespace Presentation.View.OrderView
         }
         private void BtnAddCustomer_Click(object sender, RoutedEventArgs e)
         {
-            var win = new CreateCustomerWindow(_createCustomerHandler  , _getAllBrandsHandler , _getAllTypesHandler , _getSpecsByTypeIdHandler);
+            var win = new CreateCustomerWindow(_createCustomerHandler  , _getAllBrandsHandler , _getAllTypesHandler , _getSpecsByTypeIdHandler ,_getAllSources ,_getCampaignLookup  );
             win.Owner = this;
 
             if (win.ShowDialog() == true)

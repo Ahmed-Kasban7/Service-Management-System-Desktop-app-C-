@@ -34,7 +34,7 @@
                 CornerRadius="12"
                 Padding="15"
                 BorderBrush="#E2E8F0"
-                BorderThickness="1">
+                BorderThickness="1" Margin="0,0,0,-5">
 
             <Grid>
                 <Grid.RowDefinitions>
@@ -108,6 +108,7 @@
                Foreground="Red"
                FontSize="11"
                Text=""
+                               Visibility="Collapsed"
                HorizontalAlignment="Left"/>
                 </StackPanel>
 
@@ -159,6 +160,7 @@
                Foreground="Red"
                FontSize="11"
                Text=""
+                               Visibility="Collapsed"
                HorizontalAlignment="Left"/>
                 </StackPanel>
 
@@ -180,6 +182,7 @@
                                Foreground="Red"
                                FontSize="11"
                                Text=""
+                               Visibility="Collapsed"
                                HorizontalAlignment="Left"/>
                 </StackPanel>
 
@@ -203,7 +206,7 @@
                         Content="➕ إنشاء الطلب "
                         Style="{StaticResource ActionButtonStyle}"
                         Height="40"
-                        Margin="0,12,0,0" 
+                        Margin="-2,39,2,98" 
                         Background="{StaticResource PrimaryBlue}"
                         Foreground="White"
                         Click="BtnCreateOrder_Click"/>

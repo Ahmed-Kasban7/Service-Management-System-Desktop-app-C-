@@ -159,9 +159,18 @@ END;
        ExecuteScript(@"Scripts\Tables\CreateDepartmentRolesTable.sql");
        ExecuteScript(@"Scripts\Tables\CreateEmployeesTable.sql");
        ExecuteScript(@"Scripts\Tables\CreateAppointmentsTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateAppointmentsTable.sql");
        ExecuteScript(@"Scripts\Tables\CreateVisitsTable.sql");
        ExecuteScript(@"Scripts\Tables\CreateUsedSpareParts.sql");
        ExecuteScript(@"Scripts\Tables\CreateUsedSparePartsType.sql");
+       ExecuteScript(@"Scripts\Tables\CreateFinancialTransactionsTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateSourcesTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateCampaignsTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateTreasuriesTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateGategoryTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateTreasuryTransactionsTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateReferenceTable.sql");
+
 
 
         SeedData();
@@ -194,11 +203,17 @@ END;
         ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_CustomerDeviceLookup.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Brands\SP_GetAllBrands.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Brands\SP_AddBrand.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Brands\SP_DeleteBrand.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Brands\SP_UpdateBrand.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Specs\SP_GetAllSpecs.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Specs\SP_AddSpec.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Specs\SP_DeleteSpec.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Specs\SP_UpdateSpec.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Specs\SP_GetSpecsByType.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Types\SP_GetAllTypes.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Types\SP_AddDeviceType.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Types\SP_DeleteType.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Types\SP_UpdateType.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_CreateOrder.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_UpdateOrder.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetOrderById.sql");
@@ -208,12 +223,22 @@ END;
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetDeviceOrdersHistory.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetCustomerOrders.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Employees\SP_GetTechniciansLookup.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Employees\SP_GetAllEmployeesLookup.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Appointments\SP_CreateAppointment.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Appointments\SP_GetAppointmentsByOrderId.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Appointments\SP_UpdateAppointment.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Appointments\SP_GetAppointmentById.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Appointments\SP_CancelAppointment.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Visits\sp_CreateVisitWithParts.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Visits\SP_VisitDetails.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Sources\SP_GetAllSources.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Campaigns\SP_CreateCampaign.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Campaigns\SP_GetPagedCampaignSummaries.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Campaigns\SP_SearchCampaignPaged.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Campaigns\SP_CampaignDetails.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Campaigns\SP_DeleteCampaign.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Campaigns\SP_UpdateCampaign.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Campaigns\SP_GetCampaignBySourceId.sql");
 
 
 
@@ -224,6 +249,8 @@ END;
         //ExecuteScript(@"Scripts\Triggers\trg_InsteadOfDeletePerson.sql");
         ExecuteScript(@"Scripts\Triggers\trg_AfterCreateAppointment.sql");
         ExecuteScript(@"Scripts\Triggers\trg_AfterCancelAppointment.sql");
+        ExecuteScript(@"Scripts\Triggers\trg_UpdateStatuesAfterAddVisit.sql");
+        ExecuteScript(@"Scripts\Triggers\trg_TransactionsAfterAddVisit.sql");
 
 
     }

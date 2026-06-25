@@ -5,6 +5,7 @@ using Application.Features.EmployeeManagement.Queries;
 using Application.Features.OrderManagement.Commands;
 using Application.Features.OrderManagement.Queries;
 using Application.Features.PhoneManagement.Commands;
+using Application.Features.VisitManagement;
 using Domain.Entities;
 using Presentation.View.Customer_View;
 using System;
@@ -32,10 +33,15 @@ namespace Presentation.View.OrderView
         private readonly UpdateAppointmentHandler _updateAppointmentHandler;
         private readonly GetAppointmentByIdHandler _getAppointmentByIdHandler;
         private readonly CancelAppointmentHandler _cancelAppointmentHandler;
+        private readonly CreateVisitHandler _createVisitHandler;
+        private readonly GetAllEmployeesLookupHandler _getAllEmployees;
+        private readonly GetVisitDetailsHandler _visitDetailsHandler;
 
         public OrderDetailsUC(GetOrderFullDetailsHandler getOrderFull, UpdateOrderHandler updateOrder 
             ,GetEmployeesLookupHandler getEmployees, int orderId , CreateAppointmentHandler createAppointment , 
-            GetAppointmentsByOrderIdHandler getAppointments , UpdateAppointmentHandler updateAppointment , GetAppointmentByIdHandler getAppointment , CancelAppointmentHandler cancelAppointment)
+            GetAppointmentsByOrderIdHandler getAppointments , UpdateAppointmentHandler updateAppointment , 
+            GetAppointmentByIdHandler getAppointment , CancelAppointmentHandler cancelAppointment ,
+            CreateVisitHandler createVisitHandler , GetAllEmployeesLookupHandler getAllEmployees , GetVisitDetailsHandler getVisitDetails)
         {
             InitializeComponent();
             _getOrderFullDetailsHandler = getOrderFull;
@@ -47,6 +53,9 @@ namespace Presentation.View.OrderView
             _updateAppointmentHandler = updateAppointment;
             _getAppointmentByIdHandler = getAppointment;
             _cancelAppointmentHandler = cancelAppointment;
+            _createVisitHandler = createVisitHandler;
+            _getAllEmployees = getAllEmployees;
+            _visitDetailsHandler = getVisitDetails;
 
             LoadOrder();
             
@@ -101,7 +110,7 @@ namespace Presentation.View.OrderView
             PanelVisits.Visibility = Visibility.Collapsed;
             PanelInvoice.Visibility = Visibility.Collapsed;
 
-            foreach (var btn in new[] { TabOrderInfo, TabAppointments, TabVisits, TabInvoice })
+            foreach (var btn in new[] { TabOrderInfo, TabAppointments, TabInvoice })
             {
                 btn.BorderBrush = Brushes.Transparent;
                 btn.Foreground = new SolidColorBrush(
@@ -126,12 +135,7 @@ namespace Presentation.View.OrderView
                     TabAppointments.Foreground = blue;
                     TabAppointments.FontWeight = FontWeights.SemiBold;
                     break;
-                case "visits":
-                    PanelVisits.Visibility = Visibility.Visible;
-                    TabVisits.BorderBrush = blue;
-                    TabVisits.Foreground = blue;
-                    TabVisits.FontWeight = FontWeights.SemiBold;
-                    break;
+
                 case "invoice":
                     PanelInvoice.Visibility = Visibility.Visible;
                     TabInvoice.BorderBrush = blue;
@@ -149,7 +153,6 @@ namespace Presentation.View.OrderView
             LoadAppointments();
         }
 
-        private void TabVisits_Click(object sender, RoutedEventArgs e) => SwitchTab("visits");
         private void TabInvoice_Click(object sender, RoutedEventArgs e) => SwitchTab("invoice");
 
         public void BtnBack_Click(object sender, RoutedEventArgs e) => BackRequested?.Invoke(this, EventArgs.Empty);
@@ -205,16 +208,64 @@ namespace Presentation.View.OrderView
         }
 
         private void BtnRecordVisit_Click(object sender, RoutedEventArgs e)
-        {
-            var recordVisitWindow = new RecordVisitWindow()
-            {
-                Owner = Window.GetWindow(this)
-            };
 
-            if (recordVisitWindow.ShowDialog() == true)
-            {
-                
+        {
+            if (sender is Button btn && btn.Tag is int appointmentId) {
+                var recordVisitWindow = new RecordVisitWindow(_createVisitHandler, appointmentId , _getAllEmployees)
+                {
+                    Owner = Window.GetWindow(this)
+                };
+
+                if (recordVisitWindow.ShowDialog() == true)
+                {
+                    LoadAppointments();
+                    LoadOrder();
+                }
             }
+        }
+
+
+
+        private void BtnViewVisit_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is int appointmentId)
+            {
+                try
+                {
+                    GridAppointmentsMain.Visibility = Visibility.Collapsed;
+                    PanelVisitDetailsView.Visibility = Visibility.Visible;
+
+
+
+                   var result = _visitDetailsHandler.Handle(appointmentId);
+
+                    
+                   PanelVisitDetailsView.DataContext = result;
+                    
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"حدث خطأ أثناء تحميل تفاصيل التقرير: {ex.Message}");
+                }
+            }
+        }
+
+        private void BtnBackToAppointments_Click(object sender, RoutedEventArgs e)
+        {
+            PanelVisitDetailsView.Visibility = Visibility.Collapsed;
+            GridAppointmentsMain.Visibility = Visibility.Visible;
+
+            LoadAppointments();
+        }
+
+        private void BtnPrintInvoice_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnMarkAsPaid_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

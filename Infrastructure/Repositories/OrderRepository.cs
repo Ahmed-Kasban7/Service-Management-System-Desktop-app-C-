@@ -125,12 +125,14 @@ public class OrderRepository:IOrderRepository
             while (reader.Read())
             {
                 orders.Add(new OrderSummaryDto(
-                   Convert.ToInt32( reader["OrderID"]),
+                   Convert.ToInt32(reader["OrderID"]),
                     reader["OrderNumber"].ToString(),
                     reader["CustomerName"].ToString(),
                     reader["CustomerPhone"].ToString(),
                     reader["Address"].ToString(),
                     (DateTime)reader["StartDate"],
+                    Convert.ToInt32(reader["OrderState"]),
+
                     reader["state"].ToString())
                 );
             }
@@ -233,6 +235,7 @@ public class OrderRepository:IOrderRepository
                     reader["CustomerPhone"].ToString(),
                     reader["Address"].ToString(),
                     (DateTime)reader["StartDate"],
+                    Convert.ToInt32(reader["OrderState"]),
                     reader["State"].ToString()
                 ));
             }

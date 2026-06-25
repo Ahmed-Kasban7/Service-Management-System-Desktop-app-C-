@@ -4,6 +4,8 @@
     @Sex TINYINT,
     @Discount INT,
     @Address NVARCHAR(500),
+    @SourceId INT ,
+    @CampaignId Int  = NULL ,
     @Phones PhoneList READONLY,
     @Devices DeviceList READONLY,
     @CustomerId int output 
@@ -20,10 +22,10 @@ BEGIN
         VALUES (@Name, @Age, @Sex);
 
         SET @personId = SCOPE_IDENTITY();
-
+       
         -- 2. Create Customer
-        INSERT INTO Customers (PersonID, Address, Discount)
-        VALUES (@personId, @Address, @Discount);
+        INSERT INTO Customers (PersonID, Address, Discount , SourceID , CampaignID)
+        VALUES (@personId, @Address, @Discount , @SourceId , @CampaignId);
 
         SET @CustomerId = SCOPE_IDENTITY();
 

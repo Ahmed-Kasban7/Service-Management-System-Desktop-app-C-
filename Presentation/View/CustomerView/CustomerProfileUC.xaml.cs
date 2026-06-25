@@ -96,7 +96,6 @@ namespace Presentation.View.CustomerView
 
             LoadCustomerBasicInfo();
 
-            BtnEditCustomer.IsEnabled = true;
             BtnAddPhone.IsEnabled = true;
             BtnAddDevice.IsEnabled = true;
         }
@@ -112,11 +111,13 @@ namespace Presentation.View.CustomerView
                 TxtProfileID.Text = customer.Code;
                 TxtProfileName.Text = customer.Name;
                 TxtProfileSex.Text = customer.Sex == ESex.FEMALE ? "أنثى" : "ذكر";
-                TxtProfileAge.Text = customer.Age.ToString();
+                TxtProfileAge.Text = customer.Age.ToString() == "" ?"---" : customer.Age.ToString();
                 TxtProfileAddress.Text = customer.Address;
                 TxtProfileDiscount.Text = $"{customer.Discount}%";
                 RunCustomerCode.Text = $"#{customer.Code}";
-                TxtCreatedDate.Text = $"تاريخ التسجيل: {customer.CreatedDate:yyyy/MM/dd}";
+                TxtCreatedDate.Text = $"تاريخ التسجيل: {customer.CreatedDate:dd/MM/yyyy}";
+                TxtProfileSource.Text = string.IsNullOrEmpty(customer.SourceName) ? "---" : customer.SourceName;
+                TxtProfileCampaign.Text = string.IsNullOrEmpty(customer.CampaignName) ? "---" : customer.CampaignName;
             }
             catch (Exception ex) 
             {
@@ -372,7 +373,6 @@ namespace Presentation.View.CustomerView
             {
                 TxtHistoryDeviceName.Text = $"{selectedDevice.TypeName} - {selectedDevice.BrandName}";
                 TxtHistoryDeviceDetails.Text = selectedDevice.SpecName;
-                TxtHistoryDeviceId.Text = selectedDevice.DeviceId.ToString();
 
                 if (string.IsNullOrEmpty(selectedDevice.SerialNumber))
                 {
@@ -491,5 +491,7 @@ namespace Presentation.View.CustomerView
                 }
             }
         }
+
+        
     }
 }

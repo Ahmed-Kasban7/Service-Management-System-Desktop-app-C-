@@ -40,6 +40,27 @@ public class EmployeeRepository : IEmployeeRepository
         }
         return result;
     }
+    public IEnumerable<PersonLookupDto> GetAllEmployeesLookup()
+    {
+        using var connection = DatabaseInitializer.GetConnection();
+        connection.Open();
+        using var command = new SqlCommand("SP_GetAllEmployeesLookup", connection)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
+
+        var result = new List<PersonLookupDto>();
+        using var reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            result.Add(new PersonLookupDto
+            (
+                reader.GetInt32(reader.GetOrdinal("Id")),
+                reader.GetString(reader.GetOrdinal("Name"))
+            ));
+        }
+        return result;
+    }
 
 
 }

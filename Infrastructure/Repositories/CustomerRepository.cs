@@ -39,6 +39,9 @@ public class CustomerRepository : ICustomerRepository
         cmd.Parameters.AddWithValue("@Sex", (int)customer.Sex);
         cmd.Parameters.AddWithValue("@Discount", customer.Discount);
         cmd.Parameters.AddWithValue("@Address", customer.Address);
+        cmd.Parameters.AddWithValue("@SourceId", customer.SourceId);
+        cmd.Parameters.AddWithValue("@CampaignId", customer.CampaignId);
+
         var outputParam = new SqlParameter("@CustomerId", SqlDbType.Int)
         {
             Direction = ParameterDirection.Output
@@ -246,8 +249,10 @@ public class CustomerRepository : ICustomerRepository
             reader["Address"].ToString(),
             reader["Discount"] != DBNull.Value ? Convert.ToInt32(reader["Discount"]) : 0,
             reader["Age"] != DBNull.Value ? Convert.ToInt32(reader["Age"]) : null,
-            (ESex)Convert.ToInt32(reader["Sex"]) ,
-            Convert.ToDateTime(reader["DateCreated"])
+            (ESex)Convert.ToInt32(reader["Sex"]),
+            Convert.ToDateTime(reader["DateCreated"]),
+            reader["SourceName"].ToString(),
+             reader["CampaignName"] != DBNull.Value ? reader["CampaignName"].ToString() : null
         );
 
         return CustomerBasicInfo;

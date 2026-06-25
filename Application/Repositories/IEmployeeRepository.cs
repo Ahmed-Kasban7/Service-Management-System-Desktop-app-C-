@@ -11,4 +11,5 @@ public interface IEmployeeRepository
 {
     bool IsEmployeeExists(int id);
     IEnumerable<PersonLookupDto> GetEmployeesLookup(string roleName);
+     IEnumerable<PersonLookupDto> GetAllEmployeesLookup();
 }

@@ -10,7 +10,6 @@ BEGIN
         TotalPrice AS (Quantity * UnitPrice) PERSISTED, 
 
         CONSTRAINT FK_UsedSpareParts_Visits 
-            FOREIGN KEY (VisitID) REFERENCES Visits(VisitID) ON DELETE CASCADE,
-
+            FOREIGN KEY (VisitID) REFERENCES Visits(VisitID) ON DELETE CASCADE
     )
 END

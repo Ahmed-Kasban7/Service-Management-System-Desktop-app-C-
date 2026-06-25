@@ -1,0 +1,492 @@
+﻿<UserControl x:Class="Presentation.View.CampaignView.CampaignDetailsUC"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Presentation.View.CampaignView"
+             mc:Ignorable="d"
+             d:DesignHeight="600" 
+             d:DesignWidth="900"
+             FlowDirection="RightToLeft"
+             Background="#F1F5F9"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch">
+
+    <!-- ============================================ -->
+    <!--              الموارد (Resources)               -->
+    <!-- ============================================ -->
+    <UserControl.Resources>
+
+        <!-- =====  الألوان الأساسية  ===== -->
+        <SolidColorBrush x:Key="PrimaryBlue" Color="#2563EB" />
+        <SolidColorBrush x:Key="PrimaryBlueDark" Color="#1D4ED8" />
+        <SolidColorBrush x:Key="PrimaryBlueLight" Color="#DBEAFE" />
+        <SolidColorBrush x:Key="PrimaryBlueLighter" Color="#EFF6FF" />
+
+        <SolidColorBrush x:Key="DangerRed" Color="#DC2626" />
+        <SolidColorBrush x:Key="DangerRedDark" Color="#991B1B" />
+        <SolidColorBrush x:Key="DangerRedLight" Color="#FEF2F2" />
+
+        <SolidColorBrush x:Key="SuccessGreen" Color="#16A34A" />
+        <SolidColorBrush x:Key="SuccessGreenLight" Color="#F0FDF4" />
+
+        <SolidColorBrush x:Key="WarningYellow" Color="#F59E0B" />
+        <SolidColorBrush x:Key="WarningYellowLight" Color="#FFFBEB" />
+
+        <SolidColorBrush x:Key="TextPrimary" Color="#0F172A" />
+        <SolidColorBrush x:Key="TextSecondary" Color="#475569" />
+        <SolidColorBrush x:Key="TextTertiary" Color="#94A3B8" />
+
+        <SolidColorBrush x:Key="BorderColor" Color="#E2E8F0" />
+        <SolidColorBrush x:Key="ShadowColor" Color="#00000015" />
+
+        <!-- =====  تأثيرات الظل  ===== -->
+        <DropShadowEffect x:Key="ShadowEffect"
+                          BlurRadius="10"
+                          ShadowDepth="2"
+                          Opacity="0.08"
+                          Color="#000000" />
+
+        <!-- =====  أنماط عامة  ===== -->
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
+            <Setter Property="Margin" Value="0,0,0,4" />
+        </Style>
+
+        <Style x:Key="FieldValue" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+        </Style>
+
+        <Style x:Key="InfoCard" TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="Padding" Value="20,18" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="8"
+                                      ShadowDepth="2"
+                                      Opacity="0.06"
+                                      Color="Black" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- =====  أنماط الأزرار  ===== -->
+        <Style x:Key="HeaderButtonBase" TargetType="Button">
+            <Setter Property="Height" Value="40" />
+            <Setter Property="MinWidth" Value="96" />
+            <Setter Property="Padding" Value="18,0" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.9" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.8" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BackButton" TargetType="Button" BasedOn="{StaticResource HeaderButtonBase}">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <Style x:Key="EditButton" TargetType="Button" BasedOn="{StaticResource HeaderButtonBase}">
+            <Setter Property="Background" Value="{StaticResource PrimaryBlue}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+
+        <Style x:Key="DeleteButton" TargetType="Button" BasedOn="{StaticResource HeaderButtonBase}">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="{StaticResource DangerRed}" />
+            <Setter Property="BorderBrush" Value="{StaticResource DangerRed}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <Style x:Key="StatusBadge" TargetType="Border">
+            <Setter Property="CornerRadius" Value="20" />
+            <Setter Property="Padding" Value="14,6" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="Divider" TargetType="Rectangle">
+            <Setter Property="Height" Value="1" />
+            <Setter Property="Fill" Value="{StaticResource BorderColor}" />
+            <Setter Property="Margin" Value="0,16" />
+        </Style>
+
+        <!-- =====  قالب زر الرجوع (سهم)  ===== -->
+        <ControlTemplate x:Key="BackButtonTemplate" TargetType="Button">
+            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                <Path Data="M8 4L2 10L8 16"
+                      Stroke="#64748B" 
+                      StrokeThickness="2"
+                      StrokeStartLineCap="Round" 
+                      StrokeEndLineCap="Round"
+                      HorizontalAlignment="Center" 
+                      VerticalAlignment="Center"
+                      Width="10" 
+                      Height="14" 
+                      Stretch="Uniform"
+                      FlowDirection="LeftToRight" />
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F1F5F9" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <!-- =====  قالب زر مخصص (للحذف والتعديل)  ===== -->
+        <ControlTemplate x:Key="ActionButtonTemplate" TargetType="Button">
+            <Border Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="9" 
+                    Padding="{TemplateBinding Padding}">
+                <ContentPresenter HorizontalAlignment="Center" 
+                                  VerticalAlignment="Center" />
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Tag}" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.5" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </UserControl.Resources>
+
+    <!-- ============================================ -->
+    <!--              الهيكل الرئيسي                   -->
+    <!-- ============================================ -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- ========================================== -->
+        <!--              الهيدر (Header)                -->
+        <!-- ========================================== -->
+        <Border Grid.Row="0"
+                Background="White"
+                Padding="28,16"
+                BorderBrush="{StaticResource BorderColor}"
+                BorderThickness="0,0,0,1"
+                Effect="{StaticResource ShadowEffect}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- القسم الأيمن: رجوع + أيقونة + اسم الحملة -->
+                <StackPanel Grid.Column="0" 
+                            Orientation="Horizontal" 
+                            VerticalAlignment="Center">
+
+                    <!-- زر الرجوع -->
+                    <Button x:Name="BtnBack" 
+                            Click="BtnBack_Click"
+                            Width="32" 
+                            Height="32"
+                            Background="Transparent" 
+                            BorderThickness="0"
+                            Cursor="Hand" 
+                            Margin="0,0,12,0" 
+                            VerticalAlignment="Center"
+                            Template="{StaticResource BackButtonTemplate}" />
+
+                    <Rectangle Width="1" 
+                               Height="30" 
+                               Fill="{StaticResource BorderColor}" 
+                               Margin="0,0,16,0" />
+
+                    <Border Width="40" 
+                            Height="40"
+                            CornerRadius="10"
+                            Background="{StaticResource PrimaryBlueLighter}"
+                            Margin="0,0,12,0">
+                        <TextBlock Text="📢" 
+                                   FontSize="20"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Border>
+
+                    <TextBlock x:Name="TxtCampaignNameHeader"
+                               Text="—"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               Foreground="{StaticResource TextPrimary}"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+
+                <!-- القسم الأيسر: أزرار التحكم -->
+                <StackPanel Grid.Column="2" 
+                            Orientation="Horizontal" 
+                            VerticalAlignment="Center">
+
+                    <!-- زر التعديل -->
+                    <Button x:Name="BtnEdit"
+                            Click="BtnEdit_Click"
+                            Content="✏️ تعديل الحملة"
+                            Padding="16,8"
+                            Margin="0,0,8,0"
+                            Background="White"
+                            Foreground="#1E293B"
+                            FontSize="13" 
+                            FontWeight="SemiBold"
+                            BorderBrush="#E2E8F0" 
+                            BorderThickness="1.5"
+                            Cursor="Hand" 
+                            VerticalAlignment="Center"
+                            Tag="#F8FAFC"
+                            Template="{StaticResource ActionButtonTemplate}" />
+
+                    <!-- زر الحذف -->
+                    <Button x:Name="BtnDelete"
+                            Click="BtnDelete_Click"
+                            Content="🗑️ حذف الحملة"
+                            Padding="16,8"
+                            Background="White" 
+                            Foreground="#EF4444"
+                            FontSize="13" 
+                            FontWeight="SemiBold"
+                            BorderBrush="#FCA5A5" 
+                            BorderThickness="1.5"
+                            Cursor="Hand" 
+                            VerticalAlignment="Center"
+                            Tag="#FEF2F2"
+                            Template="{StaticResource ActionButtonTemplate}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ========================================== -->
+        <!--              المحتوى (Content)              -->
+        <!-- ========================================== -->
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      Padding="28,24"
+                      Background="#F1F5F9">
+
+            <!-- استخدام DockPanel بدلاً من StackPanel للتمدد الأفقي -->
+            <DockPanel LastChildFill="True">
+
+                <!-- =====  بطاقة التكلفة والإيرادات  ===== -->
+                <Grid DockPanel.Dock="Top" Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- بطاقة التكلفة -->
+                    <Border Grid.Column="0"
+                            Style="{StaticResource InfoCard}"
+                            Background="{StaticResource DangerRedLight}"
+                            BorderBrush="#FECACA">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0"
+                                    Width="44" 
+                                    Height="44"
+                                    CornerRadius="10"
+                                    Background="#FECACA"
+                                    Margin="0,0,14,0">
+                                <TextBlock Text="💰" 
+                                           FontSize="20"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center" />
+                            </Border>
+
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="تكلفة الحملة"
+                                           Style="{StaticResource FieldLabel}"
+                                           Foreground="#991B1B" />
+                                <TextBlock x:Name="TxtCampaignCost"
+                                           Text="—"
+                                           FontSize="24"
+                                           FontWeight="Bold"
+                                           Foreground="{StaticResource DangerRed}" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- بطاقة الإيرادات -->
+                    <Border Grid.Column="2"
+                            Style="{StaticResource InfoCard}"
+                            Background="{StaticResource SuccessGreenLight}"
+                            BorderBrush="#BBF7D0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0"
+                                    Width="44" 
+                                    Height="44"
+                                    CornerRadius="10"
+                                    Background="#BBF7D0"
+                                    Margin="0,0,14,0">
+                                <TextBlock Text="💰" 
+                                           FontSize="20"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center" />
+                            </Border>
+
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="الإيرادات"
+                                           Style="{StaticResource FieldLabel}"
+                                           Foreground="#15803D" />
+                                <TextBlock x:Name="TxtCampaignRevenue"
+                                           Text="0"
+                                           FontSize="24"
+                                           FontWeight="Bold"
+                                           Foreground="{StaticResource SuccessGreen}" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- =====  بطاقة تفاصيل الحملة  ===== -->
+                <Border Style="{StaticResource InfoCard}"
+                        Margin="0,0,0,16">
+                    <StackPanel>
+
+                        <TextBlock Text="تفاصيل الحملة"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource TextPrimary}"
+                                   Margin="0,0,0,12" />
+
+                        <Rectangle Style="{StaticResource Divider}" />
+
+                        <!-- شبكة التفاصيل -->
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- مصدر الإعلان -->
+                            <StackPanel Grid.Row="0" 
+                                        Grid.Column="0" 
+                                        Margin="0,0,0,16">
+                                <TextBlock Text="📢 منصة الإعلان" 
+                                           Style="{StaticResource FieldLabel}" />
+                                <TextBlock x:Name="TxtSourceName"
+                                           Text="—"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           TextWrapping="Wrap"
+                                           Foreground="{StaticResource TextPrimary}" />
+                            </StackPanel>
+
+                            <!-- نسبة الخصم -->
+                            <StackPanel Grid.Row="0" 
+                                        Grid.Column="1" 
+                                        Margin="16,0,0,16">
+                                <TextBlock Text="🏷️ نسبة الخصم" 
+                                           Style="{StaticResource FieldLabel}" />
+                                <TextBlock x:Name="TxtDiscount"
+                                           Text="0%"
+                                           FontSize="14"
+                                           FontWeight="Bold"
+                                           Foreground="{StaticResource SuccessGreen}" />
+                            </StackPanel>
+
+                            <!-- تاريخ البداية -->
+                            <StackPanel Grid.Row="1" 
+                                        Grid.Column="0" 
+                                        Margin="0,0,16,0">
+                                <TextBlock Text="📅 تاريخ البداية" 
+                                           Style="{StaticResource FieldLabel}" />
+                                <TextBlock x:Name="TxtStartDate"
+                                           Text="—"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           FlowDirection="LeftToRight"
+                                           TextAlignment="Right"
+                                           Foreground="{StaticResource TextPrimary}" />
+                            </StackPanel>
+
+                            <!-- تاريخ النهاية -->
+                            <StackPanel Grid.Row="1" 
+                                        Grid.Column="1" 
+                                        Margin="16,0,0,0">
+                                <TextBlock Text="📅 تاريخ النهاية" 
+                                           Style="{StaticResource FieldLabel}" />
+                                <TextBlock x:Name="TxtEndDate"
+                                           Text="—"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           FlowDirection="LeftToRight"
+                                           TextAlignment="Right"
+                                           Foreground="{StaticResource TextPrimary}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Rectangle Style="{StaticResource Divider}" />
+
+                        <!-- الملاحظات -->
+                        <StackPanel>
+                            <TextBlock Text="📝 ملاحظات" 
+                                       Style="{StaticResource FieldLabel}" />
+                            <TextBlock x:Name="TxtNotes"
+                                       Text="—"
+                                       FontSize="14"
+                                       Foreground="{StaticResource TextSecondary}"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+
+                    </StackPanel>
+                </Border>
+
+            </DockPanel>
+        </ScrollViewer>
+
+    </Grid>
+</UserControl>

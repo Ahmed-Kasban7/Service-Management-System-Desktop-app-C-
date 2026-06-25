@@ -3,7 +3,15 @@
     @Notes NVARCHAR(MAX),
     @ActionsTaken NVARCHAR(MAX),
     @Diagnosis NVARCHAR(MAX),
-    @TotalCost DECIMAL(18,2),
+    
+    @TotalCostToCustomer DECIMAL(18,2), -- التكلفة على العميل
+    @TransportationCost DECIMAL(18,2),   -- تكلفة الانتقالات
+    @AmountPaid DECIMAL(18,2),           -- المبلغ المدفوع
+
+    @TransportationBearer TINYINT NULL,           
+    @PartsTransportationCost DECIMAL(18,2) NULL,
+    @PaidByEmployeeID INT NULL,
+
     @SparePartsList UsedSparePartsType READONLY 
 AS
 BEGIN
@@ -12,44 +20,61 @@ BEGIN
     BEGIN TRY
         BEGIN TRANSACTION;
 
-        INSERT INTO Visits (AppointmentID, Notes, ActionsTaken, Diagnosis, TotalCost)
-        VALUES (@AppointmentID, @Notes, @ActionsTaken, @Diagnosis, @TotalCost);
+        -- Record Visit Report 
+          INSERT INTO Visits
+        (
+            AppointmentID,
+            Notes,
+            ActionsTaken,
+            Diagnosis,
+            TotalCostToCustomer,
+            TransportationCost,
+            AmountPaid,
+            TransportationBearer,
+            PartsTransportationCost,
+            PaidByEmployeeID
+        )
+          VALUES
+        (
+            @AppointmentID,
+            @Notes,
+            @ActionsTaken,
+            @Diagnosis,
+            @TotalCostToCustomer,
+            @TransportationCost,
+            @AmountPaid,
+            @TransportationBearer,
+            @PartsTransportationCost,
+            @PaidByEmployeeID
+        );
 
         DECLARE @NewVisitID INT = SCOPE_IDENTITY();
 
+        -- if spareParts Exists add them 
         IF EXISTS (SELECT 1 FROM @SparePartsList)
         BEGIN
-            INSERT INTO SparePartsNames (PartName)
-            SELECT DISTINCT L.PartName
-            FROM @SparePartsList L
-            WHERE NOT EXISTS (
-                SELECT 1 FROM SparePartsNames S WHERE S.PartName = L.PartName
-            );
-
-            INSERT INTO UsedSpareParts (VisitID, PartId, Quantity, UnitPrice)
+            INSERT INTO UsedSpareParts (VisitID, PartName, Quantity, UnitPrice)
             SELECT 
                 @NewVisitID, 
-                S.PartId, 
+                L.PartName, 
                 L.Quantity, 
                 L.UnitPrice
-            FROM @SparePartsList L
-            INNER JOIN SparePartsNames S ON S.PartName = L.PartName;
+            FROM @SparePartsList L;
         END
 
-        UPDATE Appointments
-        SET AppointmentState = 2 
-        WHERE AppointmentId = @AppointmentID;
+        
 
         COMMIT TRANSACTION;
+
+        SELECT @NewVisitID;
+
     END TRY
     BEGIN CATCH
-        IF @@TRANCOUNT > 0
+
+            IF @@TRANCOUNT > 0
             ROLLBACK TRANSACTION;
 
-        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
-        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
-        DECLARE @ErrorState INT = ERROR_STATE();
-        
-        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
+            THROW;
+
     END CATCH
 END

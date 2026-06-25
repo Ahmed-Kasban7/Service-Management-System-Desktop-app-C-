@@ -8,4 +8,4 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs;
 
-public record  CustomerBasicInfoDto(int ID , string Code , string Name , string Address , int Discount , int? Age , ESex Sex , DateTime CreatedDate);
+public record  CustomerBasicInfoDto(int ID , string Code , string Name , string Address , int Discount , int? Age , ESex Sex , DateTime CreatedDate , string SourceName , string ? CampaignName);

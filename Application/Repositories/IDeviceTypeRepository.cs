@@ -14,4 +14,9 @@ public interface IDeviceTypeRepository
 
     bool AddType(string type);
 
+    bool DeleteType(int id);
+
+    bool UpdateType(int id, string type);
+
+
 }

@@ -6,10 +6,4 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.DeviceDTOs;
 
-public record TypeDto(int TypeID, string TypeName) {
-    public override string ToString()
-    {
-        return TypeName;
-    }
-}
-
+public record TypeDto(int TypeID, string TypeName);

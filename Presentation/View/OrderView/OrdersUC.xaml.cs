@@ -5,6 +5,7 @@ using Application.Features.AppointmentManagement.Queries;
 using Application.Features.EmployeeManagement.Queries;
 using Application.Features.OrderManagement.Commands;
 using Application.Features.OrderManagement.Queries;
+using Application.Features.VisitManagement;
 using Presentation.View.MainView;
 using System;
 using System.Windows;
@@ -28,6 +29,10 @@ namespace Presentation.View.OrderView
         private UpdateAppointmentHandler _updateAppointmentHandler;
         private GetAppointmentByIdHandler _getAppointmentByIdHandler;
         private  CancelAppointmentHandler _cancelAppointmentHandler;
+        private  CreateVisitHandler _createVisitHandler;
+        private GetAllEmployeesLookupHandler _getAllEmployees;
+        private GetVisitDetailsHandler _getVisitDetails;
+
 
 
         private bool IsSearching = false;
@@ -45,7 +50,8 @@ namespace Presentation.View.OrderView
             UpdateOrderHandler updateOrder,
             SearchOrderPageHandler searchOrder , GetEmployeesLookupHandler getEmployees 
             , CreateAppointmentHandler createAppointment , GetAppointmentsByOrderIdHandler getAppointments , 
-            UpdateAppointmentHandler updateAppointment  , GetAppointmentByIdHandler getAppointment , CancelAppointmentHandler cancelAppointment)
+            UpdateAppointmentHandler updateAppointment  , GetAppointmentByIdHandler getAppointment ,
+            CancelAppointmentHandler cancelAppointment , CreateVisitHandler createVisit , GetAllEmployeesLookupHandler getAllEmployees , GetVisitDetailsHandler getVisitDetails)
         {
             _getPagedOrderSummariesHandler = getPagedOrderSummaries;
             _getOrderFullDetailsHandler = getOrderFull;
@@ -57,8 +63,9 @@ namespace Presentation.View.OrderView
             _updateAppointmentHandler = updateAppointment;
             _getAppointmentByIdHandler = getAppointment;
             _cancelAppointmentHandler = cancelAppointment;
-
-
+            _createVisitHandler = createVisit;
+            _getAllEmployees = getAllEmployees;
+            _getVisitDetails = getVisitDetails;
             LoadAndBindOrders();
         }
 
@@ -174,7 +181,9 @@ namespace Presentation.View.OrderView
                     _getOrderFullDetailsHandler,
                     _updateOrderHandler,
                     _getEmployeesLookupHandler,
-                    selectedOrder.OrderId , _createAppointmentHandler , _getAppointmentsHandler , _updateAppointmentHandler, _getAppointmentByIdHandler , _cancelAppointmentHandler);
+                    selectedOrder.OrderId , _createAppointmentHandler ,
+                    _getAppointmentsHandler , _updateAppointmentHandler, _getAppointmentByIdHandler ,
+                    _cancelAppointmentHandler , _createVisitHandler , _getAllEmployees , _getVisitDetails);
 
                 detailsUC.BackRequested += (s, args) =>
                 {
@@ -199,7 +208,8 @@ namespace Presentation.View.OrderView
                 _getOrderFullDetailsHandler,
                 _updateOrderHandler,
                 _getEmployeesLookupHandler,
-                orderId, _createAppointmentHandler , _getAppointmentsHandler , _updateAppointmentHandler , _getAppointmentByIdHandler, _cancelAppointmentHandler);
+                orderId, _createAppointmentHandler , _getAppointmentsHandler , 
+                _updateAppointmentHandler , _getAppointmentByIdHandler, _cancelAppointmentHandler , _createVisitHandler, _getAllEmployees , _getVisitDetails);
             
             detailsUC.BackRequested += (s, args) =>
             {

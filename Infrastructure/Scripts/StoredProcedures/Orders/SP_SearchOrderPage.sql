@@ -11,7 +11,7 @@ BEGIN
         ord.OrderNumber,
         p.Name AS CustomerName,
         ord.StartDate,
-
+        ord.OrderState,
         CASE 
             WHEN ord.OrderState = 0 THEN N'قيد الانتظار'
             WHEN ord.OrderState = 1 THEN N'مجدول'

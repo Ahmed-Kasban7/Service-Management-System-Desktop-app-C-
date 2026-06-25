@@ -7,10 +7,13 @@ BEGIN
 
         EmployeeNumber AS ('EMP-' + CAST(EmployeeId AS VARCHAR)) PERSISTED,
         
-        RoleID INT NOT NULL , 
+        RoleID INT NOT NULL ,
+        
+        IsCommissionBased    BIT DEFAULT 0, 
 
         CONSTRAINT FK_Employee_Role
     FOREIGN KEY (RoleID) REFERENCES DepartmentRoles(RoleID),
+     
 
   CONSTRAINT FK_Employees_Persons FOREIGN KEY (PersonID) REFERENCES Persons(PersonID) ON DELETE CASCADE
 

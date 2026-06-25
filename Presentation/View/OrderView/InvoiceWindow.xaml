@@ -1,0 +1,259 @@
+﻿<Window x:Class="Presentation.View.OrderView.InvoiceWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="فاتورة صيانة" 
+        Height="850" Width="600"
+        WindowStartupLocation="CenterScreen"
+        Background="#1E293B"
+        FlowDirection="LeftToRight">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- شريط التحكم العلوي (زر الطباعة) -->
+        <StackPanel Grid.Row="0" Background="#0F172A"  Orientation="Horizontal">
+            <Button x:Name="BtnPrint" 
+                    Content="🖨️ طباعة الفاتورة" 
+                    Width="140" Height="36" 
+                    Background="#10B981" Foreground="White" 
+                    FontWeight="Bold" Cursor="Hand"
+                    Click="BtnPrint_Click">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </StackPanel>
+
+        <!-- 🖨️ منطقة الفاتورة القابلة للطباعة (مطابقة لملف الفاتوره.jpeg بالملّي) -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Background="#F1F5F9">
+            <Border x:Name="InvoicePrintArea" 
+                    Background="White" 
+                    Width="550" Margin="15" Padding="25"
+                    VerticalAlignment="Top"
+                    BorderBrush="#E2E8F0" BorderThickness="1">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <!-- الهيدر واللوجو -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- بيانات العميل -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- التشخيص -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- جدول العناصر -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- الحسابات والاجمالي -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- الشروط والـ QR -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Row 0: الهيدر واللوجو -->
+                    <Grid Grid.Row="0" Margin="0,0,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                            <TextBlock Text="فاتورة صيانة" FontSize="26" FontWeight="Black" Foreground="#042F43" Margin="0,0,0,15"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="رقم الفاتورة: " FontSize="14" Foreground="#C5A059" FontWeight="Bold"/>
+                                <TextBlock Text="{Binding InvoiceNumber}" FontSize="15" FontWeight="Bold" Foreground="#1E293B"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="التاريخ: " FontSize="14" Foreground="#C5A059" FontWeight="Bold"/>
+                                <TextBlock Text="{Binding InvoiceDate}" FontSize="14" FontWeight="SemiBold" Foreground="#1E293B"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="فترة الضمان: " FontSize="14" Foreground="#C5A059" FontWeight="Bold"/>
+                                <TextBlock Text="{Binding WarrantyPeriod}" FontSize="14" FontWeight="SemiBold" Foreground="#1E293B"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- اللوجو (يمكنك استبدال الـ Text بـ Image للوجو Pro Fix) -->
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Border Width="70" Height="70" Background="#042F43" CornerRadius="10">
+                                <TextBlock Text="🔧" FontSize="36" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="Pro Fix" FontSize="16" FontWeight="Black" Foreground="#042F43" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Row 1: بيانات العميل -->
+                    <Border Grid.Row="1" BorderBrush="#E2E8F0" BorderThickness="0,1,0,1" Padding="0,10" Margin="0,0,0,20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="1" HorizontalAlignment="Left">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                    <TextBlock Text="الاسم : " FontSize="13" Foreground="#C5A059" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding CustomerName}" FontSize="13" FontWeight="SemiBold" Foreground="#1E293B"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                    <TextBlock Text="العنوان : " FontSize="13" Foreground="#C5A059" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding Address}" FontSize="13" Foreground="#1E293B"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="رقم الهاتف : " FontSize="13" Foreground="#C5A059" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding PhoneNumber}" FontSize="13" FontWeight="SemiBold" Foreground="#1E293B"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Row 2: التشخيص -->
+                    <StackPanel Grid.Row="2" Margin="0,0,0,20">
+                        <Border Background="#D9C398" Padding="8" CornerRadius="4,4,0,0">
+                            <TextBlock Text="التشخيص" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold" Foreground="#042F43"/>
+                        </Border>
+                        <Border BorderBrush="#042F43" BorderThickness="1" Padding="15" CornerRadius="0,0,4,4" Background="White">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding DeviceModel}" FontSize="16" FontWeight="Black" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                <TextBlock Text="{Binding FaultDescription}" FontSize="14" Foreground="#EF4444" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Row 3: جدول العناصر المصلحة -->
+                    <DataGrid Grid.Row="3" 
+          ItemsSource="{Binding InvoiceItems}" 
+          AutoGenerateColumns="False" 
+          HeadersVisibility="Column"
+          GridLinesVisibility="Horizontal"
+          Background="White" RowHeight="30"
+          BorderBrush="#042F43" BorderThickness="1"
+          IsReadOnly="True">
+
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="#D9C398"/>
+                                <Setter Property="Foreground" Value="#042F43"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                <Setter Property="Padding" Value="5"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="م" Binding="{Binding Index}" Width="40">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="البيــــــــــــــــان" Binding="{Binding Description}" Width="*"/>
+                            <DataGridTextColumn Header="الكمية" Binding="{Binding Quantity}" Width="60">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="السعر" Binding="{Binding Price, StringFormat={}{0:N2}}" Width="80">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="الاجمالي" Binding="{Binding Total, StringFormat={}{0:N2}}" Width="90">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <!-- Row 4: الحسابات والاجمالي -->
+                    <Grid Grid.Row="4" HorizontalAlignment="Left" Width="220" Margin="0,15,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- التكلفة -->
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="التكلفة" FontWeight="Bold" FontSize="13" Padding="5"/>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding SubTotal, StringFormat={}{0:N2}}" HorizontalAlignment="Left" Padding="5"/>
+
+                        <!-- الخصم -->
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="الخصم" FontWeight="Bold" FontSize="13" Padding="5"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding Discount, StringFormat={}{0:N2}}" HorizontalAlignment="Left" Padding="5"/>
+
+                        <!-- الإجمالي الملون -->
+                        <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Background="#D9C398" Margin="0,5,0,0" Padding="2" CornerRadius="4">
+                            <Grid>
+                                <TextBlock Text="الإجمالي" FontWeight="Bold" FontSize="14" Foreground="#042F43" HorizontalAlignment="Right" Margin="0,0,5,0"/>
+                                <TextBlock Text="{Binding FinalTotal, StringFormat={}{0:N2}}" FontWeight="Bold" FontSize="14" Foreground="#042F43" HorizontalAlignment="Left" Margin="5,0,0,0"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <!-- Row 5: الملاحظات والـ QR وكود الدعوة الشيك من الصورة الفاتوره.jpeg -->
+                    <Grid Grid.Row="5" Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- الـ QR كود على اليمين -->
+                        <Border Grid.Column="0" Width="90" Height="90" BorderBrush="#CBD5E1" BorderThickness="1" Margin="0,0,15,0" VerticalAlignment="Top">
+                            <!-- يمكنك تعويضها بمكتبة توليد QR الحقيقية لاحقاً -->
+                            <TextBlock Text="QR" FontSize="11" Foreground="#94A3B8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <!-- نص الملاحظات الطويل المذكور فى الفاتوره.jpeg -->
+                        <StackPanel Grid.Column="1" VerticalAlignment="Top">
+                            <TextBlock Text="ملاحظات:" FontSize="13" FontWeight="Bold" Foreground="#042F43" Margin="0,0,0,5"/>
+                            <TextBlock FontSize="10" Foreground="#475569" TextWrapping="Wrap" LineHeight="14">
+                                • الضمان ساري على الجزء الذي تم إصلاحه أو تغييره فقط، ولا يشمل باقي أجزاء الجهاز.<LineBreak/>
+                                • مدة الضمان يتم تحديدها حسب نوع العطل وقطعة الغيار المثبتة.<LineBreak/>
+                                • الضمان يشمل عيوب الصيانة أو التركيب فقط، ولا يشمل سوء الاستخدام أو الإهمال.<LineBreak/>
+                                • يسقط الضمان في حالة: العبث بالجهاز أو فتحه بواسطة فني آخر - تعرض الجهاز لكسر، حريق، مياه زائدة، أو تيار كهربائي غير منتظم.<LineBreak/>
+                                • لا يشمل الضمان الأعطال الناتجة عن: زيادة أو نقص الكهرباء، انسداد المياه أو مشاكل السباكة، سوء التشغيل.
+                            </TextBlock>
+                        </StackPanel>
+
+                        <!-- بانر كود الدعوة والخصم السفلي المنسق -->
+                        <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Background="#F8FAFC" BorderBrush="#042F43" BorderThickness="0,1,0,0" Margin="0,20,0,0" Padding="10">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock FontSize="12" FontWeight="Bold" Foreground="#042F43" HorizontalAlignment="Center">
+                                    <Run Text="&quot;شكراً على ثقتك! كود الدعوة هو [ "/>
+                                    <Run Text="{Binding InvoiceNumber}" Foreground="#E53935"/>
+                                    <Run Text=" ] قم بدعوة أصدقائك وأقربائك و لك خصم 15% فى الصيانه القادمة و للمدعو خصم 10%.&quot;"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                </Grid>
+            </Border>
+        </ScrollViewer>
+    </Grid>
+</Window>

@@ -49,17 +49,66 @@ public class DeviceBrandRepository:IDeviceBrandRepository
     }
     public bool AddBrand(string brandName)
     {
-       
-            using var conn = DatabaseInitializer.GetConnection();
 
-            using var cmd = new SqlCommand("SP_AddBrand", conn);
-             cmd.CommandType  = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@brandName", brandName);
+        using var conn = DatabaseInitializer.GetConnection();
+        using var cmd = new SqlCommand("SP_AddBrand", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.Parameters.AddWithValue("@BrandName", brandName);
 
-            conn.Open();
-            int rowsAffected = cmd.ExecuteNonQuery();
+        conn.Open();
+        var result = cmd.ExecuteScalar();
 
-            return rowsAffected > 0;
-       
+        return result != null && Convert.ToInt32(result) == 1;
+
     }
+
+    public bool DeleteBrand(int id)
+    {
+        using var conn = DatabaseInitializer.GetConnection();
+        using var cmd = new SqlCommand("SP_DeleteBrand", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+
+        cmd.Parameters.Add(new SqlParameter("@brandId", SqlDbType.Int) { Value = id });
+
+        var returnParam = new SqlParameter
+        {
+            Direction = ParameterDirection.ReturnValue
+        };
+        cmd.Parameters.Add(returnParam);
+
+        conn.Open();
+        cmd.ExecuteNonQuery();
+
+        int result = (int)returnParam.Value;
+
+        return result == 1;
+    }
+    public bool UpdateBrand(int id, string brandName)
+    {
+        using var conn = DatabaseInitializer.GetConnection();
+        using var cmd = new SqlCommand("SP_UpdateBrand", conn);
+        cmd.CommandType = CommandType.StoredProcedure;
+
+        cmd.Parameters.Add(new SqlParameter("@brandId", SqlDbType.Int) { Value = id });
+        cmd.Parameters.Add(new SqlParameter("@brandName", SqlDbType.NVarChar, 200) { Value = brandName });
+
+        var returnParam = new SqlParameter
+        {
+            Direction = ParameterDirection.ReturnValue
+        };
+        cmd.Parameters.Add(returnParam);
+
+        conn.Open();
+        cmd.ExecuteNonQuery();
+
+        int result = (int)returnParam.Value;
+
+        if (result == -1)
+        {
+            throw new Exception("اسم الماركة هذا موجود بالفعل في النظام، لا يمكن التكرار.");
+        }
+
+        return result == 1;
+    }
+
 }

@@ -5,7 +5,9 @@
         
         xmlns:order="clr-namespace:Presentation.View.OrderView"
         
-        xmlns:settings="clr-namespace:Presentation.View.Settings_View"   
+        xmlns:settings="clr-namespace:Presentation.View.Settings_View"  
+        
+        xmlns:campaign="clr-namespace:Presentation.View.CampaignView"   
         Title="نظام إدارة الخدمات - Main Console"
         Height="850" Width="1450"
         WindowStartupLocation="CenterScreen"
@@ -94,30 +96,6 @@
 
                 </StackPanel>
                 <!-- وسط: بحث -->
-                <Border Grid.Column="1"
-                        Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1"
-                        CornerRadius="8" Padding="12,8" MaxWidth="380" HorizontalAlignment="Center">
-                    <Grid>
-                        <TextBox x:Name="HeaderSearchBox"
-                                 Background="Transparent" BorderThickness="0"
-                                 FontSize="13" Foreground="#1E293B"
-                                 VerticalContentAlignment="Center"/>
-                        <TextBlock Text="🔍  بحث سريع (عميل / رقم طلب...)"
-                                   Foreground="#94A3B8" FontSize="13"
-                                   IsHitTestVisible="False" VerticalAlignment="Center">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Text, ElementName=HeaderSearchBox}" Value="">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </Grid>
-                </Border>
 
                 <!-- يسار: تاريخ + badge + أزرار -->
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
@@ -184,8 +162,9 @@
 
                             <RadioButton x:Name="TabDashboard" Content="📊 لوحة التحكم" Style="{StaticResource NavTabStyle}"  IsChecked="True" Click="Navigate_Click" Tag="dashboard"/>
                             <RadioButton x:Name="TabCustomers" Content="👥 إدارة العملاء" Style="{StaticResource NavTabStyle}" Click="Navigate_Click" Tag="Customers"/>
-                            <RadioButton x:Name="TabOrders" Content="📦 الطلبات" Style="{StaticResource NavTabStyle}" Click="Navigate_Click" Tag="Orders"/>
-                            <RadioButton x:Name="TabTechnicians" Content="🔧 الفنيين" Style="{StaticResource NavTabStyle}" Click="Navigate_Click" Tag="Techs"/>
+                            <RadioButton x:Name="TabOrders" Content="📦 إدارة الطلبات" Style="{StaticResource NavTabStyle}" Click="Navigate_Click" Tag="Orders"/>
+                            <RadioButton x:Name="TabEmployees" Content="👥 إدارة الموظفين" Style="{StaticResource NavTabStyle}" Click="Navigate_Click" Tag="Techs"/>
+                            <RadioButton x:Name="TabCampaings" Content="📢 إدارة الحملات" Style="{StaticResource NavTabStyle}" Click="Navigate_Click" Tag="Campaign"/>
                             <RadioButton x:Name="TabSettings" Content="⚙️ الإعدادات" Style="{StaticResource NavTabStyle}" Click="Navigate_Click" Tag="Settings"/>
                         </StackPanel>
                     </Border>
@@ -193,9 +172,13 @@
                     <Grid Grid.Row="1" Margin="10">
                         <customer:CustomersUC x:Name="CustomersControl" Visibility="Collapsed"/>
 
+
                         <order:OrdersUC x:Name="OrdersControl" Visibility="Collapsed"/>
 
                         <settings:SettingsUC x:Name="SettingsControl" Visibility="Collapsed"/>
+
+                        <campaign:CampaignUC x:Name="CampaignsControl" Visibility="Collapsed"/>
+                        
                     </Grid>
                 </Grid>
             </Border>
