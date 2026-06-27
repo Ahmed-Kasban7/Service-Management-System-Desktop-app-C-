@@ -409,17 +409,30 @@
             </StackPanel>
         </ScrollViewer>
 
-        <Border Grid.Row="2" Padding="0,15,0,0" BorderThickness="0,1,0,0" BorderBrush="#CBD5E1">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button x:Name="BtnSaveAll" Content="💾 حفظ" Style="{StaticResource ActionButtonStyle}" Width="150" Height="38" Background="{StaticResource PrimaryBlue}" Click="BtnSaveAll_Click"/>
-                <Button x:Name="BtnCancel" Content="❌ إلغاء" Style="{StaticResource ActionButtonStyle}" Margin="15,0,0,0" Width="100" Height="38" Background="#F1F5F9" Foreground="#64748B" BorderBrush="#CBD5E1" BorderThickness="1" Click="BtnCancel_Click">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="8">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                        </ControlTemplate>
-                    </Button.Template>
+        <Border Grid.Row="2"
+         Padding="0,16,0,0"
+         BorderThickness="0,1,0,0"
+         BorderBrush="{StaticResource BorderColor}">
+            <StackPanel Orientation="Horizontal"
+                 HorizontalAlignment="Center"
+                 Margin="0,4,0,0">
+                <Button x:Name="BtnSave"
+                 Style="{StaticResource PrimaryButton}"
+                 Click="BtnSave_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="💾" Margin="0,0,6,0"/>
+                        <TextBlock Text="حفظ"/>
+                    </StackPanel>
+                </Button>
+
+                <Button x:Name="BtnCancel"
+                 Style="{StaticResource DangerButton}"
+                 Margin="12,0,0,0"
+                 Click="BtnCancel_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="✖" Margin="0,0,6,0"/>
+                        <TextBlock Text="إلغاء"/>
+                    </StackPanel>
                 </Button>
             </StackPanel>
         </Border>

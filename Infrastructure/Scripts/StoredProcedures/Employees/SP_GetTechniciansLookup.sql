@@ -8,6 +8,6 @@ BEGIN
     FROM Employees e
     JOIN Persons p ON e.PersonID = p.PersonID
     JOIN DepartmentRoles dr ON e.RoleID = dr.RoleID
-    WHERE dr.RoleName = @RoleName
+    WHERE dr.RoleName = @RoleName AND e.IsActive = 1
     ORDER BY p.Name
 END

@@ -49,7 +49,7 @@ namespace Presentation.View.CustomerView
         private UpdateCustomerHandler _updateCustomerHandler;
         private readonly GetCustomerPhonesHandler _getCustomerPhonesHandler;
         private readonly AddPhoneToCustomer _addPhoneToCustomer;
-        private readonly DeletePhoneHandler _deletePhoneHandler;
+        private readonly DeleteCustomerPhoneHandler _deletePhoneHandler;
         private readonly UpdatePhoneHandler _updatePhoneHandler;
         private readonly GetCustomerDevicesHandler _getCustomerDevicesHandler;
         private readonly AddDeviceToCustomerHandler _addDeviceHandler;
@@ -66,9 +66,10 @@ namespace Presentation.View.CustomerView
         public event EventHandler<int> OrderDetailsRequested;
 
         private int _customerId;
+     
 
         public CustomerProfileUC(int customerId, GetCustomerBasicInfoHandler getCustomerBasicInfoHandler, UpdateCustomerHandler updateCustomerHandler,
-            GetCustomerPhonesHandler getCustomerPhones, AddPhoneToCustomer phoneToCustomer, DeletePhoneHandler deletePhone,
+            GetCustomerPhonesHandler getCustomerPhones, AddPhoneToCustomer phoneToCustomer, DeleteCustomerPhoneHandler deletePhone,
             UpdatePhoneHandler updatePhone, GetCustomerDevicesHandler getCustomerDevices, AddDeviceToCustomerHandler addDeviceToCustomer,
             GetAllBrandsHandler getAllBrands, GetAllTypesHandler getAllTypes,
             GetSpecsByTypeIdHandler getSpecsByType, UpdateDeviceHandler updateDeviceHandler,

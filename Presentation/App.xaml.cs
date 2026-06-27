@@ -2,6 +2,8 @@
 using Application.DTOs;
 using Application.Features.AppointmentManagement.Commands;
 using Application.Features.AppointmentManagement.Queries;
+using Application.Features.AttachmentManagement.Commands;
+using Application.Features.AttachmentManagement.Queries;
 using Application.Features.BrandManagement;
 using Application.Features.BrandManagement.Commands;
 using Application.Features.BrandManagement.Queries;
@@ -10,9 +12,11 @@ using Application.Features.CampaignManagement.Queries;
 using Application.Features.CustomerManagement.Queries;
 using Application.Features.CustomerManagment;
 using Application.Features.CustomerManagment.Commands;
+using Application.Features.DepartmentManagement;
 using Application.Features.DeviceManagement;
 using Application.Features.DeviceManagement.Commands;
 using Application.Features.DeviceManagement.Queries;
+using Application.Features.EmployeeManagement.Commands;
 using Application.Features.EmployeeManagement.Queries;
 using Application.Features.OrderManagement.Commands;
 using Application.Features.OrderManagement.Queries;
@@ -23,6 +27,7 @@ using Application.Features.SourceManagement;
 using Application.Features.SpecManagement;
 using Application.Features.SpecManagement.Commands;
 using Application.Features.SpecManagement.Queries;
+using Application.Features.TreasuryManagement;
 using Application.Features.TypeManagement;
 using Application.Features.TypeManagement.Commands;
 using Application.Features.TypeManagement.Queries;
@@ -62,9 +67,11 @@ public partial class App : System.Windows.Application
             var visitRepo = new VisitRepository();
             var campaignRepo = new CampaignRepository();
             var sourcesRepo = new SourceRepository();
+            var treasuryRepo = new TreasuryRepository();
+            var departmenRepo = new DepartmentRepository();
+            var attachmentsRepo = new AttachmentRepository();
 
-            var phoneService = new PhoneService(phoneRepo);
-           
+
             var SpecService = new DeviceSpecService(specRepo);
             var createOrderHandler = new CreateOrderHandler(orderRepo, customerRepo, deviceRepo);
             var  getCustomerDeviceHandler= new GetCustomerDevicesHandler(deviceRepo);
@@ -84,7 +91,7 @@ public partial class App : System.Windows.Application
             var updateCusotmer = new UpdateCustomerHandler(customerRepo);
             var getCustomerPhones = new GetCustomerPhonesHandler(phoneRepo);
             var addPhone = new AddPhoneToCustomer(phoneRepo);
-            var deletePhone = new DeletePhoneHandler(phoneRepo);
+            var deleteCustomerPhone = new DeleteCustomerPhoneHandler(phoneRepo);
             var UpdatePhone = new UpdatePhoneHandler(phoneRepo);
             var customerDevices = new GetCustomerDevicesHandler(deviceRepo);
             var addDevice = new AddDeviceToCustomerHandler(deviceRepo);
@@ -124,17 +131,41 @@ public partial class App : System.Windows.Application
 
             var updateSpec = new UpdateSpecHandler(specRepo);
 
+            var getBalance = new GetBalanceHandler(treasuryRepo);
+
+            var createEmployee = new CreateEmployeeHandler(employeeRepo , phoneRepo);
+
+            var getDepartments = new GetDepartmentsLookupHandler(departmenRepo);
+
+            var getRoles = new GetRolesByDepartmentHandler(departmenRepo);
+
+            var getEmployeesPage = new GetPagedEmployeeSummariesHandler(employeeRepo);
+
+            var searchEmployee = new SearchEmployeeHandler(employeeRepo);
+
+            var getEmployeeProfile = new GetEmployeeProfileHandler (employeeRepo);
+            var getEmployeePhones = new GetEmployeePhonesHandler(phoneRepo);
+            var addPhoneToEmployee = new AddPhoneToEmployee(phoneRepo);
+            var deleteEmployeePhone = new DeleteEmployeePhoneHandler(phoneRepo);
+            var getAttachmentsList = new GetEmployeeAttachmentsHandler(attachmentsRepo);
+            var addAttachments = new AddAttachmentHandler(attachmentsRepo);
+            var deleteAttachments = new DeleteAttachmentHandler(attachmentsRepo);
+
+
             var mainWindow = new MainWindow(getOrderDetails , getorderPaged  , getCustomerLookupHandler ,
                 getCustomerDeviceHandler , createOrderHandler , updateOrder
                 ,createCustomerHandler , getAllBrandsHandler , getAllTypesHandler ,getSpecsByTypeIdHandler 
                 , getPagedCustomerHandler , SearchOrderPage , SearchCustomerPage , GetCustomerBasicInfo , updateCusotmer , getCustomerPhones 
-                , addPhone , deletePhone , UpdatePhone  , customerDevices , addDevice ,
+                , addPhone , deleteCustomerPhone , UpdatePhone  , customerDevices , addDevice ,
                 updateDevice , deleteDevice , getDeviceOrders , GetCustomerOrders , deleteCustomer , getEmployeesLookup , createAppointment , 
                 getAppointments , updateAppointment , getAppointment , cancleAppointment , createVisit , getAllEmployees 
                 , getVisitDetatils , createCampaign , getAllSources , getCampaignPage , 
                 searchCampaign , CampaignDetails , deleteCampaign , updateCampaign
                 , getCampaignLookup , createBrand , deleteBrand , updateBrand , addType , deleteType , updateType
-                , getAllSpecs , addSpec , DeleteSpec , updateSpec);
+                , getAllSpecs , addSpec , DeleteSpec , updateSpec ,
+                getBalance , createEmployee , getDepartments   , getRoles ,
+                getEmployeesPage , searchEmployee , getEmployeeProfile
+                , getEmployeePhones , addPhoneToEmployee , deleteEmployeePhone , getAttachmentsList , addAttachments , deleteAttachments);
             mainWindow.Show();
         }
         catch (Exception ex)

@@ -1,0 +1,702 @@
+﻿<UserControl x:Class="Presentation.View.DashboardView.DashboardUC"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Presentation.View.DashboardView"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+             mc:Ignorable="d"
+             FlowDirection="RightToLeft"
+             Background="#EFF3F8"
+             TextOptions.TextFormattingMode="Display"
+             TextOptions.TextRenderingMode="ClearType"
+             SnapsToDevicePixels="True"
+             UseLayoutRounding="True"
+             d:DesignHeight="900" d:DesignWidth="1200">
+
+    <UserControl.Resources>
+        <!-- ===== لوحة ألوان احترافية ===== -->
+        <!-- Primary: Deep Purple/Blue -->
+        <SolidColorBrush x:Key="PrimaryBlue" Color="#5B5EF7"/>
+        <SolidColorBrush x:Key="PrimaryBlueTint" Color="#EEF0FF"/>
+        <SolidColorBrush x:Key="LightBlue" Color="#E0E4FF"/>
+
+        <!-- Neutrals -->
+        <SolidColorBrush x:Key="DarkText" Color="#1E293B"/>
+        <SolidColorBrush x:Key="GrayText" Color="#64748B"/>
+        <SolidColorBrush x:Key="LightGray" Color="#E2E8F0"/>
+        <SolidColorBrush x:Key="BorderGray" Color="#CBD5E1"/>
+
+        <!-- ===== ألوان الكروت الجذابة ===== -->
+        <!-- Customers: Blue Gradient -->
+        <LinearGradientBrush x:Key="CustomersGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#EFF6FF" Offset="0"/>
+            <GradientStop Color="#DBEAFE" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="CustomersAccent" Color="#3B82F6"/>
+        <SolidColorBrush x:Key="CustomersAccentTint" Color="#DBEAFE"/>
+
+        <!-- Employees: Purple Gradient -->
+        <LinearGradientBrush x:Key="EmployeesGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#F5F3FF" Offset="0"/>
+            <GradientStop Color="#EDE9FE" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="EmployeesAccent" Color="#8B5CF6"/>
+        <SolidColorBrush x:Key="EmployeesAccentTint" Color="#EDE9FE"/>
+
+        <!-- Orders: Orange Gradient -->
+        <LinearGradientBrush x:Key="OrdersGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#FFF7ED" Offset="0"/>
+            <GradientStop Color="#FFEDD5" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="OrdersAccent" Color="#F97316"/>
+        <SolidColorBrush x:Key="OrdersAccentTint" Color="#FFEDD5"/>
+
+        <!-- Appointments: Teal Gradient -->
+        <LinearGradientBrush x:Key="AppointmentsGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#F0FDFA" Offset="0"/>
+            <GradientStop Color="#CCFBF1" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="AppointmentsAccent" Color="#14B8A6"/>
+        <SolidColorBrush x:Key="AppointmentsAccentTint" Color="#CCFBF1"/>
+
+        <!-- ===== Financial Colors ===== -->
+        <LinearGradientBrush x:Key="IncomeGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#ECFDF5" Offset="0"/>
+            <GradientStop Color="#D1FAE5" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="IncomeGreen" Color="#10B981"/>
+        <SolidColorBrush x:Key="IncomeGreenTint" Color="#D1FAE5"/>
+
+        <LinearGradientBrush x:Key="ExpenseGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#FEF2F2" Offset="0"/>
+            <GradientStop Color="#FEE2E2" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="ExpenseRed" Color="#EF4444"/>
+        <SolidColorBrush x:Key="ExpenseRedTint" Color="#FEE2E2"/>
+
+        <!-- ===== Gradient للكارت الرئيسي ===== -->
+        <LinearGradientBrush x:Key="PrimaryGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#4F46E5" Offset="0"/>
+            <GradientStop Color="#7C3AED" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- ===== Chart Card Gradient ===== -->
+        <LinearGradientBrush x:Key="ChartCardGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#F8FAFC" Offset="0"/>
+            <GradientStop Color="#F1F5F9" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- ===== Icon Chip ===== -->
+        <Style x:Key="IconChip" TargetType="Border">
+            <Setter Property="Width" Value="46"/>
+            <Setter Property="Height" Value="46"/>
+            <Setter Property="CornerRadius" Value="14"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+
+        <!-- ===== ScrollViewer Style ===== -->
+        <Style x:Key="CustomScrollViewer" TargetType="ScrollViewer">
+            <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollViewer">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <ScrollContentPresenter Grid.Row="0" Margin="{TemplateBinding Padding}"/>
+                            <ScrollBar x:Name="PART_VerticalScrollBar"
+                                       Grid.Row="1"
+                                       Orientation="Vertical"
+                                       Height="0"
+                                       Visibility="Collapsed"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Card Style موحّد للرسم البياني وآخر الحركات -->
+        <Style x:Key="DashboardCard" TargetType="Border">
+            <Setter Property="Background" Value="#F8FAFC"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="24"/>
+            <Setter Property="BorderBrush" Value="#E2E8F0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="12" Color="#000000" Opacity="0.04" ShadowDepth="1"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- بطاقة المقياس العلوي -->
+        <Style x:Key="TopMetricCard" TargetType="Border">
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="22"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="10" Color="#000000" Opacity="0.04" ShadowDepth="2"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect BlurRadius="18" Color="#4F46E5" Opacity="0.12" ShadowDepth="4"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- زر فترة العرض -->
+        <Style x:Key="PeriodButton" TargetType="RadioButton">
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="Foreground" Value="{StaticResource GrayText}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="border"
+                                Background="Transparent"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource PrimaryBlue}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource PrimaryBlueTint}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- DataTemplate لصف حركة -->
+        <DataTemplate x:Key="TransactionRowTemplate">
+            <Border BorderBrush="#E2E8F0" BorderThickness="0,0,0,1" Padding="8,14">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0"
+                            Width="42" Height="42"
+                            CornerRadius="13"
+                            Background="{Binding IconBackground}"
+                            Margin="0,0,14,0">
+                        <TextBlock Text="{Binding IconGlyph}"
+                                   FontSize="17"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Foreground="{Binding IconForeground}"/>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Description}"
+                                   FontSize="13.5"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource DarkText}"/>
+                        <TextBlock Text="{Binding ReferenceDisplayName}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource GrayText}"
+                                   Margin="0,3,0,0"
+                                   Cursor="Hand"
+                                   TextDecorations="Underline"
+                                   MouseLeftButtonUp="ReferenceLink_Click"
+                                   Tag="{Binding}"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="2"
+                               Text="{Binding FormattedAmount}"
+                               FontSize="15"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"
+                               Foreground="{Binding AmountColor}"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+    </UserControl.Resources>
+
+    <!-- الحاوية الرئيسية مع ScrollViewer -->
+    <ScrollViewer Style="{StaticResource CustomScrollViewer}"
+                  VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled"
+                  CanContentScroll="True"
+                  Margin="0">
+
+        <Grid Margin="32">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="24"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="36"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="24"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="24"/>
+            </Grid.RowDefinitions>
+
+            <!-- ===================== Header ===================== -->
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <Border Style="{StaticResource IconChip}"
+                            Background="{StaticResource PrimaryBlueTint}"
+                            VerticalAlignment="Top"
+                            Margin="0,2,16,0">
+                        <Viewbox Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Canvas Width="24" Height="24">
+                                <Rectangle Canvas.Left="3" Canvas.Top="3" Width="7" Height="7" RadiusX="2" RadiusY="2" Fill="{StaticResource PrimaryBlue}"/>
+                                <Rectangle Canvas.Left="14" Canvas.Top="3" Width="7" Height="7" RadiusX="2" RadiusY="2" Fill="{StaticResource PrimaryBlue}"/>
+                                <Rectangle Canvas.Left="3" Canvas.Top="14" Width="7" Height="7" RadiusX="2" RadiusY="2" Fill="{StaticResource PrimaryBlue}"/>
+                                <Rectangle Canvas.Left="14" Canvas.Top="14" Width="7" Height="7" RadiusX="2" RadiusY="2" Fill="{StaticResource PrimaryBlue}"/>
+                            </Canvas>
+                        </Viewbox>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="لوحة التحكم"
+                                   FontSize="26"
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource DarkText}"/>
+                        <TextBlock Text="نظرة عامة على أداء المركز"
+                                   FontSize="14"
+                                   Foreground="{StaticResource GrayText}"
+                                   Margin="0,5,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <Button Grid.Column="1"
+                        Content="↺ تحديث البيانات"
+                        Width="130" Height="44"
+                        Background="White"
+                        Foreground="{StaticResource PrimaryBlue}"
+                        BorderBrush="{StaticResource BorderGray}"
+                        BorderThickness="1"
+                        FontWeight="SemiBold"
+                        FontSize="13.5"
+                        Cursor="Hand"
+                        Click="BtnRefresh_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="12">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource PrimaryBlueTint}"/>
+                                    <Setter Property="BorderBrush" Value="{StaticResource PrimaryBlue}"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Background" Value="#E0E4FF"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+
+            <!-- ===================== صف بطاقات المقاييس ===================== -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- إجمالي العملاء - أزرق -->
+                <Border Grid.Column="0" Style="{StaticResource TopMetricCard}" 
+                        Background="{StaticResource CustomersGradient}"
+                        BorderBrush="#BFDBFE"
+                       >
+                    <StackPanel>
+                        <Border Style="{StaticResource IconChip}" Background="White">
+                            <Viewbox Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Canvas Width="24" Height="24">
+                                    <Ellipse Canvas.Left="8" Canvas.Top="3" Width="8" Height="8"
+                                             Stroke="{StaticResource CustomersAccent}" StrokeThickness="2.5"/>
+                                    <Path Data="M4,21 C4,16 8,14 12,14 C16,14 20,16 20,21"
+                                          Stroke="{StaticResource CustomersAccent}" StrokeThickness="2.5"
+                                          StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                </Canvas>
+                            </Viewbox>
+                        </Border>
+                        <TextBlock Text="إجمالي العملاء" FontSize="13" Foreground="#3B82F6" Margin="0,14,0,0" FontWeight="Medium"/>
+                        <TextBlock Text="0" FontSize="30" FontWeight="Bold" Foreground="{StaticResource DarkText}" Margin="0,6,0,0"/>
+                       
+                    </StackPanel>
+                </Border>
+
+                <!-- عدد الموظفين - بنفسجي -->
+                <Border Grid.Column="2" Style="{StaticResource TopMetricCard}" 
+                        Background="{StaticResource EmployeesGradient}"
+                        BorderBrush="#DDD6FE"
+                        >
+                    <StackPanel>
+                        <Border Style="{StaticResource IconChip}" Background="White">
+                            <Viewbox Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Canvas Width="24" Height="24">
+                                    <Rectangle Canvas.Left="5" Canvas.Top="3" Width="14" Height="18" RadiusX="3.5" RadiusY="3.5"
+                                               Stroke="{StaticResource EmployeesAccent}" StrokeThickness="2.5"/>
+                                    <Rectangle Canvas.Left="9" Canvas.Top="1" Width="6" Height="3" RadiusX="1.5" RadiusY="1.5"
+                                               Fill="{StaticResource EmployeesAccent}"/>
+                                    <Ellipse Canvas.Left="9" Canvas.Top="7.5" Width="6" Height="6"
+                                             Stroke="{StaticResource EmployeesAccent}" StrokeThickness="2"/>
+                                    <Line X1="8" Y1="17" X2="16" Y2="17"
+                                          Stroke="{StaticResource EmployeesAccent}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                </Canvas>
+                            </Viewbox>
+                        </Border>
+                        <TextBlock Text="عدد الموظفين" FontSize="13" Foreground="#8B5CF6" Margin="0,14,0,0" FontWeight="Medium"/>
+                        <TextBlock Text="{Binding TotalEmployees}" FontSize="30" FontWeight="Bold" Foreground="{StaticResource DarkText}" Margin="0,6,0,0"/>
+                        <TextBlock Text="{Binding EmployeesBreakdownText}" FontSize="12" Foreground="#7C3AED" Margin="0,11,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- الأوردرات المفتوحة - برتقالي -->
+                <Border Grid.Column="4" Style="{StaticResource TopMetricCard}" 
+                        Background="{StaticResource OrdersGradient}"
+                        BorderBrush="#FED7AA"
+                        MouseLeftButtonUp="OrdersCard_Click">
+                    <StackPanel>
+                        <Border Style="{StaticResource IconChip}" Background="White">
+                            <Viewbox Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Canvas Width="24" Height="24">
+                                    <Rectangle Canvas.Left="5" Canvas.Top="4" Width="14" Height="17" RadiusX="2.5" RadiusY="2.5"
+                                               Stroke="{StaticResource OrdersAccent}" StrokeThickness="2.5"/>
+                                    <Rectangle Canvas.Left="9" Canvas.Top="2" Width="6" Height="3" RadiusX="1.2" RadiusY="1.2"
+                                               Fill="{StaticResource OrdersAccent}"/>
+                                    <Line X1="8" Y1="10" X2="16" Y2="10" Stroke="{StaticResource OrdersAccent}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                    <Line X1="8" Y1="14" X2="16" Y2="14" Stroke="{StaticResource OrdersAccent}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                    <Line X1="8" Y1="18" X2="14" Y2="18" Stroke="{StaticResource OrdersAccent}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                </Canvas>
+                            </Viewbox>
+                        </Border>
+                        <TextBlock Text="الأوردرات المفتوحة" FontSize="13" Foreground="#F97316" Margin="0,14,0,0" FontWeight="Medium"/>
+                        <TextBlock Text="{Binding OpenOrdersCount}" FontSize="30" FontWeight="Bold" Foreground="{StaticResource DarkText}" Margin="0,6,0,0"/>
+                        <Border Background="#FED7AA" CornerRadius="8" Padding="8,4" HorizontalAlignment="Left" Margin="0,10,0,0">
+                            <TextBlock Text="{Binding NewOrdersTodayText}" FontSize="11.5" FontWeight="SemiBold" Foreground="#EA580C"/>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- مواعيد اليوم - فيروزي -->
+                <Border Grid.Column="6" Style="{StaticResource TopMetricCard}" 
+                        Background="{StaticResource AppointmentsGradient}"
+                        BorderBrush="#99F6E4"
+                        MouseLeftButtonUp="AppointmentsCard_Click">
+                    <StackPanel>
+                        <Border Style="{StaticResource IconChip}" Background="White">
+                            <Viewbox Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Canvas Width="24" Height="24">
+                                    <Rectangle Canvas.Left="4" Canvas.Top="5" Width="16" Height="15" RadiusX="2.5" RadiusY="2.5"
+                                               Stroke="{StaticResource AppointmentsAccent}" StrokeThickness="2.5"/>
+                                    <Line X1="4" Y1="9" X2="20" Y2="9" Stroke="{StaticResource AppointmentsAccent}" StrokeThickness="2.5"/>
+                                    <Line X1="8" Y1="3" X2="8" Y2="6.5" Stroke="{StaticResource AppointmentsAccent}" StrokeThickness="2.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                    <Line X1="16" Y1="3" X2="16" Y2="6.5" Stroke="{StaticResource AppointmentsAccent}" StrokeThickness="2.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                    <Ellipse Canvas.Left="10.5" Canvas.Top="12.5" Width="3.5" Height="3.5" Fill="{StaticResource AppointmentsAccent}"/>
+                                </Canvas>
+                            </Viewbox>
+                        </Border>
+                        <TextBlock Text="مواعيد اليوم" FontSize="13" Foreground="#14B8A6" Margin="0,14,0,0" FontWeight="Medium"/>
+                        <TextBlock Text="{Binding TodayAppointmentsCount}" FontSize="30" FontWeight="Bold" Foreground="{StaticResource DarkText}" Margin="0,6,0,0"/>
+                        <TextBlock Text="{Binding AppointmentsBreakdownText}" FontSize="12" Foreground="#0D9488" Margin="0,11,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- ===================== عنوان قسم الخزنة ===================== -->
+            <Border Grid.Row="4" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1" Padding="0,0,0,14">
+                <StackPanel Orientation="Horizontal">
+                    <Border Style="{StaticResource IconChip}" Width="36" Height="36" CornerRadius="10" Background="{StaticResource PrimaryBlueTint}" Margin="0,0,12,0">
+                        <Viewbox Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Canvas Width="24" Height="24">
+                                <Ellipse Canvas.Left="4" Canvas.Top="4" Width="16" Height="16" Stroke="{StaticResource PrimaryBlue}" StrokeThickness="2.5"/>
+                                <Line X1="12" Y1="7" X2="12" Y2="17" Stroke="{StaticResource PrimaryBlue}" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                            </Canvas>
+                        </Viewbox>
+                    </Border>
+                    <TextBlock Text="إدارة الخزنة" FontSize="19" FontWeight="Bold" Foreground="{StaticResource DarkText}" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- ===================== صف بطاقات الخزنة ===================== -->
+            <Grid Grid.Row="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.4*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- الرصيد الحالي -->
+                <Border Grid.Column="0" CornerRadius="16" Padding="28" Background="{StaticResource PrimaryGradient}" ClipToBounds="True">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="24" Color="#4F46E5" Opacity="0.35" ShadowDepth="6"/>
+                    </Border.Effect>
+                    <Grid>
+                        <Ellipse Width="180" Height="180" Fill="White" Opacity="0.08"
+                                 HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-70,-60,0"/>
+                        <Ellipse Width="100" Height="100" Fill="White" Opacity="0.05"
+                                 HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-30,0,0,-40"/>
+
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="44" Height="44" CornerRadius="13" Background="#25FFFFFF" Margin="0,0,14,0">
+                                    <Viewbox Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Canvas Width="24" Height="24">
+                                            <Rectangle Canvas.Left="3" Canvas.Top="6" Width="18" Height="13" RadiusX="3.5" RadiusY="3.5"
+                                                       Stroke="White" StrokeThickness="2.5"/>
+                                            <Ellipse Canvas.Left="15" Canvas.Top="11" Width="4.5" Height="4.5" Fill="White"/>
+                                        </Canvas>
+                                    </Viewbox>
+                                </Border>
+                                <TextBlock Text="الرصيد الحالي" FontSize="14" Foreground="#E0E7FF" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <TextBlock x:Name="txtcurrentbalance" Text="{Binding CurrentBalanceFormatted}"
+                                       FontSize="36"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       Margin="0,16,0,0"/>
+                            <TextBlock x:Name="txtlastupdated" Text="{Binding LastUpdatedText}"
+                                       FontSize="12"
+                                       Foreground="#C7D2FE"
+                                       Margin="0,8,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- الداخل اليوم - أخضر -->
+                <Border Grid.Column="2" CornerRadius="16" Padding="22"
+                        Background="{StaticResource IncomeGradient}"
+                        BorderBrush="#A7F3D0" BorderThickness="1">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="8" Color="#000000" Opacity="0.03" ShadowDepth="1"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="42" Height="42" CornerRadius="13" Background="White" Margin="0,0,12,0">
+                                <Viewbox Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Canvas Width="24" Height="24">
+                                        <Line X1="12" Y1="4" X2="12" Y2="17" Stroke="{StaticResource IncomeGreen}" StrokeThickness="2.5" StrokeStartLineCap="Round"/>
+                                        <Path Data="M6,12 L12,18 L18,12" Stroke="{StaticResource IncomeGreen}" StrokeThickness="2.5"
+                                              StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"/>
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <TextBlock Text="الداخل اليوم" FontSize="14" Foreground="#059669" VerticalAlignment="Center" FontWeight="Medium"/>
+                        </StackPanel>
+                        <TextBlock Text="{Binding TodayInFormatted}"
+                                   FontSize="28"
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource IncomeGreen}"
+                                   Margin="0,14,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- الخارج اليوم - أحمر -->
+                <Border Grid.Column="4" CornerRadius="16" Padding="22"
+                        Background="{StaticResource ExpenseGradient}"
+                        BorderBrush="#FECACA" BorderThickness="1">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="8" Color="#000000" Opacity="0.03" ShadowDepth="1"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="42" Height="42" CornerRadius="13" Background="White" Margin="0,0,12,0">
+                                <Viewbox Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Canvas Width="24" Height="24">
+                                        <Line X1="12" Y1="20" X2="12" Y2="7" Stroke="{StaticResource ExpenseRed}" StrokeThickness="2.5" StrokeStartLineCap="Round"/>
+                                        <Path Data="M6,12 L12,6 L18,12" Stroke="{StaticResource ExpenseRed}" StrokeThickness="2.5"
+                                              StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"/>
+                                    </Canvas>
+                                </Viewbox>
+                            </Border>
+                            <TextBlock Text="الخارج اليوم" FontSize="14" Foreground="#DC2626" VerticalAlignment="Center" FontWeight="Medium"/>
+                        </StackPanel>
+                        <TextBlock Text="{Binding TodayOutFormatted}"
+                                   FontSize="28"
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource ExpenseRed}"
+                                   Margin="0,14,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- ===================== الصف السفلي ===================== -->
+            <Grid Grid.Row="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- الرسم البياني -->
+                <Border Grid.Column="0" Style="{StaticResource DashboardCard}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Text="حركة الخزنة"
+                                       FontSize="17"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource DarkText}"
+                                       VerticalAlignment="Center"/>
+
+                            <Border Grid.Column="1" Background="White" CornerRadius="10" Padding="4" BorderBrush="#E2E8F0" BorderThickness="1">
+                                <StackPanel Orientation="Horizontal">
+                                    <RadioButton x:Name="Btn7Days"
+                                                 Content="٧ أيام"
+                                                 GroupName="Period"
+                                                 IsChecked="True"
+                                                 Style="{StaticResource PeriodButton}"
+                                                 Checked="PeriodToggle_Checked"/>
+                                    <RadioButton x:Name="Btn30Days"
+                                                 Content="٣٠ يوم"
+                                                 GroupName="Period"
+                                                 Style="{StaticResource PeriodButton}"
+                                                 Checked="PeriodToggle_Checked"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!-- Legend -->
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
+                                <Border Width="12" Height="12" CornerRadius="3" Background="{StaticResource IncomeGreen}" Margin="0,0,6,0"/>
+                                <TextBlock Text="داخل" FontSize="12" Foreground="{StaticResource GrayText}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,20,0">
+                                <Border Width="12" Height="12" CornerRadius="3" Background="{StaticResource ExpenseRed}" Margin="0,0,6,0"/>
+                                <TextBlock Text="خارج" FontSize="12" Foreground="{StaticResource GrayText}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="16" Height="2.5" Background="{StaticResource PrimaryBlue}" Margin="0,0,6,0"/>
+                                <TextBlock Text="الرصيد المتراكم" FontSize="12" Foreground="{StaticResource GrayText}"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Chart -->
+                        <lvc:CartesianChart Grid.Row="2"
+                                            Series="{Binding TrendSeries}"
+                                            XAxes="{Binding TrendXAxes}"
+                                            YAxes="{Binding TrendYAxes}"
+                                            Margin="0,16,0,0"
+                                            MinHeight="280"/>
+                    </Grid>
+                </Border>
+
+                <!-- العمود الأيمن -->
+                <StackPanel Grid.Column="2">
+
+                    <!-- توزيع الفئات -->
+                    <Border Style="{StaticResource DashboardCard}" Margin="0,0,0,20">
+                        <StackPanel>
+                            <TextBlock Text="المصروفات حسب الفئة"
+                                       FontSize="16"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource DarkText}"
+                                       Margin="0,0,0,16"/>
+
+                            <lvc:PieChart Series="{Binding CategorySeries}"
+                                          MinHeight="180"
+                                          LegendPosition="Hidden"/>
+
+                            <ItemsControl ItemsSource="{Binding CategoryLegend}" Margin="0,14,0,0">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Width="10" Height="10" CornerRadius="3"
+                                                    Background="{Binding ColorBrush}" Margin="0,0,10,0"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding CategoryName}"
+                                                       FontSize="13" Foreground="{StaticResource DarkText}"/>
+                                            <TextBlock Grid.Column="2" Text="{Binding TotalFormatted}"
+                                                       FontSize="13" FontWeight="SemiBold"
+                                                       Foreground="{StaticResource DarkText}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- آخر الحركات -->
+                    <Border Style="{StaticResource DashboardCard}">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="آخر الحركات"
+                                           FontSize="16" FontWeight="Bold"
+                                           Foreground="{StaticResource DarkText}"/>
+                                <TextBlock Grid.Column="1" Text="عرض الكل"
+                                           FontSize="13" Foreground="{StaticResource PrimaryBlue}"
+                                           Cursor="Hand" FontWeight="SemiBold"
+                                           MouseLeftButtonUp="ViewAll_Click"/>
+                            </Grid>
+
+                            <ScrollViewer MaxHeight="380" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                <ItemsControl x:Name="RecentTransactionsList"
+                                              ItemsSource="{Binding RecentTransactions}"
+                                              ItemTemplate="{StaticResource TransactionRowTemplate}"/>
+                            </ScrollViewer>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </Grid>
+
+            <!-- ===================== مسافة سفلية ===================== -->
+            <Rectangle Grid.Row="9" Height="12" Fill="Transparent"/>
+
+        </Grid>
+    </ScrollViewer>
+</UserControl>

@@ -49,7 +49,7 @@ namespace Presentation.View.CustomerView
         private UpdateCustomerHandler _updateCustomerHandler;
         private GetCustomerPhonesHandler _getCustomerPhonesHandler;
         private AddPhoneToCustomer _addPhoneToCustomer;
-        private DeletePhoneHandler _deletePhoneHandler;
+        private DeleteCustomerPhoneHandler _deletePhoneHandler;
         private UpdatePhoneHandler _updatePhoneHandler;
         private GetCustomerDevicesHandler _getCustomerDevicesHandler;
         private AddDeviceToCustomerHandler _addDeviceToCustomer;
@@ -73,7 +73,7 @@ namespace Presentation.View.CustomerView
             GetPagedCustomerSummariesHandler getPagedCustomer, SearchCustomerPageHandler searchCustomerPage,
             GetCustomerBasicInfoHandler getCustomerBasicInfoHandler, UpdateCustomerHandler updateCustomer
             , GetCustomerPhonesHandler getCustomerPhones, AddPhoneToCustomer phoneToCustomer,
-            DeletePhoneHandler deletePhone, UpdatePhoneHandler updatePhone
+            DeleteCustomerPhoneHandler deletePhone, UpdatePhoneHandler updatePhone
             , GetCustomerDevicesHandler getCustomerDevices,
             AddDeviceToCustomerHandler addDeviceToCustomer
             , UpdateDeviceHandler updateDevice, DeleteDeviceHandler deleteDevice, 

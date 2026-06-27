@@ -16,7 +16,6 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- عنوان النافذة -->
         <TextBlock Grid.Row="0" 
                    FontSize="18" 
                    FontWeight="Bold" 

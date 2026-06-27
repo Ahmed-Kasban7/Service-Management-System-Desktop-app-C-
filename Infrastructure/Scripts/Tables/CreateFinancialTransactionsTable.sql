@@ -9,7 +9,7 @@ CREATE TABLE FinancialTransactions (
     OrderID INT NULL,
     VisitID INT NULL,
     CreatedAt DATETIME DEFAULT GETDATE(),
-    Status    TINYINT DEFAULT 0, -- صفر مدفوع و  1 مستحق 
+    Status    TINYINT DEFAULT 0, 
     PaidAt           DATETIME NULL,
 
     FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID),

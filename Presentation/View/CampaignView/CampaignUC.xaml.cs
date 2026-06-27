@@ -133,7 +133,6 @@ namespace Presentation.View.CampaignView
             BtnNextPage.IsEnabled = result.HasNextPage;
             BtnPrevPage.IsEnabled = result.HasPreviousPage;
 
-            EmptyStateOverlay.Visibility = result.Items.Any() ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private void BtnNextPage_Click(object sender, RoutedEventArgs e)

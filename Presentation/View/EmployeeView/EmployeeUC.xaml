@@ -1,0 +1,212 @@
+﻿<UserControl x:Class="Presentation.View.EmployeeView.EmployeeUC"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Presentation.View.EmployeeView"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             FlowDirection="RightToLeft">
+    <Grid>
+        <Grid x:Name="EmployeesContainer" Visibility="Visible">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Border x:Name="employeeheader" Grid.Row="0" Padding="25,15">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,20,0">
+                        <TextBlock Text="قائمة الموظفين" FontSize="16" FontWeight="Bold" Foreground="#1E293B"/>
+                        <TextBlock FontSize="12" Foreground="#64748B" Margin="0,4,0,0">
+                                      <Run Text="عدد الموظفين: "/>
+<TextBlock x:Name="TxtEmployeeCountNumber"
+             Text="0"
+             FontSize="12" FontWeight="Bold"
+             Foreground="#2563EB"
+             FlowDirection="LeftToRight"/>                                        </TextBlock>
+                    </StackPanel>
+                    <Border Grid.Column="1" 
+Background="White" 
+BorderBrush="{StaticResource BorderGray}" 
+BorderThickness="1" 
+CornerRadius="8" 
+Padding="12,8" 
+MaxWidth="400" 
+Width="350" 
+HorizontalAlignment="Center">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="🔍"
+           VerticalAlignment="Center"
+           Margin="0,0,8,0"
+           FontSize="14"
+           Foreground="{StaticResource GrayText}" />
+
+                            <!-- TextBox -->
+                            <Grid Grid.Column="1">
+
+                                <TextBox x:Name="SearchBox"
+             Foreground="Black"
+             Background="Transparent"
+             BorderThickness="0"
+             FontSize="14"
+             VerticalContentAlignment="Center"
+             KeyDown="SearchBox_KeyDown"
+             Padding="0"/>
+
+                                <!--  -->
+                                <TextBlock Text="بحث باسم الموظف أو كود الموظف"
+               Foreground="{StaticResource GrayText}"
+               IsHitTestVisible="False"
+               VerticalAlignment="Center">
+
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+
+                                </TextBlock>
+
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <Button x:Name="BtnAddEmployee" Grid.Column="2" Content="➕ إضافة موظف"
+                                      Height="38" Padding="18,8"
+                                      Background="{StaticResource PrimaryBlue}" Foreground="White"
+                                      BorderThickness="0" Cursor="Hand" FontWeight="SemiBold" FontSize="14"
+                                      Click="BtnCreateEmployee_Click" HorizontalAlignment="Left">
+                        <Button.Template>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="1">
+                <DataGrid x:Name="DgEmployees"
+                                    AutoGenerateColumns="False" GridLinesVisibility="None"
+                                    Background="Transparent" BorderThickness="0"
+                                    SelectionMode="Single" CanUserAddRows="False"
+                                    IsReadOnly="True" RowHeaderWidth="0"
+                                    MouseDoubleClick ="DgEmployees_SelectionChanged">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="كود الموظف" Binding="{Binding EmployeeNumber}" Width="150"/>
+                        <DataGridTextColumn Header="اسم الموظف" Binding="{Binding Name}" Width="1.5*"/>
+                        <DataGridTextColumn Header="القسم" Binding="{Binding DepartmentName}" Width="*"/>
+                        <DataGridTextColumn Header="الدور الوظيفي" Binding="{Binding RoleName}" Width="*"/>
+                        <DataGridTextColumn Header="الهاتف" Binding="{Binding Phone}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Border x:Name="EmptyStateOverlay" Background="#AAFFFFFF"
+                                  Visibility="Collapsed" CornerRadius="12">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="👥" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,15" Opacity="0.2"/>
+                        <TextBlock x:Name="TxtEmptyMessage" Text="لا توجد بيانات لعرضها"
+                                             FontSize="15" FontWeight="Bold" Foreground="#475569" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Border Grid.Row="2" Padding="15" Background="White" BorderBrush="#F1F5F9" BorderThickness="0">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="BtnNextPage" Click="BtnNextPage_Click" Width="42" Height="42" Cursor="Hand">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}">
+                                <Setter Property="Background" Value="White"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type Button}">
+                                            <Border x:Name="btnBorder" Background="{TemplateBinding Background}"
+                                                              CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1.5">
+                                                <Path x:Name="arrowPath" Data="M6.5 1L1.5 6L6.5 11"
+                                                                Stroke="#64748B" StrokeThickness="2"
+                                                                StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                                                StrokeLineJoin="Round" HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center" Stretch="Uniform" Width="10" Height="14"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="btnBorder" Property="Background" Value="#F1F5F9"/>
+                                                    <Setter TargetName="arrowPath" Property="Stroke" Value="#2563EB"/>
+                                                    <Setter TargetName="btnBorder" Property="BorderBrush" Value="#2563EB"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="Opacity" Value="0.2"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <StackPanel VerticalAlignment="Center" Margin="20,0">
+                        <TextBlock x:Name="TxtPageInfo" Text="1" Foreground="#1E293B"
+                                             FontSize="15" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                        <TextBlock Text="الصفحة" Foreground="#94A3B8" FontSize="10"
+                                             HorizontalAlignment="Center" Margin="0,-2,0,0"/>
+                    </StackPanel>
+                    <Button x:Name="BtnPrevPage" Click="BtnPrevPage_Click" Width="42" Height="42" Cursor="Hand">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}">
+                                <Setter Property="Background" Value="White"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type Button}">
+                                            <Border x:Name="btnBorder" Background="{TemplateBinding Background}"
+                                                              CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1.5">
+                                                <Path x:Name="arrowPath" Data="M1.5 1L6.5 6L1.5 11"
+                                                                Stroke="#64748B" StrokeThickness="2"
+                                                                StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                                                StrokeLineJoin="Round" HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center" Stretch="Uniform" Width="10" Height="14"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="btnBorder" Property="Background" Value="#F1F5F9"/>
+                                                    <Setter TargetName="arrowPath" Property="Stroke" Value="#2563EB"/>
+                                                    <Setter TargetName="btnBorder" Property="BorderBrush" Value="#2563EB"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="Opacity" Value="0.2"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+            </Border>
+
+        </Grid>
+        <ContentControl x:Name="EmployeeProfileHolder" Visibility="Collapsed"/>
+    </Grid>
+</UserControl>

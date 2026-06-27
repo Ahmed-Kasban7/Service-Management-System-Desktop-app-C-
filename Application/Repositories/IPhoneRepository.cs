@@ -13,8 +13,13 @@ public interface  IPhoneRepository
     bool UpdatePhone(string newPhone, string oldPhone);
     IEnumerable<string> GetCustomerPhones(int customerId);
 
-    bool AddPhone(string phoneNumber , int customerId);
+    bool AddCustomerPhone(string phoneNumber , int customerId);
+    bool AddEmployeePhone(string phoneNumber , int employeeId);
     bool IsPhoneExist(string phoneNumber);
-    public int GetPersonPhoneCount(int personId);
+    int GetCustomerPhoneCount(int customerId);
+    IEnumerable<string> GetEmployeePhones(int employeeId);
+    public int GetEmployeePhoneCount(int employeeId);
+
+
 
 }

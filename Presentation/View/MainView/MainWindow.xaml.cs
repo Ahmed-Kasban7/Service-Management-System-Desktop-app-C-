@@ -4,14 +4,18 @@ using Application.DTOs.CustomerDTOs;
 using Application.DTOs.DeviceDTOs;
 using Application.Features.AppointmentManagement.Commands;
 using Application.Features.AppointmentManagement.Queries;
+using Application.Features.AttachmentManagement.Commands;
+using Application.Features.AttachmentManagement.Queries;
 using Application.Features.BrandManagement.Commands;
 using Application.Features.BrandManagement.Queries;
 using Application.Features.CampaignManagement.Command;
 using Application.Features.CampaignManagement.Queries;
 using Application.Features.CustomerManagement.Queries;
 using Application.Features.CustomerManagment.Commands;
+using Application.Features.DepartmentManagement;
 using Application.Features.DeviceManagement.Commands;
 using Application.Features.DeviceManagement.Queries;
+using Application.Features.EmployeeManagement.Commands;
 using Application.Features.EmployeeManagement.Queries;
 using Application.Features.OrderManagement.Commands;
 using Application.Features.OrderManagement.Queries;
@@ -20,6 +24,7 @@ using Application.Features.PhoneManagement.Queries;
 using Application.Features.SourceManagement;
 using Application.Features.SpecManagement.Commands;
 using Application.Features.SpecManagement.Queries;
+using Application.Features.TreasuryManagement;
 using Application.Features.TypeManagement.Commands;
 using Application.Features.TypeManagement.Queries;
 using Application.Features.VisitManagement;
@@ -58,7 +63,7 @@ namespace Presentation.View.MainView
         private UpdateCustomerHandler _updateCustomerHandler;
         private GetCustomerPhonesHandler _getCustomerPhonesHandler;
         private AddPhoneToCustomer _addPhoneToCustomer;
-        private DeletePhoneHandler _deletePhoneHandler;
+        private DeleteCustomerPhoneHandler _deleteCustomerPhoneHandler;
         private UpdatePhoneHandler _updatePhoneHandler;
         private GetCustomerDevicesHandler customerDevicesHandler;
         private readonly AddDeviceToCustomerHandler _addDeviceHandler;
@@ -96,9 +101,21 @@ namespace Presentation.View.MainView
         private readonly DeleteSpecHandler _deleteSpecHandler;
 
         private readonly UpdateSpecHandler _updateSpecHandler;
+        private readonly GetBalanceHandler _getBalanceHandler;
+        private readonly CreateEmployeeHandler _createEmployeeHandler;
+        private readonly GetDepartmentsLookupHandler _getDepartmentsHandler;
+        private readonly GetRolesByDepartmentHandler _getRolesHandler;
 
+        private readonly GetPagedEmployeeSummariesHandler _getPagedEmployeeSummariesHandler;
+        private readonly SearchEmployeeHandler _searchEmployeeHandler;
+        private readonly GetEmployeeProfileHandler _getEmployeeProfileHandler;
 
-
+        private readonly GetEmployeePhonesHandler _getEmployeePhones;
+        private readonly AddPhoneToEmployee _addPhoneToEmployee;
+        private readonly DeleteEmployeePhoneHandler _deleteEmployeePhone;
+        private readonly GetEmployeeAttachmentsHandler _getEmployeeAttachments;
+        private readonly AddAttachmentHandler _addAttachmentHandler;
+        private readonly DeleteAttachmentHandler _deleteAttachmentHandler;
 
 
         public MainWindow(GetOrderFullDetailsHandler getOrderFullDetails,
@@ -110,7 +127,7 @@ namespace Presentation.View.MainView
             SearchCustomerPageHandler searchCustomerPage, GetCustomerBasicInfoHandler getCustomersBasicInfoHandler,
             UpdateCustomerHandler updateCustomerHandler, GetCustomerPhonesHandler getCustomerPhones,
             AddPhoneToCustomer addPhoneToCustomer,
-            DeletePhoneHandler deletePhone, UpdatePhoneHandler updatePhone,
+            DeleteCustomerPhoneHandler deletePhone, UpdatePhoneHandler updatePhone,
             GetCustomerDevicesHandler getCustomerDevices
             , AddDeviceToCustomerHandler addDeviceToCustomer
             , UpdateDeviceHandler updateDevice, DeleteDeviceHandler deleteDevice,
@@ -127,7 +144,14 @@ namespace Presentation.View.MainView
             CreateBrandHandler createBrandHandler , DeleteBrandHandler deleteBrand , 
             UpdateBrandHandler updateBrand , AddTypeHandler addTypeHandler , 
             DeleteTypeHandler deleteType  , UpdateTypeHandler updateType , 
-            GetAllSpecsHandler getAllSpecs , AddSpecHandler addSpecHandler , DeleteSpecHandler deleteSpec , UpdateSpecHandler updateSpecHandler)
+            GetAllSpecsHandler getAllSpecs , AddSpecHandler addSpecHandler , DeleteSpecHandler deleteSpec ,
+            UpdateSpecHandler updateSpecHandler , GetBalanceHandler getBalanceHandler, CreateEmployeeHandler createEmployee,
+            GetDepartmentsLookupHandler getDepartments,
+            GetRolesByDepartmentHandler getRoles , GetPagedEmployeeSummariesHandler getPagedEmployee , 
+            SearchEmployeeHandler searchEmployee ,
+            GetEmployeeProfileHandler getEmployeeProfile , GetEmployeePhonesHandler getEmployeePhones ,
+            AddPhoneToEmployee addPhoneToEmployee , DeleteEmployeePhoneHandler deleteEmployeePhone
+            , GetEmployeeAttachmentsHandler getEmployeeAttachments , AddAttachmentHandler addAttachmentHandler, DeleteAttachmentHandler deleteAttachment)
         { 
            InitializeComponent();
             LoadSavedLogo();
@@ -148,7 +172,7 @@ namespace Presentation.View.MainView
             _getCustomersBasicInfoHandler = getCustomersBasicInfoHandler;
             _getCustomerPhonesHandler = getCustomerPhones;
             _addPhoneToCustomer = addPhoneToCustomer;
-            _deletePhoneHandler = deletePhone;
+            _deleteCustomerPhoneHandler = deletePhone;
             _updatePhoneHandler = updatePhone;
             customerDevicesHandler = getCustomerDevices;
             _addDeviceHandler = addDeviceToCustomer;
@@ -190,7 +214,28 @@ namespace Presentation.View.MainView
 
             _updateSpecHandler = updateSpecHandler;
 
+            _getBalanceHandler = getBalanceHandler;
+
+            _createEmployeeHandler = createEmployee;
+            _getDepartmentsHandler = getDepartments;
+            _getRolesHandler = getRoles;
+
+            _getPagedEmployeeSummariesHandler = getPagedEmployee;
+
+            _searchEmployeeHandler = searchEmployee;
+            _getEmployeeProfileHandler = getEmployeeProfile;
+            _getEmployeePhones = getEmployeePhones;
+            _addPhoneToEmployee = addPhoneToEmployee;
+            _deleteEmployeePhone = deleteEmployeePhone;
+
+             _getEmployeeAttachments = getEmployeeAttachments;
+            _addAttachmentHandler = addAttachmentHandler;
+            _deleteAttachmentHandler = deleteAttachment;
+
+
             _createOrderHandler.AddOrderToList += OrdersControl.RefreshIfVisible;
+
+            InitializeTabServices(DashboardControl);
         }
 
    
@@ -229,6 +274,8 @@ namespace Presentation.View.MainView
             OrdersControl.Visibility = Visibility.Collapsed;
             SettingsControl.Visibility = Visibility.Collapsed;
             CampaignsControl.Visibility = Visibility.Collapsed;
+            DashboardControl.Visibility = Visibility.Collapsed;
+            EmployeeControl.Visibility = Visibility.Collapsed;
 
             selectedContent.Visibility = Visibility.Visible;
             SidePanelColumn.Width = new GridLength(0);
@@ -259,7 +306,7 @@ namespace Presentation.View.MainView
                 CustomersControl.InitializeServices(_createCustomerHandler, _getAllBrandsHandler
                     , _getAllTypesHandler, _getSpecsByTypeIdHandler, GetPagedCustomerSummariesHandler,
                     _SearchCustomerPageHandler, _getCustomersBasicInfoHandler, _updateCustomerHandler,
-                    _getCustomerPhonesHandler, _addPhoneToCustomer, _deletePhoneHandler
+                    _getCustomerPhonesHandler, _addPhoneToCustomer, _deleteCustomerPhoneHandler
                     , _updatePhoneHandler, customerDevicesHandler, _addDeviceHandler, 
                     _updateDeviceHandler, _deleteDeviceHandler, _getDeviceOrders ,
                     _getCustomerOrdersHandler , _deleteCustomerHandler , _getAllSources , _getCampaignLookup);
@@ -277,6 +324,20 @@ namespace Presentation.View.MainView
                     _getSpecsByTypeIdHandler , _createBrandHandler , _deleteBrand , _updateBrandHandler ,
                     _addTypeHandler , deleteTypeHandler , _updateTypeHandler , _getAllSpecs , _addSpecHandler 
                     , _deleteSpecHandler , _updateSpecHandler);
+            }
+
+            if(content == DashboardControl)
+            {
+                DashboardControl.InitializeServices(_getBalanceHandler);
+            }
+
+            if( content == EmployeeControl)
+            {
+                EmployeeControl.InitializeServices(_createEmployeeHandler , 
+                    _getDepartmentsHandler ,_getRolesHandler ,
+                    _getPagedEmployeeSummariesHandler , _searchEmployeeHandler , 
+                    _getEmployeeProfileHandler , _getEmployeePhones , _addPhoneToEmployee , _updatePhoneHandler  ,
+                    _deleteEmployeePhone , _getEmployeeAttachments , _addAttachmentHandler , _deleteAttachmentHandler);
             }
         }
 
@@ -298,6 +359,12 @@ namespace Presentation.View.MainView
                     break;
                 case "Campaign":
                     SwitchToTab(CampaignsControl, btn);
+                    break;
+                case "dashboard":
+                    SwitchToTab(DashboardControl, btn);
+                    break;
+                case "Employees":
+                    SwitchToTab(EmployeeControl, btn);
                     break;
 
 
@@ -390,6 +457,8 @@ namespace Presentation.View.MainView
 
             OrdersControl.NavigateToOrderDetails(orderId, isComingFromDevices: false);
         }
+
+
     }
 
 }

@@ -111,15 +111,37 @@ namespace Presentation.View.CampaignView
 
             if (!isValid) return;
 
+            string confirmMessage = $"هل أنت متأكد من حفظ الحملة الإعلانية؟\n\n" +
+                                          $"تنبيه مالي: سيتم خصم مبلغ ({cost:F0}) ج.م تلقائياً من الخزنة الرئيسية فور الحفظ، " +
+                                          $"ولا يمكن تعديل هذه الحركة أو حذفها بعد إتمامها.";
+
+            var confirmResult = MessageBox.Show(confirmMessage,
+                                                "تأكيد المعاملة المالية",
+                                                MessageBoxButton.YesNo,
+                                                MessageBoxImage.Warning,
+                                                MessageBoxResult.No); 
+
+            if (confirmResult != MessageBoxResult.Yes) return;
+
+
             var campaignDto = new CreateCampaignDto
+
             {
+
                 CampaignName = TxtCampaignName.Text.Trim(),
+
                 StartDate = DateOnly.FromDateTime(DpStartDate.SelectedDate.Value),
+
                 EndDate = DateOnly.FromDateTime(DpEndDate.SelectedDate.Value),
+
                 SourceId = Convert.ToInt32(CbSources.SelectedValue),
+
                 CampaignCost = cost,
+
                 Discount = discount,
+
                 Note = string.IsNullOrWhiteSpace(TxtNotes.Text) ? null : TxtNotes.Text.Trim()
+
             };
 
             try

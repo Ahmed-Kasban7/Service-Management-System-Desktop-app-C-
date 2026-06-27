@@ -8,26 +8,26 @@ using System.Threading.Tasks;
 
 namespace Application.Features.PhoneManagement.Commands;
 
-public class DeletePhoneHandler
+public class DeleteCustomerPhoneHandler
 {
     private readonly IPhoneRepository _phoneRepository;
 
-    public DeletePhoneHandler(IPhoneRepository phoneRepository)
+    public DeleteCustomerPhoneHandler(IPhoneRepository phoneRepository)
     {
         _phoneRepository = phoneRepository;
     }
 
 
-    public Result<bool> Handle(string phoneNumber, int personId)
+    public Result<bool> Handle(string phoneNumber, int customerId)
     {
-        if (personId <= 0)
-            return Result<bool>.Failure("رقم الشخص غير صحيح");
+        if (customerId <= 0)
+            return Result<bool>.Failure("رقم العميل غير صحيح");
 
         if (!_phoneRepository.IsPhoneExist(phoneNumber))
             return Result<bool>.Failure("رقم الهاتف غير موجود.");
 
-        if (_phoneRepository.GetPersonPhoneCount(personId) <= 1)
-            return Result<bool>.Failure("لا يمكن حذف هذا الرقم، يجب أن يكون للشخص رقم واحد على الأقل.");
+        if (_phoneRepository.GetCustomerPhoneCount(customerId) <= 1)
+            return Result<bool>.Failure("لا يمكن حذف هذا الرقم، يجب أن يكون للعميل رقم واحد على الأقل.");
 
         bool result = _phoneRepository.DeletePhone(phoneNumber);
 

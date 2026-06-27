@@ -125,14 +125,8 @@ HorizontalAlignment="Center">
                         </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
-                <Border x:Name="EmptyStateOverlay" Background="#AAFFFFFF"
-                                  Visibility="Collapsed" CornerRadius="12">
-                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Text="👥" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,15" Opacity="0.2"/>
-                        <TextBlock x:Name="TxtEmptyMessage" Text="لا توجد بيانات لعرضها"
-                                             FontSize="15" FontWeight="Bold" Foreground="#475569" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Border>
+              
+                
             </Grid>
 
             <Border Grid.Row="2" Padding="15" Background="White" BorderBrush="#F1F5F9" BorderThickness="0">

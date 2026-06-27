@@ -2,9 +2,12 @@
         BEGIN
             CREATE TABLE Orders(
                 OrderID INT IDENTITY(1,1) PRIMARY KEY,
-              OrderNumber AS (
-   'ORD-' + RIGHT('000000' + CAST(OrderId AS VARCHAR(10)), 6)
-) PERSISTED ,
+
+                OrderNumber AS ('ORD-' + CASE  
+                WHEN OrderId < 10000 THEN RIGHT('0000' + CAST(OrderId AS VARCHAR(10)), 4)
+                ELSE CAST(OrderId AS VARCHAR(10))
+                END) PERSISTED,
+
                 StartDate DATETIME NOT NULL DEFAULT GETDATE() ,
                 EndedDate DATETIME NULL ,
                 Problem nvarchar(max) NOT null ,

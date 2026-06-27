@@ -10,8 +10,4 @@
     <ProjectReference Include="..\Models\Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\EmployeeManagement\Commands\" />
-  </ItemGroup>
-
 </Project>

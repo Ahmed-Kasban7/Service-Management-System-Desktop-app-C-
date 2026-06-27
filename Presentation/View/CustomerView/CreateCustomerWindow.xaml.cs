@@ -57,7 +57,7 @@ namespace Presentation.View.Customer_View
             CbSource.ItemsSource = _getAllSourcesHandler.Handle();
         }
 
-        private void BtnSaveAll_Click(object sender, RoutedEventArgs e)
+        private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             if (!Validate())
                 return;

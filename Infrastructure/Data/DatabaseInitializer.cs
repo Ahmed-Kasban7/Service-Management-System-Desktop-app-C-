@@ -133,6 +133,19 @@ BEGIN
          WHERE DepartmentName = N'الصيانة')
     );
 END;
+
+IF NOT EXISTS (SELECT 1 FROM Treasuries WHERE TreasuryName = N'الخزنة الرئيسية')
+BEGIN
+    INSERT INTO Treasuries (TreasuryName, CurrentBalance, LastUpdated)
+    VALUES (N'الخزنة الرئيسية', 0.00, GETDATE());
+END;
+
+IF NOT EXISTS (SELECT 1 FROM Categories WHERE CategoryName = N'مصاريف حملات')
+BEGIN
+    INSERT INTO Categories (CategoryName) VALUES (N'مصاريف حملات');
+END;
+
+
 ";
 
         using var cmd = new SqlCommand(sql, connection);
@@ -146,6 +159,8 @@ END;
         CreateDatabaseIfNotExist();
        // Tables 
        ExecuteScript(@"Scripts\Tables\CreatePersonsTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateSourcesTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateCampaignsTable.sql");
        ExecuteScript(@"Scripts\Tables\CreateCustomersTable.sql");
        ExecuteScript(@"Scripts\Tables\CreatePhonesTable.sql");
        ExecuteScript(@"Scripts\Tables\CreateTypesTable.sql");
@@ -164,12 +179,12 @@ END;
        ExecuteScript(@"Scripts\Tables\CreateUsedSpareParts.sql");
        ExecuteScript(@"Scripts\Tables\CreateUsedSparePartsType.sql");
        ExecuteScript(@"Scripts\Tables\CreateFinancialTransactionsTable.sql");
-       ExecuteScript(@"Scripts\Tables\CreateSourcesTable.sql");
-       ExecuteScript(@"Scripts\Tables\CreateCampaignsTable.sql");
        ExecuteScript(@"Scripts\Tables\CreateTreasuriesTable.sql");
-       ExecuteScript(@"Scripts\Tables\CreateGategoryTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateCategoryTable.sql");
        ExecuteScript(@"Scripts\Tables\CreateTreasuryTransactionsTable.sql");
-       ExecuteScript(@"Scripts\Tables\CreateReferenceTable.sql");
+       ExecuteScript(@"Scripts\Tables\CreateReferenceTransactionsTable.sql");
+       ExecuteScript(@"Scripts\Tables\EmployeeAttachments.sql");
+       ExecuteScript(@"Scripts\Tables\AttachmentList.sql");
 
 
 
@@ -190,10 +205,14 @@ END;
         ExecuteScript(@"Scripts\StoredProcedures\Persons\SP_DeletePerson.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_DeletePhone.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_GetCustomerPhones.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_GetEmployeePhoneCount.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_AddCustomerPhone.sql");
-        ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_UpdateCustomerPhone.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_AddEmployeePhone.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_UpdatePhone.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_GetExistingPhones.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_IsPhoneExist.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_GetEmployeePhones.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Phones\SP_GetCustomerPhoneCount.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_GetCustomerDevices.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_DeleteCustomerDevice.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Devices\SP_CreateDevice.sql");
@@ -224,6 +243,10 @@ END;
         ExecuteScript(@"Scripts\StoredProcedures\Orders\SP_GetCustomerOrders.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Employees\SP_GetTechniciansLookup.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Employees\SP_GetAllEmployeesLookup.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Employees\SP_CreateEmployee.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Employees\SP_SearchEmployee.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Employees\SP_GetPagedEmployeeSummaries.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Employees\SP_GetEmployeeProfile.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Appointments\SP_CreateAppointment.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Appointments\SP_GetAppointmentsByOrderId.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Appointments\SP_UpdateAppointment.sql");
@@ -239,6 +262,12 @@ END;
         ExecuteScript(@"Scripts\StoredProcedures\Campaigns\SP_DeleteCampaign.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Campaigns\SP_UpdateCampaign.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Campaigns\SP_GetCampaignBySourceId.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Treasuries\SP_GetCurrentBalance.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Departments\SP_GetDepartmentsLookup.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\DepartmentRoles\SP_GetRolesByDepartment.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\EmployeeAttachments\SP_GetEmployeeAttachments.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\EmployeeAttachments\SP_AddAttachment.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\EmployeeAttachments\SP_DeleteEmployeeAttachment.sql");
 
 
 
@@ -250,7 +279,8 @@ END;
         ExecuteScript(@"Scripts\Triggers\trg_AfterCreateAppointment.sql");
         ExecuteScript(@"Scripts\Triggers\trg_AfterCancelAppointment.sql");
         ExecuteScript(@"Scripts\Triggers\trg_UpdateStatuesAfterAddVisit.sql");
-        ExecuteScript(@"Scripts\Triggers\trg_TransactionsAfterAddVisit.sql");
+       // ExecuteScript(@"Scripts\Triggers\trg_TransactionsAfterAddVisit.sql");
+        ExecuteScript(@"Scripts\Triggers\trg_TransactionsAfterInsertCampaign.sql");
 
 
     }

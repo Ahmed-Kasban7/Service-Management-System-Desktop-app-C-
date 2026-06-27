@@ -18,17 +18,17 @@ public class AddPhoneToCustomer
         _phoneRepository = phoneRepository;
     }
 
-    public Result<bool> Handle(string phoneNumber, int personId)
+    public Result<bool> Handle(string phoneNumber, int customerId)
     {
-        if (personId <= 0)
-            return Result<bool>.Failure("رقم الشخص غير صحيح");
+        if (customerId <= 0)
+            return Result<bool>.Failure("رقم العميل غير صحيح");
 
         var newPhone = new Phone(phoneNumber); 
 
         if (_phoneRepository.IsPhoneExist(phoneNumber))
             return Result<bool>.Failure("رقم الهاتف مسجل بالفعل");
 
-        bool result = _phoneRepository.AddPhone(phoneNumber, personId);
+        bool result = _phoneRepository.AddCustomerPhone(phoneNumber, customerId);
 
         return Result<bool>.Success(result);
     }

@@ -5,6 +5,6 @@ BEGIN
         e.EmployeeId AS Id,
         p.Name AS Name
     FROM Employees e
-    JOIN Persons p ON e.PersonID = p.PersonID
+    JOIN Persons p ON e.PersonID = p.PersonID Where e.IsActive = 1
     ORDER BY p.Name
 END

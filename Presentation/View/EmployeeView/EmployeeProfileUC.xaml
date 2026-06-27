@@ -1,0 +1,379 @@
+﻿<UserControl x:Class="Presentation.View.EmployeeView.EmployeeProfileUC"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             Background="#EEF2F7"
+             FlowDirection="RightToLeft"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch">
+
+    <UserControl.Resources>
+        <ControlTemplate x:Key="ActionButtonTemplate" TargetType="Button">
+            <Border Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="9" 
+                    Padding="{TemplateBinding Padding}">
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Tag}" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.5" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- ============================================ -->
+        <!--            الهيدر العلوي للشاشة            -->
+        <!-- ============================================ -->
+        <Border Grid.Row="0" Background="White" BorderThickness="0,0,0,1" BorderBrush="#EDF2F7" Padding="24,16">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="12" Color="#000" Opacity="0.03" ShadowDepth="2"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button x:Name="BtnBack" Click="BtnBack_Click" Width="32" Height="32" Background="Transparent" BorderThickness="0" Cursor="Hand" Margin="0,0,12,0" VerticalAlignment="Center">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                        <Path Data="M8 4L2 10L8 16" Stroke="#64748B" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" HorizontalAlignment="Center" VerticalAlignment="Center" Width="10" Height="14" Stretch="Uniform" FlowDirection="LeftToRight"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#F1F5F9"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+
+                        <TextBlock VerticalAlignment="Center" FontSize="22">
+                            <Run Text="موظف" Foreground="#64748B" FontWeight="Medium"/>
+                            <Run Text=" "/>
+                            <Run x:Name="RunEmployeeCode" Text="#EMP----" Foreground="#2563EB" FontWeight="Bold" FlowDirection="LeftToRight"/>
+                        </TextBlock>
+                    </StackPanel>
+
+                    <TextBlock x:Name="TxtHireDate" Text="تاريخ التعيين: ---" FontSize="12" Foreground="#64748B" Margin="44,4,0,0"/>
+                </StackPanel>
+
+                <!-- أزرار الإجراءات للموظف -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button x:Name="BtnEdit" Click="BtnEditEmployee_Click" Content="✏️ تعديل البيانات" Padding="16,8" Margin="0,0,8,0" Background="White" Foreground="#1E293B" FontSize="13" FontWeight="SemiBold" BorderBrush="#E2E8F0" BorderThickness="1.5" Cursor="Hand" VerticalAlignment="Center" Tag="#F8FAFC" Template="{StaticResource ActionButtonTemplate}" />
+                    <Button x:Name="BtnDelete" Click="BtnDeleteEmployee_Click" Content="🗑️ إنهاء الخدمة (حذف)" Padding="16,8" Background="White" Foreground="#EF4444" FontSize="13" FontWeight="SemiBold" BorderBrush="#FCA5A5" BorderThickness="1.5" Cursor="Hand" VerticalAlignment="Center" Tag="#FEF2F2" Template="{StaticResource ActionButtonTemplate}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ============================================ -->
+        <!--                قائمة الـ Tabs                -->
+        <!-- ============================================ -->
+        <Border Grid.Row="1" Background="White" BorderThickness="0,0,0,1" BorderBrush="#F1F5F9" Padding="24,0">
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="TabBasicInfo" Content="البيانات الأساسية" Click="TabBasicInfo_Click" Padding="16,12" Background="Transparent" BorderThickness="0,0,0,3" BorderBrush="#2563EB" Foreground="#2563EB" FontWeight="SemiBold" FontSize="13" Cursor="Hand"/>
+                <Button x:Name="TabFinancialInfo" Content="التفاصيل المالية" Click="TabFinancialInfo_Click" Padding="16,12" Background="Transparent" BorderThickness="0,0,0,3" BorderBrush="Transparent" Foreground="#64748B" FontSize="13" Cursor="Hand"/>
+                <Button x:Name="TabPhones" Content="الهواتف" Click="TabPhones_Click" Padding="16,12" Background="Transparent" BorderThickness="0,0,0,3" BorderBrush="Transparent" Foreground="#64748B" FontSize="13" Cursor="Hand"/>
+                <Button x:Name="TabAttachments" Content="المرفقات" Click="TabAttachments_Click" Padding="16,12" Background="Transparent" BorderThickness="0,0,0,3" BorderBrush="Transparent" Foreground="#64748B" FontSize="13" Cursor="Hand"/>
+                <Button x:Name="TabOperations" Content="الطلبات المسجلة باسمه" Click="TabOperations_Click" Padding="16,12" Background="Transparent" BorderThickness="0,0,0,3" BorderBrush="Transparent" Foreground="#64748B" FontSize="13" Cursor="Hand"/>
+                <!-- 🌟 الـ Tab الجديد للمرفقات -->
+            </StackPanel>
+        </Border>
+
+        <!-- ============================================ -->
+        <!--               محتوى الـ Panels               -->
+        <!-- ============================================ -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid Margin="24,20,24,24" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+                <!-- 1️⃣ بطاقة البيانات الإدارية والأساسية -->
+                <Border x:Name="PanelBasicInfo" Visibility="Visible" Background="White" CornerRadius="14" BorderBrush="#E2E8F0" BorderThickness="1" Padding="22,20" HorizontalAlignment="Stretch">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="8" Color="#000" Opacity="0.04" ShadowDepth="1" />
+                    </Border.Effect>
+                    <StackPanel FlowDirection="RightToLeft">
+                        <TextBlock Text="📋 البيانات الأساسية" FontSize="16" FontWeight="Bold" Foreground="#0F172A" Margin="0,0,0,18" />
+
+                        <!-- كود الموظف + الاسم الكامل -->
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="كود الموظف" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,4" />
+                                <TextBlock x:Name="TxtProfileID" Text="---" FontSize="15" FontWeight="SemiBold" Foreground="#0F172A" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="الاسم الكامل" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,4" />
+                                <TextBlock x:Name="TxtProfileName" Text="---" FontSize="15" FontWeight="SemiBold" Foreground="#0F172A" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Rectangle Height="1" Fill="#F1F5F9" Margin="0,0,0,16" />
+
+                        <!-- القسم + الدور الوظيفي -->
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="القسم الإداري" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,4" />
+                                <TextBlock x:Name="TxtProfileDepartment" Text="---" FontSize="15" FontWeight="SemiBold" Foreground="#0F172A" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="الدور / الوظيفة" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,4" />
+                                <TextBlock x:Name="TxtProfileRole" Text="---" FontSize="15" FontWeight="SemiBold" Foreground="#0F172A" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Rectangle Height="1" Fill="#F1F5F9" Margin="0,0,0,16" />
+
+                        <!-- الجنس + تاريخ التعيين -->
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="الجنس" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,4" />
+                                <TextBlock x:Name="TxtProfileSex" Text="---" FontSize="15" FontWeight="SemiBold" Foreground="#0F172A" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="العمر" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,4" />
+                                <TextBlock x:Name="TxtProfileAge" Text="---" FontSize="15" FontWeight="SemiBold" Foreground="#0F172A" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Rectangle Height="1" Fill="#F1F5F9" Margin="0,0,0,16" />
+
+                        <!-- =====  الصف الرابع: العنوان (صف كامل)  ===== -->
+                        <StackPanel Margin="0,0,0,16">
+                            <TextBlock Text="العنوان" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,4" />
+                            <TextBlock x:Name="TxtProfileAddress" Text="---" FontSize="14" FontWeight="SemiBold" Foreground="#374151" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- 2️⃣ بطاقة التفاصيل المالية (الراتب والعمولات) -->
+                <Border x:Name="PanelFinancialInfo" Visibility="Collapsed" Background="White" CornerRadius="14" BorderBrush="#E2E8F0" BorderThickness="1" Padding="22,20" HorizontalAlignment="Stretch">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="8" Color="#000" Opacity="0.04" ShadowDepth="1" />
+                    </Border.Effect>
+                    <StackPanel FlowDirection="RightToLeft">
+                        <TextBlock Text="💰 النظام المالي" FontSize="16" FontWeight="Bold" Foreground="#0F172A" Margin="0,0,0,18" />
+
+                        <!-- نوع الحساب المالي -->
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="طريقة احتساب الراتب" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,4" />
+                                <TextBlock x:Name="TxtProfileCompensationType" Text="---" FontSize="15" FontWeight="Bold" Foreground="#D97706" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Rectangle Height="1" Fill="#F1F5F9" Margin="0,0,0,16" />
+
+                        <!-- الراتب الأساسي + نسبة العمولة -->
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="الراتب الأساسي" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,4" />
+                                <TextBlock x:Name="TxtProfileBaseSalary" Text="٠.٠٠ ج.م" FontSize="18" FontWeight="Bold" Foreground="#0F172A" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="نسبة العمولة (%)" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,4" />
+                                <TextBlock x:Name="TxtProfileCommissionPercent" Text="٠ %" FontSize="18" FontWeight="Bold" Foreground="#059669" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- 3️⃣ بطاقة الهواتف المسجلة -->
+                <Border x:Name="PanelPhones" Visibility="Collapsed" Background="White" CornerRadius="14" BorderBrush="#E2E8F0" BorderThickness="1" Padding="20" HorizontalAlignment="Stretch">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="8" Color="#000" Opacity="0.03" ShadowDepth="1"/>
+                    </Border.Effect>
+                    <StackPanel FlowDirection="RightToLeft">
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="📱 الهواتف المسجلة" FontSize="15" FontWeight="Bold" Foreground="#1E293B" VerticalAlignment="Center"/>
+                            <Button x:Name="BtnAddPhone" Grid.Column="1" Content="➕ إضافة رقم" Click="BtnAddPhone_Click" Background="#2563EB" Foreground="White" Padding="12,7" FontSize="13" FontWeight="SemiBold" BorderThickness="0" Cursor="Hand">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Grid>
+
+                        <ItemsControl x:Name="PhonesList">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#F9FAFB" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="12" Padding="14,12" Margin="0,0,0,10">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="40" Height="40" Background="#D1FAE5" CornerRadius="20" Margin="0,0,12,0">
+                                                <TextBlock Text="📱" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <TextBlock Grid.Column="1" Text="{Binding}" FontWeight="SemiBold" FontSize="15" VerticalAlignment="Center" Foreground="#0F172A"/>
+                                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <Button Content="✏" Background="#2563EB" Style="{StaticResource IconButtonStyle}" Tag="{Binding}" Click="BtnEditPhone_Click" Margin="0,0,6,0"/>
+                                                <Button Content="🗑" Background="#EF4444" Style="{StaticResource IconButtonStyle}" Tag="{Binding}" Click="BtnDeletePhone_Click"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock x:Name="TxtNoPhonesMessage" Text="لا توجد أرقام هواتف مسجلة" Foreground="#94A3B8" FontSize="13" HorizontalAlignment="Center" Margin="0,40,0,40" Visibility="Collapsed"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 4️⃣ بطاقة العمليات/الطلبات المسجلة باسم الموظف -->
+                <Border x:Name="PanelOrders" Visibility="Collapsed" Background="White" CornerRadius="14" BorderBrush="#E2E8F0" BorderThickness="1" Padding="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="8" Color="#000" Opacity="0.03" ShadowDepth="1"/>
+                    </Border.Effect>
+                    <StackPanel FlowDirection="RightToLeft" VerticalAlignment="Stretch">
+                        <TextBlock Text="🛠 `" FontSize="15" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,16"/>
+
+                        <DataGrid x:Name="OrdersList" AutoGenerateColumns="False" GridLinesVisibility="Horizontal" HeadersVisibility="Column" Background="Transparent" BorderThickness="0" RowHeaderWidth="0" IsReadOnly="True" CanUserAddRows="False" SelectionMode="Single" HorizontalGridLinesBrush="#F1F5F9" MouseDoubleClick="OrdersList_MouseDoubleClick" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="كود الطلب" Binding="{Binding OrderNumber}" Width="*" />
+                                <DataGridTextColumn Header="الجهاز" Binding="{Binding DeviceSummary}" Width="1.2*"/>
+                                <DataGridTextColumn Header="اسم العميل" Binding="{Binding CustomerName}" Width="1.5*"/>
+                                <DataGridTextColumn Header="تاريخ الاستلام" Binding="{Binding StartDate, StringFormat={}{0:yyyy/MM/dd}}" Width="*"/>
+                                <DataGridTemplateColumn Header="الحالة" Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border CornerRadius="10" Padding="8,2" Background="{Binding StatusBackground}" HorizontalAlignment="Center">
+                                                <TextBlock Text="{Binding StatusText}" FontSize="11" FontWeight="SemiBold" Foreground="{Binding StatusForeground}"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <TextBlock x:Name="TxtNoOrdersMessage" Text="لم يقم هذا الموظف بتسجيل أو استلام أي طلبات صيانة بعد." Foreground="#94A3B8" FontSize="13" HorizontalAlignment="Center" Margin="0,40,0,40" Visibility="Collapsed"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 5️⃣ 🌟 بطاقة المرفقات والوثائق الجديدة (تم دمجها شياكة مرنة) -->
+                <Border x:Name="PanelAttachments" Visibility="Collapsed" Background="White" CornerRadius="14" BorderBrush="#E2E8F0" BorderThickness="1" Padding="22,20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="8" Color="#000" Opacity="0.04" ShadowDepth="1" />
+                    </Border.Effect>
+                    <StackPanel FlowDirection="RightToLeft">
+                        <Grid Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="📁 المرفقات" FontSize="16" FontWeight="Bold" Foreground="#0F172A" VerticalAlignment="Center"/>
+                            <Button x:Name="BtnUploadAttachment" Grid.Column="1" Content="📤 رفع وثيقة جديدة" Click="BtnUploadAttachment_Click" Background="#2563EB" Foreground="White" Padding="14,8" FontSize="13" FontWeight="SemiBold" BorderThickness="0" Cursor="Hand">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Grid>
+
+                        <!-- قائمة عرض الأوراق المرفوعة فعلياً -->
+                        <ItemsControl x:Name="AttachmentsList">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="12" Padding="16,14" Margin="0,0,0,12">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- عرض الصورة المصغرة (Thumbnail) -->
+                                            <Border Width="44" Height="44" Background="#EFF6FF" CornerRadius="10" Margin="0,0,14,0" ClipToBounds="True">
+                                                <Image Source="{Binding}" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+
+                                            
+
+                                            <!-- أزرار التحكم -->
+                                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <Button Content="👁" ToolTip="معاينة الملف" Click="BtnViewAttachment_Click" Tag="{Binding}" Width="32" Height="32" Background="#F1F5F9" Foreground="#334155" BorderThickness="0" Cursor="Hand" Margin="0,0,6,0">
+                                                    <Button.Template>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Button.Template>
+                                                </Button>
+
+                                                <Button Content="🗑" ToolTip="حذف الوثيقة" Click="BtnDeleteAttachment_Click" Tag="{Binding}" Width="32" Height="32" Background="#FEF2F2" Foreground="#EF4444" BorderThickness="0" Cursor="Hand">
+                                                    <Button.Template>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Button.Template>
+                                                </Button>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <!-- رسالة توضيحية لو مفيش مرفقات -->
+                        <TextBlock x:Name="TxtNoAttachmentsMessage" Text="لا توجد مرفقات أو وثائق رسمية مسجلة لهذا الموظف حتى الآن." Foreground="#94A3B8" FontSize="13" HorizontalAlignment="Center" Margin="0,50,0,50" Visibility="Collapsed"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

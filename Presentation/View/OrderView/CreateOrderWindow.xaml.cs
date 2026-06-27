@@ -123,9 +123,13 @@ namespace Presentation.View.OrderView
                 }
             }
         }
-        private void BtnCreateOrder_Click(object sender, RoutedEventArgs e)
+        private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             bool isValid = true;
+            CustomerError.Visibility  = Visibility.Collapsed;
+            DeviceError.Visibility = Visibility.Collapsed;
+            IssueError.Visibility = Visibility.Collapsed;
+
             CustomerError.Text = "";
             DeviceError.Text = "";
             IssueError.Text = "";
@@ -133,6 +137,7 @@ namespace Presentation.View.OrderView
             if (customerID.SelectedValue == null)
             {
                 CustomerError.Text = "برجاء ادخال بيانات العميل";
+                CustomerError.Visibility = Visibility.Visible;
                 isValid = false;
 
             }
@@ -140,6 +145,7 @@ namespace Presentation.View.OrderView
             if (DeviceID.SelectedValue == null)
             {
                 DeviceError.Text = "برجاء ادخال بيانات الجهاز";
+                DeviceError.Visibility = Visibility.Visible;
                 isValid = false;
 
             }
@@ -147,6 +153,7 @@ namespace Presentation.View.OrderView
             if (string.IsNullOrWhiteSpace(TxtIssue.Text))
             {
                 IssueError.Text = "برجاء تسجل العطل";
+                IssueError.Visibility = Visibility.Visible;
                 isValid = false;
 
             }
@@ -264,6 +271,11 @@ namespace Presentation.View.OrderView
             }), System.Windows.Threading.DispatcherPriority.Input);
         }
 
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = false;
+            this.Close();
+        }
 
     }
 }

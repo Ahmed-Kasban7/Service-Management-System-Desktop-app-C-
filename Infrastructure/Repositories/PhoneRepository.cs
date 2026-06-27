@@ -14,7 +14,23 @@ public class PhoneRepository :IPhoneRepository
         using var conn = DatabaseInitializer.GetConnection();
         using var command = new  SqlCommand("SP_GetCustomerPhones", conn);
         command.CommandType = CommandType.StoredProcedure;
-        command.Parameters.AddWithValue("customerid", customerid);
+        command.Parameters.AddWithValue("@customerid", customerid);
+        conn.Open();
+        using var reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            phones.Add(reader["PhoneNumber"].ToString());
+        }
+        return phones;
+    }
+    public IEnumerable<string> GetEmployeePhones (int employeeId)
+    {
+        var phones = new List<string>();
+
+        using var conn = DatabaseInitializer.GetConnection();
+        using var command = new  SqlCommand("SP_GetEmployeePhones", conn);
+        command.CommandType = CommandType.StoredProcedure;
+        command.Parameters.AddWithValue("@employeeId", employeeId);
         conn.Open();
         using var reader = command.ExecuteReader();
         while (reader.Read())
@@ -38,7 +54,7 @@ public class PhoneRepository :IPhoneRepository
     {
 
         using var conn = DatabaseInitializer.GetConnection();
-        using var command = new SqlCommand("SP_UpdateCustomerPhone", conn);
+        using var command = new SqlCommand("SP_UpdatePhone", conn);
         command.CommandType = CommandType.StoredProcedure;
         command.Parameters.AddWithValue("@newPhone", newPhone);
         command.Parameters.AddWithValue("@oldPhone", oldPhone);
@@ -48,14 +64,27 @@ public class PhoneRepository :IPhoneRepository
         return result > 0;
     }
 
-    public bool AddPhone(string phoneNumber, int personId)
+    public bool AddCustomerPhone(string phoneNumber, int customerId)
     {
 
         using var conn = DatabaseInitializer.GetConnection();
         using var command = new SqlCommand("SP_AddCustomerPhone", conn);
         command.CommandType = CommandType.StoredProcedure;
         command.Parameters.AddWithValue("@phoneNumber", phoneNumber);
-        command.Parameters.AddWithValue("@personId", personId);
+        command.Parameters.AddWithValue("@customerId", customerId);
+
+        conn.Open();
+        var result = command.ExecuteNonQuery();
+        return result > 0;
+    }
+    public bool AddEmployeePhone(string phoneNumber, int employeeId)
+    {
+
+        using var conn = DatabaseInitializer.GetConnection();
+        using var command = new SqlCommand("SP_AddEmployeePhone", conn);
+        command.CommandType = CommandType.StoredProcedure;
+        command.Parameters.AddWithValue("@phoneNumber", phoneNumber);
+        command.Parameters.AddWithValue("@employeeId", employeeId);
 
         conn.Open();
         var result = command.ExecuteNonQuery();
@@ -93,19 +122,44 @@ public class PhoneRepository :IPhoneRepository
         return result;
     }
 
-    public int GetPersonPhoneCount(int personId)
+    public int GetCustomerPhoneCount(int customerId)
     {
-        var script = @"select count(*) from Phones where PersonID = @personId";
         using var conn = DatabaseInitializer.GetConnection();
-        using var command = new SqlCommand(script, conn);
-        command.Parameters.AddWithValue("personId", personId);
+        using var command = new SqlCommand("SP_GetCustomerPhoneCount", conn);
+        command.CommandType = CommandType.StoredProcedure;
+
+        command.Parameters.AddWithValue("@customerId", customerId);
+
+        SqlParameter countParam = new SqlParameter("@phoneCount", SqlDbType.Int)
+        {
+            Direction = ParameterDirection.Output
+        };
+        command.Parameters.Add(countParam);
+
         conn.Open();
+        command.ExecuteNonQuery(); 
 
-        var result = command.ExecuteScalar();
-
-        return (result == null) ? 0 : (int)result;
+        return countParam.Value != DBNull.Value ? Convert.ToInt32(countParam.Value) : 0;
     }
+    public int GetEmployeePhoneCount(int employeeId)
+    {
+        using var conn = DatabaseInitializer.GetConnection();
+        using var command = new SqlCommand("SP_GetEmployeePhoneCount", conn);
+        command.CommandType = CommandType.StoredProcedure;
 
+        command.Parameters.AddWithValue("@employeeId", employeeId);
+
+        SqlParameter countParam = new SqlParameter("@phoneCount", SqlDbType.Int)
+        {
+            Direction = ParameterDirection.Output
+        };
+        command.Parameters.Add(countParam);
+
+        conn.Open();
+        command.ExecuteNonQuery();
+
+        return countParam.Value != DBNull.Value ? Convert.ToInt32(countParam.Value) : 0;
+    }
     public bool IsPhoneExist(string phone)
     {
         using (SqlConnection connection = DatabaseInitializer.GetConnection())
