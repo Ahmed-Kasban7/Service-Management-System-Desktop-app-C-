@@ -1,0 +1,149 @@
+﻿<Window x:Class="Presentation.View.EmployeeView.EditEmployee"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" 
+        Title="تعديل بيانات الموظف"
+        Width="550"
+        Height="500"
+        FlowDirection="RightToLeft"
+        WindowStartupLocation="CenterOwner" 
+        Background="#EEF2F7">
+
+    <Grid Margin="18">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <Border Background="White" CornerRadius="12" Padding="18" BorderBrush="#E2E8F0" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="👤 تعديل بيانات الموظف" FontWeight="Bold" FontSize="18" HorizontalAlignment ="Center" Foreground="{StaticResource PrimaryBlue}" Margin="0,0,0,20"/>
+
+                    <TextBlock Style="{StaticResource FieldHeader}">
+                        <Run Text="الاسم الكامل"/>
+                        <Run Text=" *" Foreground="{StaticResource DangerRed}"/>
+                    </TextBlock>
+
+                    <TextBox x:Name="TxtName" Style="{StaticResource ModernTextBox}" Height="36" Margin="0,0,0,4"/>
+
+                    <TextBlock x:Name="TxtNameError" Foreground="{StaticResource DangerRed}" FontSize="11" Margin="0,0,0,12" Visibility="Collapsed"/>
+
+                    <TextBlock Style="{StaticResource FieldHeader}">
+                        <Run Text="العنوان"/>
+                    </TextBlock>
+                    
+
+                    <TextBox x:Name="TxtAddress" Style="{StaticResource ModernTextBox}" Height="36" Margin="0,0,0,12"/>
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- القسم -->
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Style="{StaticResource FieldHeader}">
+<Run Text="القسم"/>
+<Run Text=" *" Foreground="{StaticResource DangerRed}"/>
+                            </TextBlock>
+                            <ComboBox x:Name="CbDepartment"
+      Style="{StaticResource ModernComboBox}"
+      DisplayMemberPath="DepartmentName"
+      SelectedValuePath="DepartmentId"
+      Height="36"
+      SelectionChanged="CbDepartment_SelectionChanged"/>
+                            <TextBlock x:Name="TxtDepartmentError"
+       Foreground="{StaticResource DangerRed}"
+       FontSize="11" Margin="0,4,0,0"
+       Visibility="Collapsed"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Style="{StaticResource FieldHeader}">
+                            <Run Text="الدور الوظيفي"/>
+                            <Run Text=" *" Foreground="{StaticResource DangerRed}"/>
+                            </TextBlock>
+                            <ComboBox x:Name="CbRole"
+                                  Style="{StaticResource ModernComboBox}"
+                                  DisplayMemberPath="RoleName"
+                                  SelectedValuePath="RoleId"
+                                  Height="36"/>
+                            <TextBlock x:Name="TxtRoleError"
+                                   Foreground="{StaticResource DangerRed}"
+                                   FontSize="11" Margin="0,4,0,0"
+                                   Visibility="Collapsed"/>
+                        </StackPanel>
+                    </Grid>
+
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="العمر" Style="{StaticResource FieldHeader}"/>
+                            <TextBox x:Name="TxtAge" Style="{StaticResource ModernTextBox}" Height="36" FlowDirection="LeftToRight" HorizontalContentAlignment="Right"/>
+                            <TextBlock x:Name="TxtAgeError" Foreground="{StaticResource DangerRed}" FontSize="11" Margin="0,4,0,0" Visibility="Collapsed"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Style="{StaticResource FieldHeader}">
+                                <Run Text="الجنس"/>
+                                <Run Text=" *" Foreground="{StaticResource DangerRed}"/>
+                            </TextBlock>
+                            <ComboBox x:Name="CbSex" Style="{StaticResource ModernComboBox}" Height="36">
+                                <ComboBoxItem Content="ذكر"/>
+                                <ComboBoxItem Content="أنثى"/>
+                            </ComboBox>
+                            <TextBlock x:Name="TxtSexError" Foreground="{StaticResource DangerRed}" FontSize="11" Margin="0,4,0,0" Visibility="Collapsed"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </ScrollViewer>
+
+        <Border Grid.Row="1" Padding="0,15,0,0" BorderThickness="0,1,0,0" BorderBrush="#CBD5E1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="BtnSave" Content="💾 حفظ التغييرات" Width="160" Height="42" Background="{StaticResource SuccessGreen}" Foreground="White" FontWeight="Bold" Cursor="Hand" Click="BtnSave_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="8">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Opacity" Value="0.9"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <Button x:Name="BtnCancel" Content="❌ إلغاء" Margin="15,0,0,0" Width="100" Height="42" Background="{StaticResource DangerRed}" Foreground="White" FontWeight="Bold" Cursor="Hand" Click="BtnCancel_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="8">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="{StaticResource DangerRedDark}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </StackPanel>
+        </Border>
+
+    </Grid>
+</Window>

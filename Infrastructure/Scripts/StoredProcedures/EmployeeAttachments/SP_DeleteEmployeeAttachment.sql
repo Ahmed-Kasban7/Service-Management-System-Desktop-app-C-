@@ -1,9 +1,8 @@
 ﻿CREATE OR ALTER PROCEDURE SP_DeleteEmployeeAttachment
-    @filePath NVARCHAR(max) 
+    @AttachmentId INT
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    DELETE FROM EmployeeAttachments 
-    WHERE FilePath = @filePath;
+    DELETE FROM EmployeeAttachments WHERE AttachmentId = @AttachmentId;
 END;

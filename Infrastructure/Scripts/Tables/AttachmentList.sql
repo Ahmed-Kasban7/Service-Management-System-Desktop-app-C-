@@ -7,6 +7,6 @@
 BEGIN
     CREATE TYPE AttachmentList AS TABLE
     (
-        FilePath       NVARCHAR(max) NOT NULL
+        AttachmentData    VARBINARY(MAX) NOT NULL
     )
 END

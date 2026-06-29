@@ -48,8 +48,7 @@ public class Customer : Person
         if (string.IsNullOrWhiteSpace(address))
             throw new ArgumentException("الرجاء إدخال العنوان", nameof(address));
 
-        if (address.Length > 500)
-            throw new ArgumentException("العنوان لا يمكن أن يزيد عن 500 حرف", nameof(address));
+      
 
         this.Address = address.Trim();
     }

@@ -54,7 +54,7 @@
             <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
 
-       
+
         <Style x:Key="ModernDatePicker" TargetType="DatePicker">
             <Setter Property="Height" Value="38"/>
             <Setter Property="FontSize" Value="14"/>
@@ -112,8 +112,8 @@
 
     <Grid Margin="16">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="36*"/>
+            <RowDefinition Height="673*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
@@ -147,14 +147,14 @@
                                    Foreground="{StaticResource DangerRed}"
                                    FontSize="11" Margin="0,0,0,12"
                                    Visibility="Collapsed"/>
-                        
+
                         <TextBlock Style="{StaticResource FieldHeader}">
                             <Run Text="العنوان"/>
                         </TextBlock>
                         <TextBox x:Name="TxtAddress"
                                  Style="{StaticResource ModernTextBox}"
                                  Height="36" Margin="0,0,0,4"/>
-                 
+
 
                         <!-- القسم + الدور -->
                         <Grid Margin="0,0,0,12">
@@ -259,65 +259,79 @@
                 </Border>
 
                 <!-- ===== طريقة التعويض ===== -->
-                <Border Background="White" CornerRadius="12" Padding="18"
-                        Margin="0,0,0,14" BorderBrush="#E2E8F0" BorderThickness="1">
+                <Border Background="White" CornerRadius="12" Padding="18" Margin="0,0,0,14" BorderBrush="#E2E8F0" BorderThickness="1">
                     <StackPanel>
                         <!-- نوع الحساب -->
                         <TextBlock Style="{StaticResource FieldHeader}">
-    <Run Text="نوع الحساب"/>
-    <Run Text=" *" Foreground="{StaticResource DangerRed}"/>
+            <Run Text="نوع الحساب"/>
+            <Run Text=" *" Foreground="{StaticResource DangerRed}"/>
                         </TextBlock>
                         <ComboBox x:Name="CbCompensationType"
-          Style="{StaticResource ModernComboBox}"
-          Height="36"
-          Margin="0,0,0,4"
-          SelectionChanged="CbCompensationType_SelectionChanged">
-                            <ComboBoxItem Content="مرتب ثابت"            Tag="Salary" IsSelected="True"/>
-                            <ComboBoxItem Content="نسبة"      Tag="Commission"/>
-                            <ComboBoxItem Content="مرتب ثابت + نسبة"     Tag="Both"/>
+                  Style="{StaticResource ModernComboBox}"
+                  Height="36"
+                  Margin="0,0,0,4"
+                  SelectionChanged="CbCompensationType_SelectionChanged">
+                            <ComboBoxItem Content="مرتب ثابت" Tag="Salary" IsSelected="True"/>
+                            <ComboBoxItem Content="نسبة / عمولة" Tag="Commission"/>
+                            <ComboBoxItem Content="مرتب ثابت + عمولة" Tag="Both"/>
                             <ComboBoxItem Content="بالمشوار" Tag="FullTrip"/>
                         </ComboBox>
-                        <TextBlock x:Name="TxtCompensationTypeError"
-           Foreground="{StaticResource DangerRed}"
-           FontSize="11" Margin="0,0,0,10"
-           Visibility="Collapsed"/>
+                        <TextBlock x:Name="TxtCompensationTypeError" Foreground="{StaticResource DangerRed}" FontSize="11" Margin="0,0,0,10" Visibility="Collapsed"/>
 
                         <!-- المرتب -->
                         <StackPanel x:Name="PanelBaseSalary">
                             <TextBlock Style="{StaticResource FieldHeader}">
-                                <Run Text="المرتب الأساسي (ج.م)"/>
-                                <Run Text=" *" Foreground="{StaticResource DangerRed}"/>
+                <Run Text="المرتب الأساسي (ج.م)"/>
+                <Run Text=" *" Foreground="{StaticResource DangerRed}"/>
                             </TextBlock>
                             <TextBox x:Name="TxtBaseSalary"
-                                     Style="{StaticResource ModernTextBox}"
-                                     Text="0" Height="36"
-                                     FlowDirection="LeftToRight"
-                                     HorizontalContentAlignment="Right"
-                                     />
-
-                            <TextBlock x:Name="TxtSalartError"
-                                   Foreground="{StaticResource DangerRed}"
-                                   FontSize="11" Margin="0,6,0,0"
-                                   Visibility="Collapsed"/>
+                     Style="{StaticResource ModernTextBox}"
+                     Text="0" Height="36"
+                     FlowDirection="LeftToRight"
+                     HorizontalContentAlignment="Right" Margin="0,0,0,12"/>
+                            <TextBlock x:Name="TxtSalartError" Foreground="{StaticResource DangerRed}" FontSize="11" Margin="0,0,0,6" Visibility="Collapsed"/>
                         </StackPanel>
 
-                        <!-- النسبة -->
+                        <!-- 🌟 النسبة / العمولة مع الـ CheckBox المتظبط بالملّي 🌟 -->
                         <StackPanel x:Name="PanelCommission" Visibility="Collapsed">
                             <TextBlock Style="{StaticResource FieldHeader}">
-        <Run Text="نسبة العمولة %"/>
-        <Run Text=" *" Foreground="{StaticResource DangerRed}"/>
+                <Run Text="قيمة أو نسبة العمولة"/>
+                <Run Text=" *" Foreground="{StaticResource DangerRed}"/>
                             </TextBlock>
-                            <TextBox x:Name="TxtCommissionPercent"
-             Style="{StaticResource ModernTextBox}"
-             Text="0" Height="36"
-             FlowDirection="LeftToRight"
-             HorizontalContentAlignment="Right"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="12"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox x:Name="TxtCommissionPercent"
+                         Grid.Column="0"
+                         Style="{StaticResource ModernTextBox}"
+                         Text="0" Height="36"
+                         FlowDirection="LeftToRight"
+                         HorizontalContentAlignment="Right"/>
+                                <StackPanel Grid.Column="2"
+            Orientation="Horizontal"
+            FlowDirection="RightToLeft"
+            VerticalAlignment="Center">
+
+                                    <CheckBox x:Name="ChkIsFixedMoney"
+              VerticalAlignment="Center"
+              FlowDirection="LeftToRight"/>
+
+                                    <TextBlock Text="مبلغ ثابت (ج.م)"
+               Margin="5,0,0,0"
+               FontSize="13"
+               FontWeight="SemiBold"
+               Foreground="#475569"
+               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
                         </StackPanel>
 
-                        <TextBlock x:Name="TxtCompensationError"
-                                   Foreground="{StaticResource DangerRed}"
-                                   FontSize="11" Margin="0,6,0,0"
-                                   Visibility="Collapsed"/>
+                        <TextBlock x:Name="TxtCompensationError" Foreground="{StaticResource DangerRed}" FontSize="11" Margin="0,6,0,0" Visibility="Collapsed"/>
                     </StackPanel>
                 </Border>
 

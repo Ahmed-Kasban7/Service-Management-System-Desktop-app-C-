@@ -18,6 +18,8 @@ public interface IEmployeeRepository
     PagedResult<EmployeeSummaryDto> GetPagedEmployeeSummaries(int pageNumber, int pageSize);
     PagedResult<EmployeeSummaryDto> SearchEmployee(int pageNumber, int pageSize, string searchWord);
     EmployeeProfileDto GetEmployeeProfileById(int employeeId);
+    bool Update(UpdateEmployeeDto dto);
+
 
 
 

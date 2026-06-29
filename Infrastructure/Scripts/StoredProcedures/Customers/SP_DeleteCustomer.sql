@@ -4,17 +4,23 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-
-
     IF EXISTS (SELECT 1 FROM Orders WHERE CustomerId = @CustomerId)
     BEGIN
-        RAISERROR(N'لا يمكن حذف هذا العميل لأن له طلبات مسجلة في النظام', 16, 1);
+        ;THROW 50001, N'لا يمكن حذف هذا العميل لأن له طلبات مسجلة في النظام', 1;
         RETURN;
     END
 
-    Declare @personId INT ;
+    DECLARE @personId INT;
+    SELECT @personId = PersonId FROM Customers WHERE CustomerId = @CustomerId;
 
-    select @personId =  PersonId from Customers where  CustomerId = @CustomerId;
+    IF @personId IS NULL
+    BEGIN
+        RETURN;
+    END
 
-    DELETE FROM Persons WHERE PersonID = @personId;
-END
+    
+    UPDATE Persons 
+    SET IsActive = 0 
+    WHERE PersonID = @personId;
+
+END;

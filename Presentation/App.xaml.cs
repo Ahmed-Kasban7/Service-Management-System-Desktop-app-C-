@@ -9,6 +9,7 @@ using Application.Features.BrandManagement.Commands;
 using Application.Features.BrandManagement.Queries;
 using Application.Features.CampaignManagement.Command;
 using Application.Features.CampaignManagement.Queries;
+using Application.Features.CompanySettingsManagement;
 using Application.Features.CustomerManagement.Queries;
 using Application.Features.CustomerManagment;
 using Application.Features.CustomerManagment.Commands;
@@ -70,6 +71,7 @@ public partial class App : System.Windows.Application
             var treasuryRepo = new TreasuryRepository();
             var departmenRepo = new DepartmentRepository();
             var attachmentsRepo = new AttachmentRepository();
+            var companyRepo = new CompanyRepository();
 
 
             var SpecService = new DeviceSpecService(specRepo);
@@ -150,7 +152,20 @@ public partial class App : System.Windows.Application
             var getAttachmentsList = new GetEmployeeAttachmentsHandler(attachmentsRepo);
             var addAttachments = new AddAttachmentHandler(attachmentsRepo);
             var deleteAttachments = new DeleteAttachmentHandler(attachmentsRepo);
-
+            var getCampaignCustomerCount = new GetCampaignCustomersCount(campaignRepo);
+            var deleteDepartment = new DeleteDepartmentHandler(departmenRepo);
+            var updateDepartment = new UpdateDepartmentHandler(departmenRepo);
+            var addDepartment = new AddDepartmentHandler(departmenRepo);
+            var addRole = new AddRoleHandler(departmenRepo);
+            var updateRole = new UpdateRoleHandler(departmenRepo);
+            var deleteRole =  new DeleteRoleHandler(departmenRepo);
+            var getAllDepartmentRole = new GetAllDepartmentRolesHandler(departmenRepo);
+            var addSource = new AddSourceHandler(sourcesRepo);
+            var updateSource = new UpdateSourceHandler(sourcesRepo);
+            var deleteSource = new DeleteSourceHandler(sourcesRepo);
+            var getCompanySettings = new GetCompanySettingsHandler(companyRepo);
+            var updateCompany = new UpdateCompanySettingsHandler    (companyRepo);
+            var updateEmployee = new UpdateEmployeeHandler(employeeRepo);
 
             var mainWindow = new MainWindow(getOrderDetails , getorderPaged  , getCustomerLookupHandler ,
                 getCustomerDeviceHandler , createOrderHandler , updateOrder
@@ -165,8 +180,13 @@ public partial class App : System.Windows.Application
                 , getAllSpecs , addSpec , DeleteSpec , updateSpec ,
                 getBalance , createEmployee , getDepartments   , getRoles ,
                 getEmployeesPage , searchEmployee , getEmployeeProfile
-                , getEmployeePhones , addPhoneToEmployee , deleteEmployeePhone , getAttachmentsList , addAttachments , deleteAttachments);
+                , getEmployeePhones , addPhoneToEmployee , deleteEmployeePhone ,
+                getAttachmentsList , addAttachments , deleteAttachments 
+                , getCampaignCustomerCount , deleteDepartment , updateDepartment
+                , addDepartment , addRole , deleteRole , updateRole , getAllDepartmentRole ,
+                addSource , updateSource , deleteSource , getCompanySettings  , updateCompany , updateEmployee);
             mainWindow.Show();
+
         }
         catch (Exception ex)
         {

@@ -21,7 +21,7 @@ BEGIN
     INNER JOIN Persons p ON e.PersonID = p.PersonID
     INNER JOIN Departments d ON e.DepartmentID = d.DepartmentID
     INNER JOIN DepartmentRoles r ON e.RoleID = r.RoleID
-    where e.IsActive = 1
+    where p.IsActive = 1
     
     ORDER BY e.EmployeeId DESC 
     OFFSET (@PageNumber - 1) * @RowsPerPage ROWS 

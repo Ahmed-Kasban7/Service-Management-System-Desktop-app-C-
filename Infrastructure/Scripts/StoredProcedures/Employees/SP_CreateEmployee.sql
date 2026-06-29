@@ -8,7 +8,8 @@
     @DepartmentId      INT,
     @CompensationType TINYINT , 
     @BaseSalary        DECIMAL(10,2) = NULL,
-    @CommissionPercent DECIMAL(5,2)  = NULL,
+    @Commission DECIMAL(10,2)  = NULL,
+    @CommissionType BIT = NULL, 
     @Phones            PhoneList READONLY,
     @Attachments       AttachmentList READONLY,
     @EmployeeId        INT OUTPUT
@@ -26,8 +27,8 @@ BEGIN
         SET @PersonId = SCOPE_IDENTITY();
 
         -- 2. Create Employee
-        INSERT INTO Employees (PersonID, HireDate, RoleID, DepartmentID,CompensationType, BaseSalary, CommissionPercent , Address)
-        VALUES (@PersonId, @HireDate, @RoleId, @DepartmentId,@CompensationType, @BaseSalary, @CommissionPercent , @Address);
+        INSERT INTO Employees (PersonID, HireDate, RoleID, DepartmentID,CompensationType, BaseSalary,CommissionType, Commission , Address)
+        VALUES (@PersonId, @HireDate, @RoleId, @DepartmentId,@CompensationType, @BaseSalary, @CommissionType,@Commission , @Address);
         SET @EmployeeId = SCOPE_IDENTITY();
 
         -- 3. Add Phones
@@ -36,14 +37,15 @@ BEGIN
         FROM @Phones;
 
         -- 4. Add Attachments
-        INSERT INTO EmployeeAttachments (EmployeeId, FilePath)
-        SELECT @EmployeeId, FilePath
+        INSERT INTO EmployeeAttachments (EmployeeId, AttachmentData)
+        SELECT @EmployeeId, AttachmentData
         FROM @Attachments;
 
         COMMIT TRANSACTION;
     END TRY
     BEGIN CATCH
-        ROLLBACK TRANSACTION;
-        THROW;
+    IF @@TRANCOUNT > 0
+    ROLLBACK TRANSACTION;
+    THROW;
     END CATCH
 END

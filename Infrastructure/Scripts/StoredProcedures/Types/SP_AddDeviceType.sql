@@ -1,17 +1,14 @@
 ﻿CREATE OR ALTER PROCEDURE SP_AddDeviceType
-    @TypeName NVARCHAR(200)
+    @TypeName NVARCHAR(max)
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    IF EXISTS (SELECT 1 FROM Types WHERE TRIM(TypeName) = TRIM(@TypeName))
+    IF NOT EXISTS (SELECT 1 FROM Types WHERE TypeName = @TypeName)
     BEGIN
-        SELECT 0 AS Result;
-        RETURN;
+            INSERT INTO Types (TypeName)
+            VALUES (@TypeName);
     END
 
-    INSERT INTO Types (TypeName)
-    VALUES (TRIM(@TypeName));
-
-    SELECT 1 AS Result;
+    SELECT @@ROWCOUNT; 
 END

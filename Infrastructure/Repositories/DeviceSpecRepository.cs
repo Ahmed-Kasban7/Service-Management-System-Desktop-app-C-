@@ -60,8 +60,9 @@ public class DeviceSpecRepository:IDeviceSpecRepository
         conn.Open();
 
         var result = cmd.ExecuteScalar();
+        int rowsAffected = result != null ? Convert.ToInt32(result) : 0;
 
-        return result != null && Convert.ToInt32(result) == 1;
+        return rowsAffected > 0;
     }
 
     public bool DeleteSpec(int specId)
@@ -74,8 +75,9 @@ public class DeviceSpecRepository:IDeviceSpecRepository
         conn.Open();
 
         var result = cmd.ExecuteScalar();
+        int rowsAffected = result != null ? Convert.ToInt32(result) : 0;
 
-        return result != null && Convert.ToInt32(result) == 1;
+        return rowsAffected > 0;
     }
 
     public bool UpdateSpec(int specId, string newSpecName)
@@ -87,24 +89,12 @@ public class DeviceSpecRepository:IDeviceSpecRepository
         cmd.Parameters.AddWithValue("@SpecId", specId);
         cmd.Parameters.AddWithValue("@SpecName", newSpecName);
 
-        var returnParameter = cmd.Parameters.Add("@ReturnVal", System.Data.SqlDbType.Int);
-        returnParameter.Direction = System.Data.ParameterDirection.ReturnValue;
 
         conn.Open();
 
-        cmd.ExecuteNonQuery();
+        var result = cmd.ExecuteScalar();
+        int rowsAffected = result != null ? Convert.ToInt32(result) : 0;
 
-        int result = Convert.ToInt32(returnParameter.Value);
-
-        if (result == 1)
-        {
-            return true; 
-        }
-        else if (result == -1)
-        {
-            throw new Exception("عفواً، هذا الاسم مستخدم بالفعل لمواصفة أخرى في نفس هذا النوع.");
-        }
-
-        return false; 
+        return rowsAffected > 0;
     }
 }

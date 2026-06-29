@@ -10,6 +10,7 @@ using Application.Features.BrandManagement.Commands;
 using Application.Features.BrandManagement.Queries;
 using Application.Features.CampaignManagement.Command;
 using Application.Features.CampaignManagement.Queries;
+using Application.Features.CompanySettingsManagement;
 using Application.Features.CustomerManagement.Queries;
 using Application.Features.CustomerManagment.Commands;
 using Application.Features.DepartmentManagement;
@@ -29,6 +30,7 @@ using Application.Features.TypeManagement.Commands;
 using Application.Features.TypeManagement.Queries;
 using Application.Features.VisitManagement;
 using Microsoft.Extensions.Configuration;
+using OpenTK;
 using Presentation.View.Customer_View;
 using Presentation.View.OrderView;
 using Presentation.View.Settings_View;
@@ -117,6 +119,23 @@ namespace Presentation.View.MainView
         private readonly AddAttachmentHandler _addAttachmentHandler;
         private readonly DeleteAttachmentHandler _deleteAttachmentHandler;
 
+        private readonly GetCampaignCustomersCount _getCampaignCustomers;
+        private readonly DeleteDepartmentHandler _deleteDepartment;
+        private readonly UpdateDepartmentHandler _updateDepartment;
+        private readonly AddDepartmentHandler _addDepartment;
+
+        private readonly AddRoleHandler _addRoleHandler;
+        private readonly DeleteRoleHandler _deleteRoleHandler;
+        private readonly UpdateRoleHandler _updateRoleHandler;
+        private readonly GetAllDepartmentRolesHandler _getAllDepartmentRolesHandler;
+
+        private readonly AddSourceHandler _addSourceHandler;
+        private readonly DeleteSourceHandler _deleteSourceHandler;
+        private readonly UpdateSourceHandler _updateSourceHandler;
+        private readonly GetCompanySettingsHandler _getCompanySettingsHandler;
+        private readonly UpdateCompanySettingsHandler _updateCompanySettings;
+
+        private readonly UpdateEmployeeHandler _updateEmployeeHandler;
 
         public MainWindow(GetOrderFullDetailsHandler getOrderFullDetails,
             GetPagedOrderSummariesHandler getPagedOrderSummaries, GetCustomersLookupHandler getCustomersLookup,
@@ -151,10 +170,21 @@ namespace Presentation.View.MainView
             SearchEmployeeHandler searchEmployee ,
             GetEmployeeProfileHandler getEmployeeProfile , GetEmployeePhonesHandler getEmployeePhones ,
             AddPhoneToEmployee addPhoneToEmployee , DeleteEmployeePhoneHandler deleteEmployeePhone
-            , GetEmployeeAttachmentsHandler getEmployeeAttachments , AddAttachmentHandler addAttachmentHandler, DeleteAttachmentHandler deleteAttachment)
+            , GetEmployeeAttachmentsHandler getEmployeeAttachments , 
+            AddAttachmentHandler addAttachmentHandler, DeleteAttachmentHandler deleteAttachment ,
+            GetCampaignCustomersCount getCampaignCustomers
+            , DeleteDepartmentHandler  deleteDepartment ,
+            UpdateDepartmentHandler updateDepartment ,
+            AddDepartmentHandler addDepartment , AddRoleHandler addRoleHandler 
+            , DeleteRoleHandler deleteRoleHandler , UpdateRoleHandler updateRoleHandler ,
+            GetAllDepartmentRolesHandler getAllDepartmentRolesHandler ,
+            AddSourceHandler addSourceHandler, UpdateSourceHandler updateSource, 
+            DeleteSourceHandler deleteSource , GetCompanySettingsHandler getCompanySettings , 
+            UpdateCompanySettingsHandler updateCompanySettings  , UpdateEmployeeHandler updateEmployeeHandler)
         { 
-           InitializeComponent();
-            LoadSavedLogo();
+
+             InitializeComponent();
+            this.Closing += MainWindow_Closing;
             TxtTodayDate.Text = DateTime.Now.ToString("dddd، dd MMMM yyyy", new CultureInfo("ar-EG"));
             _getOrderFullDetailsHandler = getOrderFullDetails;
             _getPagedOrderSummariesHandler = getPagedOrderSummaries;
@@ -231,10 +261,24 @@ namespace Presentation.View.MainView
              _getEmployeeAttachments = getEmployeeAttachments;
             _addAttachmentHandler = addAttachmentHandler;
             _deleteAttachmentHandler = deleteAttachment;
+            _getCampaignCustomers = getCampaignCustomers;
+            _addDepartment = addDepartment;
+            _deleteDepartment = deleteDepartment;
+            _updateDepartment = updateDepartment;
 
+            _addRoleHandler = addRoleHandler;
+            _deleteRoleHandler = deleteRoleHandler;
+            _updateRoleHandler = updateRoleHandler;
+            _getAllDepartmentRolesHandler = getAllDepartmentRolesHandler;
+            _addSourceHandler = addSourceHandler;
+            _updateSourceHandler = updateSource;
+            _deleteSourceHandler = deleteSource;
+            _getCompanySettingsHandler = getCompanySettings;
+            _updateCompanySettings =    updateCompanySettings;
+            _updateEmployeeHandler = updateEmployeeHandler;
 
             _createOrderHandler.AddOrderToList += OrdersControl.RefreshIfVisible;
-
+            LoadSavedLogo();
             InitializeTabServices(DashboardControl);
         }
 
@@ -315,7 +359,7 @@ namespace Presentation.View.MainView
             if(content == CampaignsControl)
             {
                 CampaignsControl.InitializeServices(_createCampaignHandler , _getAllSources , 
-                    _getPagedCampaignSummaries , _searchCampaignsPaged , _getCampaignDetails , _deleteCampaign , _updateCampaign );
+                    _getPagedCampaignSummaries , _searchCampaignsPaged , _getCampaignDetails , _deleteCampaign , _updateCampaign , _getCampaignCustomers );
             }
 
             if(content == SettingsControl)
@@ -323,7 +367,10 @@ namespace Presentation.View.MainView
                 SettingsControl.InitializeServices(_getAllTypesHandler , _getAllBrandsHandler ,
                     _getSpecsByTypeIdHandler , _createBrandHandler , _deleteBrand , _updateBrandHandler ,
                     _addTypeHandler , deleteTypeHandler , _updateTypeHandler , _getAllSpecs , _addSpecHandler 
-                    , _deleteSpecHandler , _updateSpecHandler);
+                    , _deleteSpecHandler , _updateSpecHandler , _deleteDepartment ,
+                    _updateDepartment , _addDepartment , _getDepartmentsHandler , _addRoleHandler , 
+                    _deleteRoleHandler  , _updateRoleHandler , _getAllDepartmentRolesHandler  
+                    , _getAllSources , _addSourceHandler , _updateSourceHandler , _deleteSourceHandler , _updateCompanySettings , _getCompanySettingsHandler);
             }
 
             if(content == DashboardControl)
@@ -337,7 +384,7 @@ namespace Presentation.View.MainView
                     _getDepartmentsHandler ,_getRolesHandler ,
                     _getPagedEmployeeSummariesHandler , _searchEmployeeHandler , 
                     _getEmployeeProfileHandler , _getEmployeePhones , _addPhoneToEmployee , _updatePhoneHandler  ,
-                    _deleteEmployeePhone , _getEmployeeAttachments , _addAttachmentHandler , _deleteAttachmentHandler);
+                    _deleteEmployeePhone , _getEmployeeAttachments , _addAttachmentHandler , _deleteAttachmentHandler , _updateEmployeeHandler );
             }
         }
 
@@ -383,57 +430,41 @@ namespace Presentation.View.MainView
             createOrderWin.ShowDialog();
         }
 
-        private void LoadSavedLogo()
+        public void LoadSavedLogo()
         {
             try
             {
-                var config = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                    .Build();
+                var companySettings = _getCompanySettingsHandler.Handle();
 
-                string savedPath = config["ImageSettings:LogoPath"];
+                if (companySettings != null)
+                {
+                    TxtCompanyName.Text = companySettings.CompanyName;
 
-                if (!string.IsNullOrEmpty(savedPath) && File.Exists(savedPath))
-                {
-                    CompanyLogo.Source = new BitmapImage(new Uri(savedPath));
-                }
-                else
-                {
-                    CompanyLogo.Source = null;
+                    if (companySettings.CompanyLogo != null && companySettings.CompanyLogo.Length > 0)
+                    {
+                        using var stream = new System.IO.MemoryStream(companySettings.CompanyLogo);
+                        var bitmap = new BitmapImage();
+                        bitmap.BeginInit();
+                        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                        bitmap.StreamSource = stream;
+                        bitmap.EndInit();
+
+                        CompanyLogo.Source = bitmap;
+                    }
+                    else
+                    {
+                        CompanyLogo.Source = null; 
+                    }
                 }
             }
             catch (Exception)
             {
                 CompanyLogo.Source = null;
+                TxtCompanyName.Text = "Pro Fix Company";
             }
         }
 
-        private void BtnChangeLogo_Click(object sender, RoutedEventArgs e)
-        {
-            var dlg = new Microsoft.Win32.OpenFileDialog();
-            dlg.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
 
-            if (dlg.ShowDialog() == true)
-            {
-                string selectedFileName = dlg.FileName;
-                CompanyLogo.Source = new BitmapImage(new Uri(selectedFileName));
-
-                try
-                {
-                    string json = File.ReadAllText("appsettings.json");
-                    dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-                    jsonObj["ImageSettings"]["LogoPath"] = selectedFileName;
-
-                    string output = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
-                    File.WriteAllText("appsettings.json", output);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("فشل حفظ مسار الصورة في الإعدادات: " + ex.Message);
-                }
-            }
-        }
 
         public void OpenOrderDetailsAfterCreate(int orderId)
         {
@@ -441,6 +472,10 @@ namespace Presentation.View.MainView
 
             CustomersControl.Visibility = Visibility.Collapsed;
             SettingsControl.Visibility = Visibility.Collapsed;
+            CampaignsControl.Visibility = Visibility.Collapsed;
+            DashboardControl.Visibility = Visibility.Collapsed;
+            EmployeeControl.Visibility = Visibility.Collapsed;
+
             OrdersControl.Visibility = Visibility.Visible;
 
             SidePanelColumn.Width = new GridLength(0);
@@ -456,6 +491,74 @@ namespace Presentation.View.MainView
             );
 
             OrdersControl.NavigateToOrderDetails(orderId, isComingFromDevices: false);
+        }
+
+        private async void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+
+            this.Cursor = Cursors.Wait;
+
+            try
+            {
+                await RunAutomaticBackupAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Shutdown Backup Error: {ex.Message}");
+            }
+            finally
+            {
+                this.Cursor = Cursors.Arrow;
+
+                this.Closing -= MainWindow_Closing;
+
+                System.Windows.Application.Current.Shutdown();
+            }
+        }
+        private System.Threading.Tasks.Task RunAutomaticBackupAsync()
+        {
+            return System.Threading.Tasks.Task.Run(() =>
+            {
+                try
+                {
+                    string backupFolder = @"D:\Database_Backup";
+                    if (!Directory.Exists(backupFolder))
+                    {
+                        Directory.CreateDirectory(backupFolder);
+                    }
+
+                    var configuration = new ConfigurationBuilder()
+                        .SetBasePath(AppContext.BaseDirectory)
+                        .AddJsonFile("appsettings.json", optional: false)
+                        .Build();
+
+                    string connectionString = configuration.GetConnectionString("DefaultConnection")
+                             ?? throw new Exception("ملف اعدادات قاعده البيانات غير موجود ");
+
+                    string databaseName = configuration["DatabaseSettings:DatabaseName"]
+                       ?? throw new Exception("اسم قاعده البيانات غير موجود فى  ملف الاعدادات");
+
+
+                    using (var connection = new Microsoft.Data.SqlClient.SqlConnection(connectionString))
+                    {
+                        using (var command = new Microsoft.Data.SqlClient.SqlCommand("SP_Backup", connection))
+                        {
+                            command.CommandType = System.Data.CommandType.StoredProcedure;
+                            command.Parameters.AddWithValue("@databaseName", databaseName);
+
+                            connection.Open();
+                            command.CommandTimeout = 60;
+
+                            command.ExecuteNonQuery();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Auto Backup Failed: {ex.Message}");
+                }
+            });
         }
 
 

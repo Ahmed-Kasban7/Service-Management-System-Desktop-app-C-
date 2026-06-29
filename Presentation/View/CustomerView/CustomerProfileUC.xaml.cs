@@ -116,7 +116,7 @@ namespace Presentation.View.CustomerView
                 TxtProfileAddress.Text = customer.Address;
                 TxtProfileDiscount.Text = $"{customer.Discount}%";
                 RunCustomerCode.Text = $"#{customer.Code}";
-                TxtCreatedDate.Text = $"تاريخ التسجيل: {customer.CreatedDate:dd/MM/yyyy}";
+                TxtCreatedDate.Text = $"تاريخ التسجيل: {customer.CreatedDate:yyyy/MM/dd}";
                 TxtProfileSource.Text = string.IsNullOrEmpty(customer.SourceName) ? "---" : customer.SourceName;
                 TxtProfileCampaign.Text = string.IsNullOrEmpty(customer.CampaignName) ? "---" : customer.CampaignName;
             }

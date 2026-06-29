@@ -3,7 +3,7 @@ BEGIN
 
     CREATE TABLE Sources (
         SourceID    INT IDENTITY(1,1) PRIMARY KEY,
-        SourceName  NVARCHAR(100) NOT NULL UNIQUE, 
+        SourceName  NVARCHAR(max) NOT NULL , 
     );
 
 END

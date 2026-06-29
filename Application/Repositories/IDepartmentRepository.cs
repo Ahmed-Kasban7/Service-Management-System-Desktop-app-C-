@@ -12,5 +12,12 @@ public interface IDepartmentRepository
 {
      IEnumerable<DepartmentLookupDto> GetDepartmentsLookup();
     IEnumerable<RoleLookupDto> GetRolesByDepartment(int departmentId);
+    IEnumerable<DepartmentWithRolesDto> GetAllDepartmentRoles();
+    bool UpdateDepartment(int departmentId, string departmentName); 
+    bool DeleteDepartment(int departmentId);
+    bool AddDepartment(string departmentName);
 
+    bool AddRole(string roleName, int departmentId);
+    bool UpdateRole(int roleId, string roleName);
+    bool DeleteRole(int roleId);
 }

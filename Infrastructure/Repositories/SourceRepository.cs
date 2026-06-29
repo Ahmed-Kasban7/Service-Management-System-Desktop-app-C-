@@ -34,5 +34,59 @@ public class SourceRepository:ISourceRepository
         return sourcesList;
 
     }
+    public bool AddSource(string sourceName)
+    {
+        using var conn = DatabaseInitializer.GetConnection();
+        conn.Open();
+
+        using var cmd = new SqlCommand("SP_AddSource", conn)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
+
+        cmd.Parameters.AddWithValue("@SourceName", sourceName.Trim());
+
+        var result = cmd.ExecuteScalar();
+        int rowsAffected = result != null ? Convert.ToInt32(result) : 0;
+
+        return rowsAffected > 0;
+    }
+
+    public bool UpdateSource(int sourceId, string sourceName)
+    {
+        using var conn = DatabaseInitializer.GetConnection();
+        conn.Open();
+
+        using var cmd = new SqlCommand("SP_UpdateSource", conn)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
+
+        cmd.Parameters.AddWithValue("@SourceId", sourceId);
+        cmd.Parameters.AddWithValue("@SourceName", sourceName.Trim());
+
+        var result = cmd.ExecuteScalar();
+        int rowsAffected = result != null ? Convert.ToInt32(result) : 0;
+
+        return rowsAffected > 0;
+    }
+
+    public bool DeleteSource(int sourceId)
+    {
+        using var conn = DatabaseInitializer.GetConnection();
+        conn.Open();
+
+        using var cmd = new SqlCommand("SP_DeleteSource", conn)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
+
+        cmd.Parameters.AddWithValue("@SourceId", sourceId);
+
+        var result = cmd.ExecuteScalar();
+        int rowsAffected = result != null ? Convert.ToInt32(result) : 0;
+
+        return rowsAffected > 0;
+    }
 
 }

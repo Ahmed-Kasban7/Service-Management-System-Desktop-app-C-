@@ -5,5 +5,5 @@ BEGIN
         c.CustomerID AS Id,
         p.Name AS Name
     FROM Customers c 
-    JOIN Persons p ON c.PersonID = p.PersonID
+    JOIN Persons p ON c.PersonID = p.PersonID where p.IsActive= 1
 END

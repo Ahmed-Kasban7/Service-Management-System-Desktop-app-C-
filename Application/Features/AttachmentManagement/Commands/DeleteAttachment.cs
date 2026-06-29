@@ -17,12 +17,12 @@ public class DeleteAttachmentHandler
         _attachmentRepository = attachmentRepository;
     }
 
-    public void Handle(string filePath)
+    public void Handle(int id)
     {
 
-        if (string.IsNullOrWhiteSpace(filePath))
-            throw new ArgumentException("مسار الملف لا يمكن أن يكون فارغاً");
+        if (id <=0)
+            throw new ArgumentException("رقم الملف غير صالح");
 
-        _attachmentRepository.DeleteAttachment( filePath);
+        _attachmentRepository.DeleteAttachment(id);
     }
 }

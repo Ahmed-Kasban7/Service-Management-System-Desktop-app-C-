@@ -8,8 +8,5 @@ BEGIN
     WHERE BrandID = @brandId
       AND NOT EXISTS (SELECT 1 FROM Devices WHERE BrandID = @brandId);
 
-    IF @@ROWCOUNT > 0
-        RETURN 1; 
-    ELSE
-        RETURN 0; 
+    SELECT @@ROWCOUNT; 
 END

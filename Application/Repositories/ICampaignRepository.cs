@@ -17,6 +17,8 @@ namespace Application.Repositories
         bool DeleteCampaign(int campaignId);
         bool UpdateCampaign(UpdateCampaignDto campaign);
         IEnumerable<CampaignLookup> GetCampaignsBySourceId(int sourceId);
+        int GetCampaignCustomersCount(int campaignId);
+
 
 
 

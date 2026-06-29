@@ -1,5 +1,9 @@
 ﻿create or alter procedure SP_IsCustomerExist @customerId int 
 as 
 begin 
-select 1 from Customers where CustomerID = @customerId
+SELECT 1 
+        FROM Customers c
+        INNER JOIN Persons p ON c.PersonID = p.PersonID
+        WHERE c.CustomerID = @CustomerId AND p.IsActive = 1
+        
 end 

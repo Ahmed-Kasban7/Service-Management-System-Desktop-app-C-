@@ -8,6 +8,7 @@
              SnapsToDevicePixels="True">
 
     <UserControl.Resources>
+        <!-- الألوان والفرش الأساسية -->
         <SolidColorBrush x:Key="PrimaryBlue" Color="#4169E1"/>
         <SolidColorBrush x:Key="SuccessGreen" Color="#10B981"/>
         <SolidColorBrush x:Key="LightBlue" Color="#E8F0FE"/>
@@ -17,6 +18,7 @@
         <SolidColorBrush x:Key="BorderGray" Color="#D1D5DB"/>
         <SolidColorBrush x:Key="DangerRed" Color="#EF4444"/>
 
+        <!-- استايل الـ TextBox الحديث -->
         <Style x:Key="ModernTextBox" TargetType="TextBox">
             <Setter Property="Padding" Value="12,0"/>
             <Setter Property="Height" Value="40"/>
@@ -52,6 +54,7 @@
             </Setter>
         </Style>
 
+        <!-- استايل أزرار القائمة الجانبية -->
         <Style x:Key="SidebarButton" TargetType="RadioButton">
             <Setter Property="Height" Value="45"/>
             <Setter Property="Background" Value="Transparent"/>
@@ -81,6 +84,7 @@
             </Setter>
         </Style>
 
+        <!-- استايل الأزرار الأساسية الملونة -->
         <Style x:Key="SuccessButton" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource PrimaryBlue}"/>
             <Setter Property="Foreground" Value="White"/>
@@ -101,7 +105,7 @@
             </Setter>
         </Style>
 
-        <!-- ستايل خاص بزرار "التعديل الشفاف" اللي بيغطي اسم العنصر -->
+        <!-- زر التعديل الشفاف لتغطية مساحة النص بالكامل -->
         <Style x:Key="TransparentEditButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -117,111 +121,117 @@
             </Setter>
         </Style>
 
+        <!-- استايل موحد لأزرار الحذف الدائرية الأنيقة -->
+        <Style x:Key="RoundDeleteButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="{StaticResource DangerRed}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="deleteBorder" Background="Transparent" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="deleteBorder" Property="Background" Value="#FEE2E2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ==================== Data Templates ==================== -->
+
+        <!-- قالب قائمة الماركات -->
         <DataTemplate x:Key="BrandListItemTemplate">
-            <Border Background="Transparent"
-                    BorderBrush="{StaticResource LightGray}"
-                    BorderThickness="0,0,0,1"
-                    Padding="10,6"
-                    HorizontalAlignment="Stretch"
-                    ToolTip="انقر لتعديل الاسم">
+            <Border Background="Transparent" BorderBrush="{StaticResource LightGray}" BorderThickness="0,0,0,1" Padding="10,6" HorizontalAlignment="Stretch" ToolTip="انقر لتعديل الاسم">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-
                     <Grid Grid.Column="0" VerticalAlignment="Center">
-                        <TextBlock x:Name="TxtBlockName"
-                                   Text="{Binding BrandName}" 
-                                   VerticalAlignment="Center"
-                                   Foreground="{StaticResource DarkText}"
-                                   FontSize="13"
-                                   FontWeight="SemiBold"
-                                   TextWrapping="NoWrap"/>
-
-                        <TextBox x:Name="TxtBoxEditName"
-                                 Text="{Binding BrandName, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
-                                 Style="{StaticResource ModernTextBox}"
-                                 Height="32"
-                                 FontSize="13"
-                                 Padding="5,0"
-                                 Visibility="Collapsed"
-                                 KeyDown="TxtBoxEdit_KeyDown"
-                                 LostFocus="TxtBoxEdit_LostFocus"/>
-
-                        <!-- زرار شفاف يغطي مساحة الاسم بالكامل، بيستقبل الكليك بشكل مضمون -->
-                        <Button Style="{StaticResource TransparentEditButton}"
-                                Click="EditField_Click"/>
+                        <TextBlock x:Name="TxtBlockName" Text="{Binding BrandName}" VerticalAlignment="Center" Foreground="{StaticResource DarkText}" FontSize="13" FontWeight="SemiBold" TextWrapping="NoWrap"/>
+                        <TextBox x:Name="TxtBoxEditName" Text="{Binding BrandName, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Style="{StaticResource ModernTextBox}" Height="32" FontSize="13" Padding="5,0" Visibility="Collapsed" KeyDown="TxtBox_KeyDown" LostFocus="TxtBox_LostFocus"/>
+                        <Button Style="{StaticResource TransparentEditButton}" Click="EditField_Click"/>
                     </Grid>
-
-                    <Button Grid.Column="1" Content="🗑️" Background="Transparent" BorderThickness="0" Foreground="{StaticResource DangerRed}" Cursor="Hand" Width="30" Height="30" Click="BtnDeleteListItem_Click">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border x:Name="deleteBorder" Background="Transparent" CornerRadius="6">
-                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="deleteBorder" Property="Background" Value="#FEE2E2"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
+                    <Button Grid.Column="1" Content="🗑️" Style="{StaticResource RoundDeleteButton}" Click="BtnDeleteListItem_Click"/>
                 </Grid>
             </Border>
         </DataTemplate>
 
+        <!-- قالب قائمة الأنواع -->
         <DataTemplate x:Key="TypeListItemTemplate">
-            <Border Background="Transparent"
-                    BorderBrush="{StaticResource LightGray}"
-                    BorderThickness="0,0,0,1"
-                    Padding="10,6"
-                    HorizontalAlignment="Stretch"
-                    ToolTip="انقر لتعديل الاسم">
+            <Border Background="Transparent" BorderBrush="{StaticResource LightGray}" BorderThickness="0,0,0,1" Padding="10,6" HorizontalAlignment="Stretch" ToolTip="انقر لتعديل الاسم">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-
                     <Grid Grid.Column="0" VerticalAlignment="Center">
-                        <TextBlock x:Name="TxtBlockName"
-                                   Text="{Binding TypeName}" 
-                                   VerticalAlignment="Center"
-                                   Foreground="{StaticResource DarkText}"
-                                   FontSize="13"
-                                   FontWeight="SemiBold"
-                                   TextWrapping="NoWrap"/>
-
-                        <TextBox x:Name="TxtBoxEditName"
-                                 Text="{Binding TypeName, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
-                                 Style="{StaticResource ModernTextBox}"
-                                 Height="32"
-                                 FontSize="13"
-                                 Padding="5,0"
-                                 Visibility="Collapsed"
-                                 KeyDown="TxtBoxEdit_KeyDown"
-                                 LostFocus="TxtBoxEdit_LostFocus"/>
-
-                        <Button Style="{StaticResource TransparentEditButton}"
-                                Click="EditField_Click"/>
+                        <TextBlock x:Name="TxtBlockName" Text="{Binding TypeName}" VerticalAlignment="Center" Foreground="{StaticResource DarkText}" FontSize="13" FontWeight="SemiBold" TextWrapping="NoWrap"/>
+                        <TextBox x:Name="TxtBoxEditName" Text="{Binding TypeName, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Style="{StaticResource ModernTextBox}" Height="32" FontSize="13" Padding="5,0" Visibility="Collapsed" KeyDown="TxtBox_KeyDown" LostFocus="TxtBox_LostFocus"/>
+                        <Button Style="{StaticResource TransparentEditButton}" Click="EditField_Click"/>
                     </Grid>
+                    <Button Grid.Column="1" Content="🗑️" Style="{StaticResource RoundDeleteButton}" Click="BtnDeleteListItem_Click"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
 
-                    <Button Grid.Column="1" Content="🗑️" Background="Transparent" BorderThickness="0" Foreground="{StaticResource DangerRed}" Cursor="Hand" Width="30" Height="30" Click="BtnDeleteListItem_Click">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border x:Name="deleteBorder" Background="Transparent" CornerRadius="6">
-                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="deleteBorder" Property="Background" Value="#FEE2E2"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
+        <!-- قالب قائمة الأقسام -->
+        <DataTemplate x:Key="DepartmentListItemTemplate">
+            <Border Background="Transparent" BorderBrush="{StaticResource LightGray}" BorderThickness="0,0,0,1" Padding="10,6" HorizontalAlignment="Stretch" ToolTip="انقر لتعديل اسم القسم">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock x:Name="TxtBlockDepartmentName" Text="{Binding DepartmentName}" VerticalAlignment="Center" Foreground="{StaticResource DarkText}" FontSize="13" FontWeight="SemiBold"/>
+                        <TextBox x:Name="TxtBoxEditDepartmentName" Text="{Binding DepartmentName, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Style="{StaticResource ModernTextBox}" Height="32" FontSize="13" Padding="5,0" Visibility="Collapsed" KeyDown="TxtBox_KeyDown" LostFocus="TxtBox_LostFocus"/>
+                        <Button Style="{StaticResource TransparentEditButton}" Click="EditField_Click"/>
+                    </Grid>
+                    <Button Grid.Column="1" Content="🗑️" Style="{StaticResource RoundDeleteButton}" Click="BtnDeleteDeptItem_Click"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <!-- قالب قائمة الأدوار الوظيفية -->
+        <DataTemplate x:Key="RoleListItemTemplate">
+            <Border Background="Transparent" BorderBrush="{StaticResource LightGray}" BorderThickness="0,0,0,1" Padding="10,6" HorizontalAlignment="Stretch" ToolTip="انقر لتعديل اسم الدور الوظيفي">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock x:Name="TxtBlockRoleName" Text="{Binding RoleName}" VerticalAlignment="Center" Foreground="{StaticResource DarkText}" FontSize="13" FontWeight="SemiBold"/>
+                        <TextBox x:Name="TxtBoxEditRoleName" Text="{Binding RoleName, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Style="{StaticResource ModernTextBox}" Height="32" FontSize="13" Padding="5,0" Visibility="Collapsed" KeyDown="TxtBox_KeyDown" LostFocus="TxtBox_LostFocus"/>
+                        <Button Style="{StaticResource TransparentEditButton}" Click="EditField_Click"/>
+                    </Grid>
+                    <Button Grid.Column="1" Content="🗑️" Style="{StaticResource RoundDeleteButton}" Click="BtnDeleteRoleItem_Click"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="SourceListItemTemplate">
+            <Border Background="Transparent" BorderBrush="{StaticResource LightGray}" BorderThickness="0,0,0,1" Padding="10,6" HorizontalAlignment="Stretch" ToolTip="انقر لتعديل اسم المصدر">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock x:Name="TxtBlockSourceName" Text="{Binding SourceName}" VerticalAlignment="Center" Foreground="{StaticResource DarkText}" FontSize="13" FontWeight="SemiBold"/>
+                        <TextBox x:Name="TxtBoxEditSourceName" Text="{Binding SourceName, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Style="{StaticResource ModernTextBox}" Height="32" FontSize="13" Padding="5,0" Visibility="Collapsed" KeyDown="TxtBox_KeyDown" LostFocus="TxtBox_LostFocus"/>
+                        <Button Style="{StaticResource TransparentEditButton}" Click="EditField_Click"/>
+                    </Grid>
+                    <Button Grid.Column="1" Content="🗑️" Style="{StaticResource RoundDeleteButton}" Click="BtnDeleteSourceItem_Click"/>
                 </Grid>
             </Border>
         </DataTemplate>
@@ -234,6 +244,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+        <!-- ===== القائمة الجانبية (Sidebar) ===== -->
         <Border Grid.Column="0" Background="White" CornerRadius="0,0,12,12" Margin="0,0,5,0">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="8" Color="#000" Opacity="0.04" ShadowDepth="1"/>
@@ -243,28 +254,40 @@
                     <TextBlock Text="الإعدادات ⚙️" FontSize="20" FontWeight="Bold" Foreground="{StaticResource DarkText}"/>
                     <TextBlock Text="إدارة إعدادات النظام" FontSize="11" Foreground="{StaticResource GrayText}" Margin="0,3,0,0"/>
                 </StackPanel>
+
                 <RadioButton x:Name="BtnGeneralSettings" Style="{StaticResource SidebarButton}" IsChecked="True" Checked="BtnGeneralSettings_Checked">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="🏢" Margin="0,0,10,0" FontSize="15"/>
-                        <TextBlock><Run Text="بيانات ا"/><Run FlowDirection="RightToLeft" Language="ar-eg" Text="لمركز"/></TextBlock>
+                        <TextBlock Text="بيانات الشركة"/>
                     </StackPanel>
                 </RadioButton>
+
                 <RadioButton x:Name="BtnHardwareSettings" Style="{StaticResource SidebarButton}" Checked="BtnHardwareSettings_Checked">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="🧺" Margin="0,0,10,0" FontSize="15"/>
-                        <TextBlock Text="إدارة الاجهزة"/>
+                        <TextBlock Text="تعريفات الاجهزة"/>
                     </StackPanel>
                 </RadioButton>
-                <Separator Margin="15,10" Background="{StaticResource LightGray}"/>
-                <RadioButton x:Name="BtnBackupSettings" Style="{StaticResource SidebarButton}" Checked="BtnBackupSettings_Checked">
+
+                <RadioButton x:Name="BtnHRSettings" Style="{StaticResource SidebarButton}" Checked="BtnHRSettings_Checked">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="💾" Margin="0,0,10,0" FontSize="15"/>
-                        <TextBlock Text="النسخ الاحتياطي"/>
+                        <TextBlock Text="👥" Margin="0,0,10,0" FontSize="15"/>
+                        <TextBlock Text="الأقسام والأدوار الوظيفية"/>
                     </StackPanel>
                 </RadioButton>
+
+                <RadioButton x:Name="BtnSourcesSettings" Style="{StaticResource SidebarButton}" Checked="BtnSourcesSettings_Checked">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="📢" Margin="0,0,10,0" FontSize="15"/>
+                        <TextBlock Text="المصادر"/>
+                    </StackPanel>
+                </RadioButton>
+
+                
             </StackPanel>
         </Border>
 
+        <!-- ===== منطقة المحتوى الأساسي (Content Area) ===== -->
         <Border Grid.Column="2" Background="White" CornerRadius="0,0,12,12">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="8" Color="#000" Opacity="0.04" ShadowDepth="1"/>
@@ -272,11 +295,11 @@
             <Grid Margin="30">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel>
+
                         <Border x:Name="GeneralSettingsPanel" Visibility="Visible">
                             <StackPanel>
                                 <StackPanel Margin="0,0,0,25">
-                                    <TextBlock Text="🏢 بيانات المركز الأساسية" FontSize="22" FontWeight="Bold" Foreground="{StaticResource DarkText}"/>
-                                    <TextBlock Text="إدارة المعلومات الأساسية للمركز" FontSize="13" Foreground="{StaticResource GrayText}" Margin="0,5,0,0"/>
+                                    <TextBlock Text="🏢 بيانات الشركة الأساسية" FontSize="22" FontWeight="Bold" Foreground="{StaticResource DarkText}"/>
                                 </StackPanel>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -286,60 +309,38 @@
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0">
                                         <StackPanel Margin="0,0,0,18">
-                                            <TextBlock Text="اسم المركز  *" Margin="0,0,0,6" Foreground="{StaticResource GrayText}" FontSize="13"/>
-                                            <TextBox x:Name="TxtCenterName" Style="{StaticResource ModernTextBox}"/>
+                                            <TextBlock Text="اسم الشركة  *" Margin="0,0,0,6" Foreground="{StaticResource GrayText}" FontSize="13"/>
+                                            <TextBox x:Name="TxtCenterName" Style="{StaticResource ModernTextBox}" IsReadOnly="True"/>
                                         </StackPanel>
-                                        <Grid Margin="0,0,0,18">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="15"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <StackPanel Grid.Column="0">
-                                                <TextBlock Text="رقم الهاتف *" Margin="0,0,0,6" Foreground="{StaticResource GrayText}" FontSize="13"/>
-                                                <TextBox x:Name="TxtPhone" Style="{StaticResource ModernTextBox}" MaxLength="11"/>
-                                            </StackPanel>
-                                            <StackPanel Grid.Column="2"/>
-                                        </Grid>
-                                        <StackPanel Margin="0,0,0,18">
-                                            <TextBlock Text="العنوان" Margin="0,0,0,6" Foreground="{StaticResource GrayText}" FontSize="13"/>
-                                            <TextBox x:Name="TxtAddress" Style="{StaticResource ModernTextBox}"/>
-                                        </StackPanel>
-                                        <StackPanel>
-                                            <TextBlock Text="ملاحظات إضافية" Margin="0,0,0,6" Foreground="{StaticResource GrayText}" FontSize="13"/>
-                                            <TextBox x:Name="TxtNotes" Height="90" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top" Padding="12,10" Background="White" Foreground="{StaticResource DarkText}" BorderBrush="{StaticResource BorderGray}" BorderThickness="1">
-                                                <TextBox.Template>
-                                                    <ControlTemplate TargetType="TextBox">
-                                                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
-                                                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </TextBox.Template>
-                                            </TextBox>
-                                        </StackPanel>
+                                     
+                                           
+                                      
                                     </StackPanel>
                                     <StackPanel Grid.Column="2" VerticalAlignment="Top">
                                         <TextBlock Text="شعار المركز (Logo)" HorizontalAlignment="Center" Margin="0,0,0,10" Foreground="{StaticResource GrayText}" FontSize="13"/>
                                         <Border x:Name="LogoContainer" Width="200" Height="200" Background="#F8FAFC" CornerRadius="12" BorderBrush="{StaticResource LightGray}" BorderThickness="2" Cursor="Hand">
                                             <Grid>
-                                                <StackPanel x:Name="DefaultLogoState" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                <Button x:Name="BtnUploadLogo" Background="Transparent" BorderThickness="0" Cursor="Hand" Click="BtnUploadLogo_Click" IsEnabled="False"/>
+
+                                                <StackPanel x:Name="DefaultLogoState" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
                                                     <TextBlock Text="📸" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,10"/>
                                                     <TextBlock Text="إضافة شعار" Foreground="{StaticResource PrimaryBlue}" FontSize="14" FontWeight="Medium" HorizontalAlignment="Center"/>
                                                 </StackPanel>
-                                                <Image x:Name="LogoImage" Stretch="UniformToFill" Visibility="Collapsed"/>
-                                                <Button Background="Transparent" BorderThickness="0" Cursor="Hand" Click="BtnUploadLogo_Click"/>
+
+                                                <Image x:Name="LogoImage" Stretch="UniformToFill" Visibility="Collapsed" IsHitTestVisible="False"/>
                                             </Grid>
                                         </Border>
                                     </StackPanel>
                                 </Grid>
                                 <Separator Margin="0,30" Background="{StaticResource LightGray}"/>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                    <Button Content="💾 حفظ التغييرات" Style="{StaticResource SuccessButton}" Width="160" Click="BtnSaveSettings_Click"/>
-                                    <Button Content="↺ إعادة تعيين" Width="140" Height="42" Margin="10,0,0,0" Background="White" Foreground="{StaticResource GrayText}" BorderBrush="{StaticResource BorderGray}" BorderThickness="1" FontWeight="SemiBold" FontSize="14" Cursor="Hand" Click="BtnResetSettings_Click"/>
+                                    <Button x:Name="BtnSaveSettings" Content="💾 حفظ التغييرات" Style="{StaticResource SuccessButton}" Width="160" Click="BtnSaveSettings_Click" IsEnabled="False"/>
+                                    <Button x:Name="BtnToggleEdit" Content="✏️ تعديل البيانات" Width="140" Height="42" Margin="10,0,0,0" Background="White" Foreground="{StaticResource PrimaryBlue}" BorderBrush="{StaticResource PrimaryBlue}" BorderThickness="1" FontWeight="SemiBold" FontSize="14" Cursor="Hand" Click="BtnResetSettings_Click"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
 
+                        <!-- 2️⃣ واجهة إدارة تعريفات الأجهزة -->
                         <Border x:Name="HardwareSettingsPanel" Visibility="Collapsed">
                             <StackPanel>
                                 <TextBlock Text="🧺 إدارة تعريفات الأجهزة" FontSize="20" FontWeight="Bold" Margin="0,0,0,20" Foreground="{StaticResource DarkText}"/>
@@ -352,6 +353,7 @@
                                         <ColumnDefinition Width="1.2*"/>
                                     </Grid.ColumnDefinitions>
 
+                                    <!-- صندوق أنواع الأجهزة -->
                                     <Border Grid.Column="0" Background="#F8FAFC" CornerRadius="12" BorderBrush="{StaticResource LightGray}" BorderThickness="1" Padding="15">
                                         <StackPanel>
                                             <TextBlock Text="أنواع الأجهزة" FontWeight="Bold" Margin="0,0,0,10" Foreground="{StaticResource PrimaryBlue}"/>
@@ -371,6 +373,7 @@
                                         </StackPanel>
                                     </Border>
 
+                                    <!-- صندوق ماركات الأجهزة -->
                                     <Border Grid.Column="2" Background="#F8FAFC" CornerRadius="12" BorderBrush="{StaticResource LightGray}" BorderThickness="1" Padding="15">
                                         <StackPanel>
                                             <TextBlock Text="ماركات الأجهزة" FontWeight="Bold" Margin="0,0,0,10" Foreground="{StaticResource PrimaryBlue}"/>
@@ -390,6 +393,7 @@
                                         </StackPanel>
                                     </Border>
 
+                                    <!-- صندوق المواصفات الخاص بالأنواع -->
                                     <Border Grid.Column="4" Background="#F8FAFC" CornerRadius="12" BorderBrush="{StaticResource LightGray}" BorderThickness="1" Padding="15">
                                         <StackPanel>
                                             <TextBlock Text="المواصفات" FontWeight="Bold" Margin="0,0,0,10" Foreground="{StaticResource PrimaryBlue}"/>
@@ -399,18 +403,10 @@
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <ComboBox x:Name="ComboDeviceType"
-          Grid.Column="0"
-          Height="40"
-          FontSize="14"
-          Style="{StaticResource ModernComboBox}"
-          VerticalContentAlignment="Center"
-          DisplayMemberPath="TypeName"
-          SelectedValuePath="TypeID"/>
+                                                <ComboBox x:Name="ComboDeviceType" Grid.Column="0" Height="40" FontSize="14" Style="{StaticResource ModernComboBox}" VerticalContentAlignment="Center" DisplayMemberPath="TypeName" SelectedValuePath="TypeID"/>
                                                 <TextBox x:Name="TxtNewSpec" Grid.Column="1" Margin="8,0" Style="{StaticResource ModernTextBox}" Height="40" FontSize="14"/>
                                                 <Button Grid.Column="2" Content="+" Width="40" Height="40" Background="{StaticResource PrimaryBlue}" Foreground="White" BorderThickness="0" Click="BtnAddSpec_Click"/>
                                             </Grid>
-
                                             <Border Background="{StaticResource LightGray}" Padding="10,5" CornerRadius="8,8,0,0">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
@@ -422,7 +418,6 @@
                                                     <TextBlock Grid.Column="0" Text="النوع" FontSize="11" FontWeight="Bold" Foreground="{StaticResource GrayText}"/>
                                                 </Grid>
                                             </Border>
-
                                             <Border Background="White" CornerRadius="0,0,8,8" Height="340" BorderBrush="{StaticResource LightGray}" BorderThickness="1,0,1,1">
                                                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                                                     <ItemsControl x:Name="SpecsList">
@@ -436,16 +431,12 @@
                                                                             <ColumnDefinition Width="30"/>
                                                                         </Grid.ColumnDefinitions>
                                                                         <TextBlock Grid.Column="0" Text="{Binding TypeName}" VerticalAlignment="Center" Foreground="{StaticResource PrimaryBlue}" FontSize="13" FontWeight="SemiBold"/>
-
                                                                         <Grid Grid.Column="1" VerticalAlignment="Center" Margin="5,0">
                                                                             <TextBlock x:Name="TxtSpecNameBlock" Text="{Binding SpecName}" VerticalAlignment="Center" Foreground="{StaticResource DarkText}" FontSize="13" TextWrapping="NoWrap"/>
-                                                                            <TextBox x:Name="TxtSpecNameBox" Style="{StaticResource ModernTextBox}" Height="32" FontSize="13" Padding="5,0" Visibility="Collapsed" KeyDown="TxtSpecBox_KeyDown" LostFocus="TxtSpecBox_LostFocus"/>
-
-                                                                            <Button Style="{StaticResource TransparentEditButton}"
-                                                                                    Click="EditSpecField_Click"/>
+                                                                            <TextBox x:Name="TxtSpecNameBox" Style="{StaticResource ModernTextBox}" Height="32" FontSize="13" Padding="5,0" Visibility="Collapsed" KeyDown="TxtBox_KeyDown" LostFocus="TxtBox_LostFocus"/>
+                                                                            <Button Style="{StaticResource TransparentEditButton}" Click="EditField_Click"/>
                                                                         </Grid>
-
-                                                                        <Button Grid.Column="2" Content="🗑️" Background="Transparent" BorderThickness="0" Foreground="{StaticResource DangerRed}" Cursor="Hand" Width="25" Height="25" Click="BtnDeleteListItem_Click"/>
+                                                                        <Button Grid.Column="2" Content="🗑️" Style="{StaticResource RoundDeleteButton}" Click="BtnDeleteListItem_Click"/>
                                                                     </Grid>
                                                                 </Border>
                                                             </DataTemplate>
@@ -459,12 +450,155 @@
                             </StackPanel>
                         </Border>
 
+                        <!-- 3️⃣ واجهة إدارة الأقسام والأدوار الوظيفية (HR Settings) -->
+                        <Border x:Name="HRSettingsPanel" Visibility="Collapsed">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,20">
+                                    <TextBlock Text="👥 إدارة الأقسام و الأدوار الوظيفية" FontSize="20" FontWeight="Bold" Foreground="{StaticResource DarkText}"/>
+                                </StackPanel>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Width="1.3*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.Column="0" Background="#F8FAFC" CornerRadius="12" BorderBrush="{StaticResource LightGray}" BorderThickness="1" Padding="15">
+                                        <StackPanel>
+                                            <TextBlock Text="الأقسام" FontWeight="Bold" Margin="0,0,0,10" Foreground="{StaticResource PrimaryBlue}"/>
+                                            <Grid Margin="0,0,0,10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBox x:Name="TxtNewDepartment" Style="{StaticResource ModernTextBox}" Height="35"/>
+                                                <Button Grid.Column="1" Content="+" Width="35" Margin="5,0,0,0" Background="{StaticResource PrimaryBlue}" Foreground="White" BorderThickness="0" Click="BtnAddDepartment_Click"/>
+                                            </Grid>
+                                            <Border Background="White" CornerRadius="8" Height="350" BorderBrush="{StaticResource LightGray}" BorderThickness="1">
+                                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                                    <ItemsControl x:Name="DepartmentsList" ItemTemplate="{StaticResource DepartmentListItemTemplate}"/>
+                                                </ScrollViewer>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Grid.Column="2" Background="#F8FAFC" CornerRadius="12" BorderBrush="{StaticResource LightGray}" BorderThickness="1" Padding="15">
+                                        <StackPanel>
+                                            <TextBlock Text="الأدوار الوظيفية" FontWeight="Bold" Margin="0,0,0,10" Foreground="{StaticResource PrimaryBlue}"/>
+
+                                            <!-- منطقة الإضافة والفلترة -->
+                                            <Grid Margin="0,0,0,15">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="200"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <ComboBox x:Name="ComboHRDepartment" Grid.Column="0" Height="40" FontSize="14" Style="{StaticResource ModernComboBox}" VerticalContentAlignment="Center" DisplayMemberPath="DepartmentName" SelectedValuePath="DepartmentId" SelectionChanged="ComboHRDepartment_SelectionChanged"/>
+                                                <TextBox x:Name="TxtNewRole" Grid.Column="1" Margin="8,0" Style="{StaticResource ModernTextBox}" Height="40" FontSize="14"/>
+                                                <Button Grid.Column="2" Content="+" Width="40" Height="40" Background="{StaticResource PrimaryBlue}" Foreground="White" BorderThickness="0" Click="BtnAddRole_Click"/>
+                                            </Grid>
+
+                                            <!-- الهيدر الجديد المتناسق مع جدول المواصفات -->
+                                            <Border Background="{StaticResource LightGray}" Padding="10,5" CornerRadius="8,8,0,0">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="1.2*"/>
+                                                        <ColumnDefinition Width="2*"/>
+                                                        <ColumnDefinition Width="40"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="القسم" FontSize="11" FontWeight="Bold" Foreground="{StaticResource GrayText}"/>
+                                                    <TextBlock Grid.Column="1" Text="اسم الوظيفة / الدور" FontSize="11" FontWeight="Bold" Foreground="{StaticResource GrayText}"/>
+                                                </Grid>
+                                            </Border>
+
+                                            <!-- الجدول وعرض البيانات -->
+                                            <Border Background="White" CornerRadius="0,0,8,8" Height="340" BorderBrush="{StaticResource LightGray}" BorderThickness="1,0,1,1">
+                                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                                    <ItemsControl x:Name="RolesList">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <Border BorderBrush="#F1F5F9" BorderThickness="0,0,0,1" Padding="10,6" Background="Transparent" ToolTip="انقر لتعديل الدور الوظيفي">
+                                                                    <Grid>
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="1.2*"/>
+                                                                            <ColumnDefinition Width="2*"/>
+                                                                            <ColumnDefinition Width="30"/>
+                                                                        </Grid.ColumnDefinitions>
+
+                                                                        <!-- عمود اسم القسم التابع له الدور -->
+                                                                        <TextBlock Grid.Column="0" Text="{Binding DepartmentName}" VerticalAlignment="Center" Foreground="{StaticResource PrimaryBlue}" FontSize="13" FontWeight="SemiBold"/>
+
+                                                                        <!-- عمود اسم الدور/الوظيفة القابل للتعديل السريع -->
+                                                                        <Grid Grid.Column="1" VerticalAlignment="Center" Margin="5,0">
+                                                                            <TextBlock x:Name="TxtRoleNameBlock" Text="{Binding RoleName}" VerticalAlignment="Center" Foreground="{StaticResource DarkText}" FontSize="13" TextWrapping="NoWrap"/>
+                                                                            <TextBox x:Name="TxtBoxEditRoleName" Style="{StaticResource ModernTextBox}" Height="32" FontSize="13" Padding="5,0" Visibility="Collapsed" KeyDown="TxtBox_KeyDown" LostFocus="TxtBox_LostFocus"/>
+                                                                            <Button Style="{StaticResource TransparentEditButton}" Click="EditField_Click"/>
+                                                                        </Grid>
+
+                                                                        <!-- زر الحذف الدائري -->
+                                                                        <Button Grid.Column="2" Content="🗑️" Style="{StaticResource RoundDeleteButton}" Click="BtnDeleteRoleItem_Click"/>
+                                                                    </Grid>
+                                                                </Border>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </ScrollViewer>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                        <!-- 4️⃣ 🌟 واجهة إدارة مصادر الاستحواذ المضافة حديثاً (Sources Settings) -->
+                        <Border x:Name="SourcesSettingsPanel" Visibility="Collapsed">
+                            <StackPanel>
+                                <StackPanel Margin="0,0,0,20">
+                                    <TextBlock Text="📢 إدارة مصادر العملاء و المنصات الاعلان" FontSize="20" FontWeight="Bold" Foreground="{StaticResource DarkText}"/>
+                                </StackPanel>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- حاوية المصادر المصممة بشكل متناسق ومستقل -->
+                                    <Border Grid.Column="0" Background="#F8FAFC" CornerRadius="12" BorderBrush="{StaticResource LightGray}" BorderThickness="1" Padding="15" HorizontalAlignment="Stretch">
+                                        <StackPanel>
+                                            <TextBlock Text="المصادر و المنصات الاعلان" FontWeight="Bold" Margin="0,0,0,10" Foreground="{StaticResource PrimaryBlue}"/>
+
+                                            <!-- شريط الإضافة الفوري -->
+                                            <Grid Margin="0,0,0,10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBox x:Name="TxtNewSource" Style="{StaticResource ModernTextBox}" Height="35" ToolTip="اكتب اسم المنصة الإعلانية الجديدة"/>
+                                                <Button Grid.Column="1" Content="+" Width="35" Margin="5,0,0,0" Background="{StaticResource PrimaryBlue}" Foreground="White" BorderThickness="0" Click="BtnAddSource_Click"/>
+                                            </Grid>
+
+                                            <!-- جدول العرض للبيانات المسطحة -->
+                                            <Border Background="White" CornerRadius="8" Height="350" BorderBrush="{StaticResource LightGray}" BorderThickness="1">
+                                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                                    <ItemsControl x:Name="SourcesList" ItemTemplate="{StaticResource SourceListItemTemplate}"/>
+                                                </ScrollViewer>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+
+                        <!-- 4️⃣ واجهة النسخ الاحتياطي -->
                         <Border x:Name="BackupSettingsPanel" Visibility="Collapsed">
                             <StackPanel>
                                 <TextBlock Text="💾 النسخ الاحتياطي" FontSize="22" FontWeight="Bold" Foreground="{StaticResource DarkText}" Margin="0,0,0,10"/>
                                 <TextBlock Text="قسم النسخ الاحتياطي للبيانات قريباً..." FontSize="16" Foreground="{StaticResource GrayText}" HorizontalAlignment="Center" Margin="0,50"/>
                             </StackPanel>
                         </Border>
+
                     </StackPanel>
                 </ScrollViewer>
             </Grid>

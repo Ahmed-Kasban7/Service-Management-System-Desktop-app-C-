@@ -10,7 +10,7 @@
                 Discount INT NOT NULL DEFAULT 0 
                          CONSTRAINT CHK_Customer_Discount CHECK (Discount >= 0 AND Discount <= 100),
 
-               Address NVARCHAR(500) NOT NULL , 
+               Address NVARCHAR(max) NOT NULL , 
 
                SourceID INT NOT NULL , 
 

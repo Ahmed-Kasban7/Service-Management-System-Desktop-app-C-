@@ -1,19 +1,19 @@
 ﻿CREATE OR ALTER PROCEDURE SP_AddSpec
-    @Spec NVARCHAR(200),
+    @Spec NVARCHAR(max),
     @TypeId INT
 AS
 BEGIN
     SET NOCOUNT ON;
 
    
-    IF EXISTS (SELECT 1 FROM Specs WHERE TRIM(SpecName) = TRIM(@Spec) AND TypeID = @TypeId)
+    IF NOT EXISTS (SELECT 1 FROM Specs WHERE SpecName = @Spec AND TypeID = @TypeId)
     BEGIN
-        SELECT 0 AS Result;
-        RETURN;
+        
+    INSERT INTO Specs (SpecName, TypeID)
+    VALUES (@Spec, @TypeId);
+
     END
 
-    INSERT INTO Specs (SpecName, TypeID)
-    VALUES (TRIM(@Spec), @TypeId);
+    SELECT @@ROWCOUNT; 
 
-    SELECT 1 AS Result;
 END

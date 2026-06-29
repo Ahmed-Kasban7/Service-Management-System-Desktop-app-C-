@@ -1,4 +1,5 @@
-﻿using Application.Repositories;
+﻿using Application.DTOs.EmployeeDTOs;
+using Application.Repositories;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -11,52 +12,51 @@ namespace Infrastructure.Repositories;
 
 public class AttachmentRepository:IAttachmentRepository
 {
-    public IEnumerable<string> GetEmployeeAttachments(int employeeId)
+    public IEnumerable<EmployeeAttachmentDto> GetEmployeeAttachments(int employeeId)
     {
-        var attachments = new List<string>();
+        var attachments = new List<EmployeeAttachmentDto>();
 
         using var conn = DatabaseInitializer.GetConnection();
         using var command = new SqlCommand("SP_GetEmployeeAttachments", conn);
         command.CommandType = CommandType.StoredProcedure;
 
-        command.Parameters.AddWithValue("@employeeId", employeeId);
+        command.Parameters.AddWithValue("@EmployeeId", employeeId);
 
         conn.Open();
 
         using var reader = command.ExecuteReader();
         while (reader.Read())
         {
-            attachments.Add(reader["FilePath"].ToString());
+            attachments.Add(new EmployeeAttachmentDto
+            {
+                Id = Convert.ToInt32(reader["Id"]),
+                AttachmentData = (byte[])reader["AttachmentData"]
+            });
         }
 
         return attachments;
     }
-    public void AddAttachment(int employeeId, string filePath)
+    public void AddAttachment(int employeeId, byte[] attachmentData)
     {
-      
         using var conn = DatabaseInitializer.GetConnection();
         using var command = new SqlCommand("SP_AddEmployeeAttachment", conn);
         command.CommandType = CommandType.StoredProcedure;
 
-        command.Parameters.AddWithValue("@employeeId", employeeId);
-        command.Parameters.AddWithValue("@filePath", filePath);
+        command.Parameters.AddWithValue("@EmployeeId", employeeId);
+        command.Parameters.AddWithValue("@AttachmentData", attachmentData);
 
         conn.Open();
-
         command.ExecuteNonQuery();
-        
     }
-    public void DeleteAttachment(string filePath)
+    public void DeleteAttachment(int attachmentId)
     {
+        using var conn = DatabaseInitializer.GetConnection();
+        using var command = new SqlCommand("SP_DeleteEmployeeAttachment", conn);
+        command.CommandType = CommandType.StoredProcedure;
 
-            using var conn = DatabaseInitializer.GetConnection();
-            using var command = new SqlCommand("SP_DeleteEmployeeAttachment", conn);
-            command.CommandType = CommandType.StoredProcedure;
+        command.Parameters.AddWithValue("@AttachmentId", attachmentId);
 
-            command.Parameters.AddWithValue("@filePath", filePath);
-
-            conn.Open();
-            command.ExecuteNonQuery();
-
+        conn.Open();
+        command.ExecuteNonQuery();
     }
 }

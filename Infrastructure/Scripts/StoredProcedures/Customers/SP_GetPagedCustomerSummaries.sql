@@ -8,7 +8,7 @@ begin
     SELECT @TotalOrderCount = COUNT(*) FROM Customers;
 
 select c.CustomerID, c.CustomerNumber , p.Name , c.Address ,dbo.GetFirstPersonPhoneNumber(p.PersonID) as PhoneNumber
-from Persons  p join Customers c on p.PersonID = c.PersonID
+from Persons  p join Customers c on p.PersonID = c.PersonID where p.IsActive = 1
 order by p.DateCreated desc
 
 OFFSET (@PageNumber - 1) * @RowsPerPage ROWS

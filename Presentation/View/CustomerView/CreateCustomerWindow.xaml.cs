@@ -79,7 +79,9 @@ namespace Presentation.View.Customer_View
 
                 MessageBox.Show(res.IsSuccess
                     ? "تم حفظ بيانات العميل بنجاح"
-                    : res.Error);
+                    : res.Error, "نتيجة العملية", MessageBoxButton.OK, res.IsSuccess ? MessageBoxImage.Information : MessageBoxImage.Error);
+
+              
 
                 if (res.IsSuccess)
                 {
@@ -90,7 +92,7 @@ namespace Presentation.View.Customer_View
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"حدث خطأ أثناء الحفظ برجاء إعادة المحاولة" );
+                MessageBox.Show($"{ex} حدث خطأ أثناء الحفظ برجاء إعادة المحاولة", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         private bool Validate()

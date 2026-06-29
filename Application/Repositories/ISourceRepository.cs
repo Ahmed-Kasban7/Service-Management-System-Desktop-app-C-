@@ -10,5 +10,8 @@ namespace Application.Repositories;
 
 public interface ISourceRepository
 {
+    bool AddSource(string sourceName);
+    bool UpdateSource(int sourceId, string sourceName);
+    bool DeleteSource(int sourceId);
     IEnumerable< SourceDto> GetAllSources();
 }

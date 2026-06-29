@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.EmployeeDTOs;
 using Application.Features.AttachmentManagement.Commands;
 using Application.Features.AttachmentManagement.Queries;
+using Application.Features.DepartmentManagement;
 using Application.Features.EmployeeManagement.Commands;
 using Application.Features.EmployeeManagement.Queries;
 using Application.Features.PhoneManagement.Commands;
@@ -25,9 +26,8 @@ namespace Presentation.View.EmployeeView
         public event EventHandler BackRequested;
         public event EventHandler<int> OrderDetailsRequested;
 
-        // 🛠️ الـ Handlers الخاصة بالموظف
         private readonly GetEmployeeProfileHandler _getEmployeeProfileHandler;
-        //private readonly UpdateEmployeeHandler _updateEmployeeHandler;
+        private readonly UpdateEmployeeHandler _updateEmployeeHandler;
         //private readonly DeleteEmployeeHandler _deleteEmployeeHandler;
         //private readonly GetEmployeeOrdersHandler _getEmployeeOrdersHandler;
 
@@ -37,6 +37,8 @@ namespace Presentation.View.EmployeeView
         private readonly UpdatePhoneHandler _updatePhoneHandler;
         private readonly AddAttachmentHandler _addAttachmentHandler;
         private readonly DeleteAttachmentHandler _deleteAttachmentHandler;
+        private readonly GetDepartmentsLookupHandler _getDepartmentsLookupHandler;
+        private readonly GetRolesByDepartmentHandler _getRolesByDepartmentHandler;
 
         private readonly GetEmployeeAttachmentsHandler _employeeAttachmentsHandler;
 
@@ -46,7 +48,8 @@ namespace Presentation.View.EmployeeView
             int employeeId,GetEmployeeProfileHandler getEmployeeProfileHandler , GetEmployeePhonesHandler getEmployeePhones , 
             AddPhoneToEmployee phoneToEmployee , UpdatePhoneHandler updatePhoneHandler , 
             DeleteEmployeePhoneHandler deleteEmployeePhone , GetEmployeeAttachmentsHandler getEmployeeAttachments , 
-            AddAttachmentHandler addAttachmentHandler , DeleteAttachmentHandler deleteAttachmentHandler)
+            AddAttachmentHandler addAttachmentHandler , DeleteAttachmentHandler deleteAttachmentHandler ,
+            GetDepartmentsLookupHandler getDepartmentsLookup , GetRolesByDepartmentHandler getRolesByDepartment , UpdateEmployeeHandler updateEmployee)
         {
             InitializeComponent();
             _employeeId = employeeId;
@@ -62,6 +65,9 @@ namespace Presentation.View.EmployeeView
             _employeeAttachmentsHandler = getEmployeeAttachments;
             _addAttachmentHandler = addAttachmentHandler;
             _deleteAttachmentHandler = deleteAttachmentHandler;
+            _getDepartmentsLookupHandler = getDepartmentsLookup;
+            _getRolesByDepartmentHandler = getRolesByDepartment;
+            _updateEmployeeHandler = updateEmployee;
 
             LoadEmployeeProfileInfo();
         }
@@ -78,15 +84,65 @@ namespace Presentation.View.EmployeeView
                 TxtProfileDepartment.Text = emp.DepartmentName;
                 TxtProfileRole.Text = emp.RoleName;
                 TxtProfileSex.Text = emp.Sex == 1 ? "أنثى" : "ذكر"; 
-                TxtProfileAddress.Text = emp.Address??"---";
-                TxtProfileAge.Text = emp.Age == null ? "---" : emp.Age.ToString();
+                TxtProfileAddress.Text = string.IsNullOrWhiteSpace(emp.Address)?"---" : emp.Address;
+                TxtProfileAge.Text =
+                    emp.Age?.ToString() ?? "---";
+                TxtProfileHireDate.Text = $"{ emp.HireDate:yyyy/MM/dd}";
 
                 RunEmployeeCode.Text = $"#{emp.EmployeeNumber}";
-                TxtHireDate.Text = $"تاريخ التعيين: {emp.HireDate:dd/MM/yyyy}";
+                TxtHireDate.Text = $"تاريخ التعيين: {emp.HireDate:yyyy/MM/dd}";
 
                 TxtProfileCompensationType.Text = emp.CompensationTypeText;
-                TxtProfileBaseSalary.Text = $"{emp.BaseSalary:F0} ج.م";
-                TxtProfileCommissionPercent.Text = $"{emp.CommissionPercent} %";
+                TxtProfileCompensationType.Text = emp.CompensationTypeText;
+
+                switch (emp.CompensationType)
+                {
+                    case 0: // مرتب
+                        TxtProfileBaseSalary.Text = $"{emp.BaseSalary:F0} ج.م";
+                        TxtCommissionTitle.Text = "العمولة";
+                        TxtProfileCommissionPercent.Text = "---";
+                        break;
+
+                    case 1: // عمولة
+                        TxtProfileBaseSalary.Text = "---";
+
+                        if (emp.CommissionType == true)
+                        {
+                            TxtCommissionTitle.Text = "العمولة الثابتة";
+                            TxtProfileCommissionPercent.Text =
+                                $"{emp.Commission:F0} ج.م";
+                        }
+                        else
+                        {
+                            TxtCommissionTitle.Text = "نسبة العمولة";
+                            TxtProfileCommissionPercent.Text = $"%{emp.Commission:F0}";
+                        }
+                        break;
+
+                    case 2: // مرتب + عمولة
+                        TxtProfileBaseSalary.Text =
+                            $"{emp.BaseSalary:F0} ج.م";
+
+                        if (emp.CommissionType == true)
+                        {
+                            TxtCommissionTitle.Text = "العمولة الثابتة";
+                            TxtProfileCommissionPercent.Text =
+                                $"{emp.Commission:F0} ج.م";
+                        }
+                        else
+                        {
+                            TxtCommissionTitle.Text = "نسبة العمولة";
+                            TxtProfileCommissionPercent.Text = $"%{emp.Commission:F0}";
+                        }
+                        break;
+
+                    case 3: // بالمشوار
+                        TxtProfileBaseSalary.Text = "---";
+                        TxtCommissionTitle.Text = "الاستحقاق";
+                        TxtProfileCommissionPercent.Text =
+                            "قيمة المشوار كاملة";
+                        break;
+                }
             }
             catch (Exception)
             {
@@ -173,19 +229,20 @@ namespace Presentation.View.EmployeeView
             //}
         }
 
-        // 5️⃣ تعديل بيانات الموظف
         private void BtnEditEmployee_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                // بنجيب البيانات الحالية أولاً
                 var emp = _getEmployeeProfileHandler.Handle(_employeeId);
 
-                // افتح شاشة التعديل (لو مجهز الـ Window بتاعت الموظف)
-                // var editWindow = new EditEmployeeWindow(_updateEmployeeHandler, emp) { Owner = Window.GetWindow(this) };
-                // if (editWindow.ShowDialog() == true) LoadEmployeeProfileInfo();
+                 var editWindow = new EditEmployee(_employeeId,emp , _getRolesByDepartmentHandler , _getDepartmentsLookupHandler  , _updateEmployeeHandler) 
+                 { 
+                     Owner = Window.GetWindow(this) 
+                 };
 
-                MessageBox.Show("شاشة تعديل بيانات الموظف جاهزة للربط بالـ Window الخاصة بك.", "إشعار", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (editWindow.ShowDialog() == true) 
+                    LoadEmployeeProfileInfo();
+
             }
             catch (Exception ex)
             {
@@ -329,20 +386,24 @@ namespace Presentation.View.EmployeeView
         {
             try
             {
-                if (sender is Button btn && btn.DataContext is string filePath)
+                if (sender is Button btn && btn.DataContext is EmployeeAttachmentDto attachment)
                 {
-                    if (System.IO.File.Exists(filePath))
+                    if (attachment.AttachmentData != null && attachment.AttachmentData.Length > 0)
                     {
+                        string tempFileName = $"Attachment_{attachment.Id}_{Guid.NewGuid().ToString().Substring(0, 5)}.jpg";
+                        string tempFilePath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), tempFileName);
+
+                        System.IO.File.WriteAllBytes(tempFilePath, attachment.AttachmentData);
+
                         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
                         {
-                            FileName = filePath,
-                            UseShellExecute = true 
+                            FileName = tempFilePath,
+                            UseShellExecute = true
                         });
                     }
                     else
                     {
-                        MessageBox.Show("عذراً، لم يتم العثور على الملف في المسار المحدد. قد يكون قد تم نقله أو حذفه.",
-                                        "تنبيه", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show("عذراً، ملف الصورة فارغ أو تالف.", "تنبيه", MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
                 }
             }
@@ -353,34 +414,26 @@ namespace Presentation.View.EmployeeView
         }
         private void BtnDeleteAttachment_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button btn && btn.DataContext != null)
+            if (sender is Button btn && btn.DataContext is EmployeeAttachmentDto attachment)
             {
-                var result = MessageBox.Show("هل أنت متأكد من حذف هذه الوثيقة؟", "تأكيد الحذف",
+                var result = MessageBox.Show("هل أنت متأكد من حذف هذه الوثيقة نهائياً من قاعدة البيانات؟", "تأكيد الحذف",
                                              MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    
-                    if (btn.DataContext is string filePath)
+                    try
                     {
-                        try
-                        {
-                            _deleteAttachmentHandler.Handle(filePath);
+                        _deleteAttachmentHandler.Handle(attachment.Id);
 
-
-                            LoadEmployeeAttachments();
-                        }
-                        catch (Exception ex)
-                        {
-
-                            MessageBox.Show($"حدث خطأ غير متوقع: {ex.Message}", "خطأ في السيستم", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                        }
-
+                        LoadEmployeeAttachments();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"حدث خطأ غير متوقع أثناء الحذف: {ex.Message}", "خطأ في السيستم", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             }
-         }
+        }
 
         private void BtnUploadAttachment_Click(object sender, RoutedEventArgs e)
         {
@@ -388,7 +441,7 @@ namespace Presentation.View.EmployeeView
             {
                 var openFileDialog = new Microsoft.Win32.OpenFileDialog
                 {
-                    Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg",
+                    Filter = "Image files (*.jpg, *.jpeg, *.png, *.bmp) | *.jpg; *.jpeg; *.png; *.bmp",
                     Title = "اختر وثيقة الموظف الرسمية"
                 };
 
@@ -396,20 +449,16 @@ namespace Presentation.View.EmployeeView
                 {
                     string selectedFilePath = openFileDialog.FileName;
 
-          
-                    
-                    _addAttachmentHandler.Handle(_employeeId, selectedFilePath);
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(selectedFilePath);
 
-                  
-                    
-                      LoadEmployeeAttachments();
-                    
-                  
+                    _addAttachmentHandler.Handle(_employeeId, imageBytes);
+
+                    LoadEmployeeAttachments();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"حدث خطأ غير متوقع: {ex.Message}", "خطأ في السيستم", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"حدث خطأ غير متوقع أثناء الرفع: {ex.Message}", "خطأ في السيستم", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

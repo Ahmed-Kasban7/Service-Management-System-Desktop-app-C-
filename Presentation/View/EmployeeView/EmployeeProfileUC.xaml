@@ -149,7 +149,26 @@
                         </Grid>
 
                         <Rectangle Height="1" Fill="#F1F5F9" Margin="0,0,0,16" />
+                        
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="12" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
+                            <StackPanel  Grid.Column="0">
+                                <TextBlock Text="تاريخ التعيين" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,4" />
+                                <TextBlock x:Name="TxtProfileHireDate" Text="---" FontSize="15" FontWeight="SemiBold" Foreground="#0F172A" />
+                            </StackPanel >
+
+                            <StackPanel  Grid.Column="2" >
+                                <TextBlock Text="العنوان" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,4" />
+                                <TextBlock x:Name="TxtProfileAddress" Text="---" FontSize="14" FontWeight="SemiBold" Foreground="#0F172A" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Grid>
+                        
+                        <Rectangle Height="1" Fill="#F1F5F9" Margin="0,0,0,16" />
                         <!-- الجنس + تاريخ التعيين -->
                         <Grid Margin="0,0,0,16">
                             <Grid.ColumnDefinitions>
@@ -167,13 +186,9 @@
                             </StackPanel>
                         </Grid>
 
-                        <Rectangle Height="1" Fill="#F1F5F9" Margin="0,0,0,16" />
+                        
+                        
 
-                        <!-- =====  الصف الرابع: العنوان (صف كامل)  ===== -->
-                        <StackPanel Margin="0,0,0,16">
-                            <TextBlock Text="العنوان" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,4" />
-                            <TextBlock x:Name="TxtProfileAddress" Text="---" FontSize="14" FontWeight="SemiBold" Foreground="#374151" TextWrapping="Wrap" />
-                        </StackPanel>
                     </StackPanel>
                 </Border>
 
@@ -212,8 +227,17 @@
                                 <TextBlock x:Name="TxtProfileBaseSalary" Text="٠.٠٠ ج.م" FontSize="18" FontWeight="Bold" Foreground="#0F172A" />
                             </StackPanel>
                             <StackPanel Grid.Column="2">
-                                <TextBlock Text="نسبة العمولة (%)" FontSize="11" Foreground="#94A3B8" Margin="0,0,0,4" />
-                                <TextBlock x:Name="TxtProfileCommissionPercent" Text="٠ %" FontSize="18" FontWeight="Bold" Foreground="#059669" />
+                                <TextBlock x:Name="TxtCommissionTitle"
+               Text="العمولة"
+               FontSize="11"
+               Foreground="#94A3B8"
+               Margin="0,0,0,4" />
+
+                                <TextBlock x:Name="TxtProfileCommissionPercent"
+               Text="---"
+               FontSize="18"
+               FontWeight="Bold"
+               Foreground="#059669" />
                             </StackPanel>
                         </Grid>
                     </StackPanel>
@@ -337,10 +361,13 @@
 
                                             <!-- عرض الصورة المصغرة (Thumbnail) -->
                                             <Border Width="44" Height="44" Background="#EFF6FF" CornerRadius="10" Margin="0,0,14,0" ClipToBounds="True">
-                                                <Image Source="{Binding}" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                <Image Source="{Binding AttachmentData, TargetNullValue={x:Null}, FallbackValue={x:Null}}" 
+           Stretch="UniformToFill" 
+           HorizontalAlignment="Center" 
+           VerticalAlignment="Center"/>
                                             </Border>
 
-                                            
+
 
                                             <!-- أزرار التحكم -->
                                             <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">

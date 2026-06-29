@@ -8,8 +8,6 @@ BEGIN
     WHERE TypeID = @typeId
       AND NOT EXISTS (SELECT 1 FROM Devices WHERE TypeID = @typeId);
 
-    IF @@ROWCOUNT > 0
-        RETURN 1; 
-    ELSE
-        RETURN 0; 
+        SELECT @@ROWCOUNT; 
+
 END

@@ -1,5 +1,5 @@
 ﻿CREATE OR ALTER PROCEDURE SP_GetEmployeesLookup
-    @RoleName NVARCHAR(100)
+    @RoleName NVARCHAR(max)
 AS
 BEGIN 
     SELECT 
@@ -8,6 +8,6 @@ BEGIN
     FROM Employees e
     JOIN Persons p ON e.PersonID = p.PersonID
     JOIN DepartmentRoles dr ON e.RoleID = dr.RoleID
-    WHERE dr.RoleName = @RoleName AND e.IsActive = 1
+    WHERE dr.RoleName = @RoleName AND p.IsActive = 1
     ORDER BY p.Name
 END

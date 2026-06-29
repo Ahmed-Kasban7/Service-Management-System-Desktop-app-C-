@@ -4,7 +4,8 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    DELETE FROM Campaigns 
+    Update Campaigns 
+    set IsActive = 0
     WHERE CampaignId = @CampaignId 
       AND NOT EXISTS (SELECT 1 FROM Customers WHERE CampaignID = @CampaignId);
 

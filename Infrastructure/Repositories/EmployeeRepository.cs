@@ -33,15 +33,19 @@ public class EmployeeRepository : IEmployeeRepository
         cmd.Parameters.AddWithValue("@Name", dto.Name);
         cmd.Parameters.AddWithValue("@Age", dto.Age.HasValue ? dto.Age : DBNull.Value);
         cmd.Parameters.AddWithValue("@Sex", dto.Sex);
-        cmd.Parameters.AddWithValue("@Address", dto.Address !=null ? dto.Address : DBNull.Value);
+        cmd.Parameters.Add("@Address", SqlDbType.NVarChar).Value =
+            string.IsNullOrWhiteSpace(dto.Address)
+                ? DBNull.Value
+                : dto.Address;
         cmd.Parameters.AddWithValue("@HireDate", dto.HireDate);
         cmd.Parameters.AddWithValue("@RoleId", dto.RoleId);
         cmd.Parameters.AddWithValue("@DepartmentId", dto.DepartmentId);
         cmd.Parameters.AddWithValue("@CompensationType", dto.CompensationType);
+        cmd.Parameters.AddWithValue("@CommissionType", dto.CommissionType.HasValue ? dto.CommissionType : DBNull.Value);
         cmd.Parameters.AddWithValue("@BaseSalary",
             dto.BaseSalary.HasValue ? dto.BaseSalary : DBNull.Value);
-        cmd.Parameters.AddWithValue("@CommissionPercent",
-            dto.CommissionPercent.HasValue ? dto.CommissionPercent : DBNull.Value);
+        cmd.Parameters.AddWithValue("@Commission",
+            dto.Commission.HasValue ? dto.Commission : DBNull.Value);
 
         // Phones
         var phonesTable = new DataTable();
@@ -55,9 +59,15 @@ public class EmployeeRepository : IEmployeeRepository
 
         // Attachments
         var attachmentsTable = new DataTable();
-        attachmentsTable.Columns.Add("FilePath", typeof(string));
-        foreach (var att in dto.Attachments)
-            attachmentsTable.Rows.Add(att);
+        attachmentsTable.Columns.Add("AttachmentData", typeof(byte[])); 
+
+        foreach (var imageBytes in dto.Attachments)
+        {
+            if (imageBytes != null && imageBytes.Length > 0)
+            {
+                attachmentsTable.Rows.Add(imageBytes); 
+            }
+        }
 
         var attachmentsParam = cmd.Parameters.AddWithValue("@Attachments", attachmentsTable);
         attachmentsParam.SqlDbType = SqlDbType.Structured;
@@ -218,24 +228,52 @@ public class EmployeeRepository : IEmployeeRepository
                 Id = Convert.ToInt32(reader["Id"]),
                 EmployeeNumber = reader["EmployeeNumber"].ToString(),
                 Name = reader["Name"].ToString(),
-                Sex = Convert.ToByte(reader["Sex"]), 
+                Sex = Convert.ToByte(reader["Sex"]),
                 HireDate = Convert.ToDateTime(reader["HireDate"]),
                 Address = reader["Address"] == DBNull.Value ? null : reader["Address"].ToString(),
                 DepartmentName = reader["DepartmentName"].ToString(),
+                DepartmentId = Convert.ToInt32(reader["DepartmentId"]),
                 RoleName = reader["RoleName"].ToString(),
+                RoleId = Convert.ToInt32(reader["RoleId"]),
                 CompensationType = Convert.ToByte(reader["CompensationType"]),
                 CompensationTypeText = reader["CompensationTypeText"].ToString(),
+                CommissionType = reader["CommissionType"] == DBNull.Value? null : Convert.ToBoolean(reader["CommissionType"]),
+                BaseSalary =
+    reader["BaseSalary"] == DBNull.Value
+        ? null
+        : Convert.ToDecimal(reader["BaseSalary"]),
 
-                BaseSalary = reader["BaseSalary"] != DBNull.Value ? Convert.ToDecimal(reader["BaseSalary"]) : 0,
-                CommissionPercent = reader["CommissionPercent"] != DBNull.Value ? Convert.ToInt32(reader["CommissionPercent"]) : 0,
+                Commission =
+    reader["Commission"] == DBNull.Value
+        ? null
+        : Convert.ToDecimal(reader["Commission"]),
 
-                Age = reader["Age"] == DBNull.Value ? null : Convert.ToInt32( reader["Age"])
+                Age = reader["Age"] == DBNull.Value ? null : Convert.ToInt32(reader["Age"])
             };
         }
 
         return null; 
     }
+    public bool Update(UpdateEmployeeDto dto)
+    {
+        using var conn = DatabaseInitializer.GetConnection();
+        conn.Open();
 
-   
+        using var cmd = new SqlCommand("SP_UpdateEmployee", conn)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
+
+        cmd.Parameters.AddWithValue("@EmployeeId", dto.EmployeeId);
+        cmd.Parameters.AddWithValue("@Name", dto.Name);
+        cmd.Parameters.AddWithValue("@Age", dto.Age.HasValue ? dto.Age : DBNull.Value);
+        cmd.Parameters.AddWithValue("@Sex", dto.Sex);
+        cmd.Parameters.AddWithValue("@Address", dto.Address ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("@RoleId", dto.RoleId);
+        cmd.Parameters.AddWithValue("@DepartmentId", dto.DepartmentId);
+        cmd.ExecuteNonQuery();
+        return  true;
+    }
+
 
 }

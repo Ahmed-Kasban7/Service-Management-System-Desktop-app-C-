@@ -10,7 +10,7 @@ BEGIN
    SELECT @TotalEmployeeCount = COUNT(*) 
     FROM Employees e 
     INNER JOIN Persons p ON p.PersonID = e.PersonID
-    WHERE e.IsActive = 1 AND (
+    WHERE p.IsActive = 1 AND (
         CAST(e.EmployeeID AS NVARCHAR(50)) = @SearchWord   
         OR e.EmployeeNumber = @SearchWord 
         OR p.Name LIKE '%' + @SearchWord + '%'
@@ -28,7 +28,7 @@ BEGIN
     INNER JOIN Persons p ON e.PersonID = p.PersonID
     INNER JOIN Departments d ON e.DepartmentID = d.DepartmentID
     INNER JOIN DepartmentRoles r ON e.RoleID = r.RoleID
-    WHERE e.IsActive = 1 AND (
+    WHERE p.IsActive = 1 AND (
         CAST(e.EmployeeID AS NVARCHAR(50)) = @SearchWord   
         OR e.EmployeeNumber = @SearchWord 
         OR p.Name LIKE '%' + @SearchWord + '%'

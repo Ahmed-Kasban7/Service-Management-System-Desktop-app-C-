@@ -183,4 +183,24 @@ public class CampaignRepository : ICampaignRepository
 
         return rowsAffected > 0;
     }
+    public int GetCampaignCustomersCount(int campaignId)
+    {
+        using var conn = DatabaseInitializer.GetConnection();
+        using var cmd = new SqlCommand("SP_CampaignCustomerCount", conn);
+
+        cmd.CommandType = CommandType.StoredProcedure;
+
+        cmd.Parameters.AddWithValue("@CampaignId", campaignId);
+
+        var countParam = new SqlParameter("@CustomerCount", SqlDbType.Int)
+        {
+            Direction = ParameterDirection.Output
+        };
+        cmd.Parameters.Add(countParam);
+
+        conn.Open();
+        cmd.ExecuteNonQuery();
+
+        return countParam.Value != DBNull.Value ? (int)countParam.Value : 0;
+    }
 }

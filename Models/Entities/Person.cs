@@ -37,8 +37,7 @@ public class Person : BaseEntity
         if (string.IsNullOrWhiteSpace(Name))
             throw new ArgumentNullException("الرجاء إدخال الاسم");
 
-        if (Name.Length > 200)
-            throw new ArgumentException("الاسم لا يمكن أن يزيد عن 200 حرف");
+       
 
         if (!System.Text.RegularExpressions.Regex.IsMatch(Name, @"^[\p{L} ]+$"))
             throw new ArgumentException("الاسم يجب أن يحتوي على حروف فقط");

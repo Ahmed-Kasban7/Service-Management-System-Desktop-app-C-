@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Application.DTOs.EmployeeDTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,9 @@ namespace Application.Repositories;
 
 public interface IAttachmentRepository
 {
-    IEnumerable<string> GetEmployeeAttachments(int employeeId);
-    void AddAttachment(int employeeId, string filePath);
-    void DeleteAttachment(string filePath);
+    IEnumerable<EmployeeAttachmentDto> GetEmployeeAttachments(int employeeId);
+    void AddAttachment(int employeeId, byte[] attachmentData);
+    public void DeleteAttachment(int attachmentId);
 
 
 }

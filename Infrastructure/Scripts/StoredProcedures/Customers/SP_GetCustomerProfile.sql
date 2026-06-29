@@ -20,6 +20,6 @@ BEGIN
     INNER JOIN Persons p ON p.PersonID = c.PersonID
     LEFT JOIN Sources s ON s.SourceID = c.SourceID        
     LEFT JOIN Campaigns cam ON cam.CampaignID = c.CampaignID  
-    WHERE c.CustomerID = @id;
+    WHERE c.CustomerID = @id AND p.IsActive = 1
 
 END

@@ -1,9 +1,9 @@
 ﻿CREATE OR ALTER PROCEDURE SP_UpdateCustomerInfo 
     @customerId INT,
-    @Name NVARCHAR(200),
+    @Name NVARCHAR(max),
     @Age INT,
     @Sex INT,
-    @Address NVARCHAR(200),
+    @Address NVARCHAR(max),
     @discount INT
 AS
 BEGIN 

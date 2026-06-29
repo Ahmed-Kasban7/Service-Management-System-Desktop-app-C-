@@ -157,6 +157,7 @@ END;
     public static void InitializeDatabase()
     {
         CreateDatabaseIfNotExist();
+
        // Tables 
        ExecuteScript(@"Scripts\Tables\CreatePersonsTable.sql");
        ExecuteScript(@"Scripts\Tables\CreateSourcesTable.sql");
@@ -185,6 +186,7 @@ END;
        ExecuteScript(@"Scripts\Tables\CreateReferenceTransactionsTable.sql");
        ExecuteScript(@"Scripts\Tables\EmployeeAttachments.sql");
        ExecuteScript(@"Scripts\Tables\AttachmentList.sql");
+       ExecuteScript(@"Scripts\Tables\CompanySettings.sql");
 
 
 
@@ -247,6 +249,7 @@ END;
         ExecuteScript(@"Scripts\StoredProcedures\Employees\SP_SearchEmployee.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Employees\SP_GetPagedEmployeeSummaries.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Employees\SP_GetEmployeeProfile.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Employees\SP_UpdateEmployee.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Appointments\SP_CreateAppointment.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Appointments\SP_GetAppointmentsByOrderId.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Appointments\SP_UpdateAppointment.sql");
@@ -255,6 +258,9 @@ END;
         ExecuteScript(@"Scripts\StoredProcedures\Visits\sp_CreateVisitWithParts.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Visits\SP_VisitDetails.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Sources\SP_GetAllSources.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Sources\SP_UpdateSource.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Sources\SP_AddSource.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Sources\SP_DeleteSource.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Campaigns\SP_CreateCampaign.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Campaigns\SP_GetPagedCampaignSummaries.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Campaigns\SP_SearchCampaignPaged.sql");
@@ -262,12 +268,23 @@ END;
         ExecuteScript(@"Scripts\StoredProcedures\Campaigns\SP_DeleteCampaign.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Campaigns\SP_UpdateCampaign.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Campaigns\SP_GetCampaignBySourceId.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Campaigns\SP_CampaignCustomerCount.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Treasuries\SP_GetCurrentBalance.sql");
         ExecuteScript(@"Scripts\StoredProcedures\Departments\SP_GetDepartmentsLookup.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Departments\SP_AddDepartment.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Departments\SP_UpdateDepartment.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\Departments\SP_DeleteDepartment.sql");
         ExecuteScript(@"Scripts\StoredProcedures\DepartmentRoles\SP_GetRolesByDepartment.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\DepartmentRoles\SP_AddDepartmentRole.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\DepartmentRoles\SP_DeleteRole.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\DepartmentRoles\SP_UpdateRole.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\DepartmentRoles\SP_GetAllDepartmentRoles.sql");
         ExecuteScript(@"Scripts\StoredProcedures\EmployeeAttachments\SP_GetEmployeeAttachments.sql");
         ExecuteScript(@"Scripts\StoredProcedures\EmployeeAttachments\SP_AddAttachment.sql");
         ExecuteScript(@"Scripts\StoredProcedures\EmployeeAttachments\SP_DeleteEmployeeAttachment.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\CompanySettings\SP_UpdateCompanySettings.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\CompanySettings\SP_GetCompanySettings.sql");
+        ExecuteScript(@"Scripts\StoredProcedures\CompanySettings\SP_Backup.sql");
 
 
 

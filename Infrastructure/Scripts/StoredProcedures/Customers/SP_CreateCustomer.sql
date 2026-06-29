@@ -1,9 +1,9 @@
 ﻿CREATE OR ALTER PROCEDURE SP_CreateCustomer
-    @Name NVARCHAR(200),
+    @Name NVARCHAR(max),
     @Age INT = NULL,
     @Sex TINYINT,
     @Discount INT,
-    @Address NVARCHAR(500),
+    @Address NVARCHAR(max),
     @SourceId INT ,
     @CampaignId Int  = NULL ,
     @Phones PhoneList READONLY,

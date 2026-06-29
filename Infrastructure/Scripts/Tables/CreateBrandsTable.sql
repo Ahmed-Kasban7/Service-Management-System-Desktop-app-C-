@@ -2,6 +2,6 @@
         BEGIN
             CREATE TABLE Brands(
                 BrandID INT IDENTITY(1,1) PRIMARY KEY,
-                BrandName VARCHAR(200) NOT NULL UNIQUE
+                BrandName VARCHAR(max) NOT NULL 
             )
         END

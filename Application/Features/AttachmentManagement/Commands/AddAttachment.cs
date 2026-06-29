@@ -16,14 +16,14 @@ public class AddAttachmentHandler
         _attachmentRepository = attachmentRepository;
     }
 
-    public void Handle (int employeeId  ,string filePath)
+    public void Handle (int employeeId  , byte[] ImageData)
     {
         if (employeeId <= 0)
             throw new ArgumentException("رقم الموظف غير صالح");
 
-        if (string.IsNullOrWhiteSpace(filePath))
-            throw new ArgumentException("مسار الملف لا يمكن أن يكون فارغاً");
+        if (ImageData==null || ImageData.Length<=0 )
+            throw new ArgumentException("الملف لا يمكن أن يكون فارغاً");
 
-         _attachmentRepository.AddAttachment(employeeId, filePath);
+         _attachmentRepository.AddAttachment(employeeId, ImageData);
     }
 }

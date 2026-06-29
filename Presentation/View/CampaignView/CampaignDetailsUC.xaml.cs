@@ -19,8 +19,11 @@ namespace Presentation.View.CampaignView
         private readonly UpdateCampaignHandler _updateCampaignHandler;
         private readonly GetAllSourcesHandler _getAllSourcesHandler;
         private CampaignDetailsDto _currentCampaignDetails;
+        private GetCampaignCustomersCount _getCampaignCustomersCount;
 
-        public CampaignDetailsUC(int campaignId, GetCampaignDetailsHandler getCampaignDetailsHandler, DeleteCampaignHandler deleteCampaign, UpdateCampaignHandler updateCampaignHandler, GetAllSourcesHandler getAllSourcesHandler)
+        public CampaignDetailsUC(int campaignId, GetCampaignDetailsHandler getCampaignDetailsHandler,
+            DeleteCampaignHandler deleteCampaign, UpdateCampaignHandler updateCampaignHandler, 
+            GetAllSourcesHandler getAllSourcesHandler , GetCampaignCustomersCount getCampaignCustomers)
         {
             InitializeComponent();
             _campaignId = campaignId;
@@ -28,6 +31,7 @@ namespace Presentation.View.CampaignView
             _deleteCampaign = deleteCampaign;
             _updateCampaignHandler = updateCampaignHandler;
             _getAllSourcesHandler = getAllSourcesHandler;
+            _getCampaignCustomersCount = getCampaignCustomers;
             LoadCampaignDetails();
         }
 
@@ -92,7 +96,7 @@ namespace Presentation.View.CampaignView
                     campaignDetails.Note
                 );
 
-                var updateWindow = new UpdateCampaign(updateDto, _updateCampaignHandler, _getAllSourcesHandler)
+                var updateWindow = new UpdateCampaign(updateDto, _updateCampaignHandler, _getAllSourcesHandler , _getCampaignCustomersCount)
                 {
                     Owner = Window.GetWindow(this)
                 };
@@ -118,13 +122,21 @@ namespace Presentation.View.CampaignView
             {
                 try
                 {
-                    _deleteCampaign.Handle(_campaignId);
-                    MessageBox.Show("تم حذف الحملة بنجاح.", "نجاح", MessageBoxButton.OK, MessageBoxImage.Information);
-                    BackRequested?.Invoke(this, EventArgs.Empty);
+
+                    bool res =_deleteCampaign.Handle(_campaignId);
+                    if (res == true)
+                    {
+                        MessageBox.Show("تم حذف الحملة بنجاح.", "نجاح", MessageBoxButton.OK, MessageBoxImage.Information);
+                        BackRequested?.Invoke(this, EventArgs.Empty);
+                    }
+                    else
+                    {
+                        MessageBox.Show("لا يمكن حذف هذه الحملة لوجود عملاء مسجلين عليها حالياً", "فشل", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("لا يمكن حذف هذه الحملة لوجود عملاء مسجلين عليها حالياً", "فشل", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("حدث خطأ أثناء حذف الحملة", "فشل", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
         }

@@ -12,20 +12,24 @@ BEGIN
         p.Age,
         e.Address,
         e.HireDate,
-        d.DepartmentName,          
+        d.DepartmentName, 
+        d.DepartmentID,
         r.RoleName,
+        r.RoleID,
         e.CompensationType,
         
         CASE e.CompensationType
             WHEN 0 THEN N'مرتب ثابت'
             WHEN 1 THEN N'نسبة / عمولة'
-            WHEN 3 THEN N'مرتب + نسبة'
-            WHEN 4 THEN N'بالمشوار'
+            WHEN 2 THEN N'مرتب + نسبة'
+            WHEN 3 THEN N'بالمشوار'
             ELSE N'غير محدد'
         END AS CompensationTypeText,
 
+        e.CommissionType , 
+
         e.BaseSalary,
-        e.CommissionPercent
+        e.Commission
         
     FROM Employees e
     INNER JOIN Persons p ON e.PersonID = p.PersonID

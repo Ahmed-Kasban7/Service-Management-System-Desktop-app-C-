@@ -1,4 +1,5 @@
-﻿using Application.Repositories;
+﻿using Application.DTOs.EmployeeDTOs;
+using Application.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ public class GetEmployeeAttachmentsHandler
         _attachmentRepository = attachmentRepository;
     }
 
-    public IEnumerable<string> Handle(int employeeId)
+    public IEnumerable<EmployeeAttachmentDto> Handle(int employeeId)
     {
 
         if (employeeId <= 0)

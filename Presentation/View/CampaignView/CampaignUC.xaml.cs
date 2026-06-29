@@ -45,6 +45,7 @@ namespace Presentation.View.CampaignView
         private GetCampaignDetailsHandler  _getCampaignDetailsHandler;
         private DeleteCampaignHandler _deleteCampaign;
         private UpdateCampaignHandler _updateCampaignHandler;
+        private GetCampaignCustomersCount _getCampaignCustomersCount;
         public CampaignUC()
         {
             InitializeComponent();
@@ -52,7 +53,7 @@ namespace Presentation.View.CampaignView
         }
         public void InitializeServices(CreateCampaignHandler createCampaignHandler, 
             GetAllSourcesHandler getAllSources, GetPagedCampaignSummariesHandler getPagedCampaign , SearchCampaignsPaged searchCampaigns ,
-            GetCampaignDetailsHandler detailsHandler , DeleteCampaignHandler deleteCampaign , UpdateCampaignHandler updateCampaign)
+            GetCampaignDetailsHandler detailsHandler , DeleteCampaignHandler deleteCampaign , UpdateCampaignHandler updateCampaign , GetCampaignCustomersCount getCampaignCustomers)
         {
 
             _createCampaignHandler = createCampaignHandler;
@@ -62,7 +63,7 @@ namespace Presentation.View.CampaignView
             _getCampaignDetailsHandler = detailsHandler;
             _deleteCampaign = deleteCampaign;
             _updateCampaignHandler = updateCampaign;
-
+            _getCampaignCustomersCount = getCampaignCustomers;
             _createCampaignHandler.CampaignCreated += LoadAndBindCampaigns;
 
             LoadAndBindCampaigns();
@@ -155,7 +156,8 @@ namespace Presentation.View.CampaignView
         {
             if (DgCampaign.SelectedItem is CampaignSummariesDto selectedCampaign)
             {
-                var campaignDetailsUC = new CampaignDetailsUC(selectedCampaign.Id , _getCampaignDetailsHandler , _deleteCampaign , _updateCampaignHandler, _getSourcesHandler);
+                var campaignDetailsUC = new CampaignDetailsUC(selectedCampaign.Id , _getCampaignDetailsHandler , 
+                    _deleteCampaign , _updateCampaignHandler, _getSourcesHandler  , _getCampaignCustomersCount );
 
                 campaignDetailsUC.BackRequested += (s, args) =>
                 {

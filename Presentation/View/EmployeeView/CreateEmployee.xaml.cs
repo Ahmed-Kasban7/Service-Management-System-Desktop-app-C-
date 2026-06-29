@@ -13,11 +13,13 @@ namespace Presentation.View.EmployeeView
 {
     public class AttachmentItem
     {
-        public string FilePath { get; set; }
-        public string FileExtension => System.IO.Path.GetExtension(FilePath)?.ToLower();
+        public string FilePath { get; set; } 
+        public byte[] ImageData { get; set; }
 
+        public string FileExtension => System.IO.Path.GetExtension(FilePath)?.ToLower();
         public bool IsImage => new[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".ico" }.Contains(FileExtension);
     }
+
     public partial class CreateEmployee : Window
     {
         private readonly CreateEmployeeHandler _createEmployeeHandler;
@@ -43,16 +45,14 @@ namespace Presentation.View.EmployeeView
             LstPhones.ItemsSource = PhonesList;
             ListAttachments.ItemsSource = AttachmentsList;
 
-
             CbDepartment.ItemsSource = _getDepartmentsHandler.Handle();
 
             UpdateNoAttachmentsMessage();
-
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            if (!Validate(out decimal? baseSalary, out decimal? commissionPercent))
+            if (!Validate(out decimal? baseSalary, out decimal? commission))
                 return;
 
             try
@@ -73,28 +73,29 @@ namespace Presentation.View.EmployeeView
                     RoleId = (int)CbRole.SelectedValue,
                     DepartmentId = (int)CbDepartment.SelectedValue,
                     BaseSalary = baseSalary,
-                    CommissionPercent = commissionPercent,
-                    Address = string.IsNullOrWhiteSpace(TxtAddress.Text) ?null : TxtAddress.Text.Trim(),
+                    CommissionType = commission.HasValue? ChkIsFixedMoney.IsChecked == true : null,
+
+                    Commission = commission,
+                    Address = string.IsNullOrWhiteSpace(TxtAddress.Text) ? null : TxtAddress.Text.Trim(),
 
                     CompensationType = ((ComboBoxItem)CbCompensationType.SelectedItem).Tag?.ToString() switch
                     {
                         "Salary" => 0,
                         "Commission" => 1,
-                        "Both" => 3,
-                        "FullTrip" => 4,
+                        "Both" => 2,
+                        "FullTrip" => 3,
                         _ => 0
                     },
 
                     Phones = PhonesList.ToList(),
-                    Attachments = AttachmentsList.Select(a => a.FilePath).ToList()
-
+                    Attachments = AttachmentsList.Select(a => a.ImageData).ToList()
                 };
 
                 var res = _createEmployeeHandler.Handle(dto);
 
                 MessageBox.Show(res.IsSuccess
                     ? "تم حفظ بيانات الموظف بنجاح"
-                    : res.Error);
+                    : res.Error, "نتيجة العملية", MessageBoxButton.OK, res.IsSuccess ? MessageBoxImage.Information : MessageBoxImage.Error);
 
                 if (res.IsSuccess)
                 {
@@ -105,37 +106,25 @@ namespace Presentation.View.EmployeeView
             }
             catch (Exception ex)
             {
-                MessageBox.Show("حدث خطأ أثناء الحفظ برجاء إعادة المحاولة");
+                MessageBox.Show($"{ex} حدث خطأ أثناء الحفظ برجاء إعادة المحاولة", "خطأ", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private bool Validate(out decimal? baseSalary, out decimal? commissionPercent)
+        private bool Validate(out decimal? baseSalary, out decimal? commission)
         {
             baseSalary = null;
-            commissionPercent = null;
+            commission = null;
             bool hasError = false;
 
-            TxtNameError.Text = "";
-            TxtDepartmentError.Text = "";
-            TxtRoleError.Text = "";
-            TxtHireDateError.Text = "";
-            TxtSexError.Text = "";
-            TxtCompensationTypeError.Text = "";
-            TxtSalartError.Text = "";
-            TxtCompensationError.Text = "";
-            TxtAgeError.Text = "";
-            txtPhoneError.Text = "";
+            TxtNameError.Text = ""; TxtDepartmentError.Text = ""; TxtRoleError.Text = ""; TxtHireDateError.Text = "";
+            TxtSexError.Text = ""; TxtCompensationTypeError.Text = ""; TxtSalartError.Text = ""; TxtCompensationError.Text = "";
+            TxtAgeError.Text = ""; txtPhoneError.Text = "";
 
-            TxtNameError.Visibility = Visibility.Collapsed;
-            TxtDepartmentError.Visibility = Visibility.Collapsed;
-            TxtRoleError.Visibility = Visibility.Collapsed;
-            TxtHireDateError.Visibility = Visibility.Collapsed;
-            TxtSexError.Visibility = Visibility.Collapsed;
-            TxtCompensationTypeError.Visibility = Visibility.Collapsed;
-            TxtSalartError.Visibility = Visibility.Collapsed;
-            TxtCompensationError.Visibility = Visibility.Collapsed;
-            TxtAgeError.Visibility = Visibility.Collapsed;
-            txtPhoneError.Visibility = Visibility.Collapsed;
+            TxtNameError.Visibility = Visibility.Collapsed; TxtDepartmentError.Visibility = Visibility.Collapsed;
+            TxtRoleError.Visibility = Visibility.Collapsed; TxtHireDateError.Visibility = Visibility.Collapsed;
+            TxtSexError.Visibility = Visibility.Collapsed; TxtCompensationTypeError.Visibility = Visibility.Collapsed;
+            TxtSalartError.Visibility = Visibility.Collapsed; TxtCompensationError.Visibility = Visibility.Collapsed;
+            TxtAgeError.Visibility = Visibility.Collapsed; txtPhoneError.Visibility = Visibility.Collapsed;
 
             if (string.IsNullOrWhiteSpace(TxtName.Text))
             {
@@ -213,13 +202,15 @@ namespace Presentation.View.EmployeeView
                         break;
 
                     case "Commission":
-                        if (!decimal.TryParse(TxtCommissionPercent.Text, out decimal comm) || comm < 0 || comm > 100)
+                        if (!decimal.TryParse(TxtCommissionPercent.Text, out decimal comm) || comm < 0 || (ChkIsFixedMoney.IsChecked == false && comm > 100))
                         {
-                            TxtCompensationError.Text = "نسبة العمولة يجب أن تكون بين 0 و 100";
+                            TxtCompensationError.Text = ChkIsFixedMoney.IsChecked == true
+                                ? "قيمة المبلغ الثابت يجب أن تكون موجبة وصحيحة"
+                                : "نسبة العمولة يجب أن تكون بين 0 و 100";
                             TxtCompensationError.Visibility = Visibility.Visible;
                             hasError = true;
                         }
-                        else commissionPercent = comm;
+                        else commission = comm;
                         break;
 
                     case "Both":
@@ -231,17 +222,20 @@ namespace Presentation.View.EmployeeView
                         }
                         else baseSalary = bothSalary;
 
-                        if (!decimal.TryParse(TxtCommissionPercent.Text, out decimal bothComm) || bothComm < 0 || bothComm > 100)
+                        if (!decimal.TryParse(TxtCommissionPercent.Text, out decimal bothComm) || bothComm < 0 || (ChkIsFixedMoney.IsChecked == false && bothComm > 100))
                         {
-                            TxtCompensationError.Text = "نسبة العمولة يجب أن تكون بين 0 و 100";
+                            TxtCompensationError.Text = ChkIsFixedMoney.IsChecked == true
+                                ? "قيمة المبلغ الثابت يجب أن تكون موجبة وصحيحة"
+                                : "نسبة العمولة يجب أن تكون بين 0 و 100";
                             TxtCompensationError.Visibility = Visibility.Visible;
                             hasError = true;
                         }
-                        else commissionPercent = bothComm;
+                        else commission = bothComm;
                         break;
 
                     case "FullTrip":
-                        commissionPercent = 100;
+                        commission = 100;
+                        ChkIsFixedMoney.IsChecked = false;
                         break;
                 }
             }
@@ -311,30 +305,33 @@ namespace Presentation.View.EmployeeView
         {
             var dialog = new Microsoft.Win32.OpenFileDialog
             {
-                Filter = "Images|*.jpg;*.jpeg;*.png|All Files|*.*",
+                Filter = "Image files (*.jpg, *.jpeg, *.png, *.bmp) | *.jpg; *.jpeg; *.png; *.bmp",
                 Multiselect = true
             };
 
             if (dialog.ShowDialog() == true)
             {
-                string tempFolder = Path.Combine(
-                    AppDomain.CurrentDomain.BaseDirectory,
-                    "Attachments", "Employees", "Temp");
-                Directory.CreateDirectory(tempFolder);
-
                 foreach (var file in dialog.FileNames)
                 {
-                    string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file)}";
-                    string destPath = Path.Combine(tempFolder, fileName);
-                    File.Copy(file, destPath, true);
+                    try
+                    {
+                        byte[] imageBytes = File.ReadAllBytes(file);
 
-                    AttachmentsList.Add(new AttachmentItem { FilePath = destPath });
-
+                        AttachmentsList.Add(new AttachmentItem
+                        {
+                            FilePath = file,
+                            ImageData = imageBytes,
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($" فشل في قراءة ملف الصورة: {Path.GetFileName(file)}", "خطأ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
                 }
                 UpdateNoAttachmentsMessage();
-
             }
         }
+
         private void UpdateNoAttachmentsMessage()
         {
             TxtNoAttachments.Visibility = AttachmentsList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -347,15 +344,7 @@ namespace Presentation.View.EmployeeView
 
             if (attachment != null)
             {
-                try
-                {
-                    if (File.Exists(attachment.FilePath))
-                        File.Delete(attachment.FilePath);
-                }
-                catch { }
-
                 AttachmentsList.Remove(attachment);
-
                 UpdateNoAttachmentsMessage();
             }
         }

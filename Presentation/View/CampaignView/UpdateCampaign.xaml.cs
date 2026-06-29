@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.CampaignDTOs;
 using Application.Features.CampaignManagement.Command;
+using Application.Features.CampaignManagement.Queries;
 using Application.Features.SourceManagement;
 using System;
 using System.Windows;
@@ -12,14 +13,19 @@ namespace Presentation.View.CampaignView
     {
         private readonly UpdateCampaignHandler _updateCampaignHandler;
         private readonly GetAllSourcesHandler _getAllSources;
+        private readonly GetCampaignCustomersCount _getCampaignCustomers;
+      
         private readonly int _campaignId;
+        private  int _customerCount;
 
-        public UpdateCampaign(UpdateCampaignDto currentCampaign, UpdateCampaignHandler updateCampaign, GetAllSourcesHandler getAllSources)
+        public UpdateCampaign(UpdateCampaignDto currentCampaign, UpdateCampaignHandler updateCampaign,
+            GetAllSourcesHandler getAllSources , GetCampaignCustomersCount campaignCustomersCount)
         {
             InitializeComponent();
             _updateCampaignHandler = updateCampaign;
             _getAllSources = getAllSources;
             _campaignId = currentCampaign.CampaignId;
+            _getCampaignCustomers = campaignCustomersCount;
 
             Load_Sources();
             LoadCurrentValues(currentCampaign);
@@ -44,8 +50,23 @@ namespace Presentation.View.CampaignView
             DpEndDate.SelectedDate = currentCampaign.EndDate.ToDateTime(TimeOnly.MinValue);
             TxtDiscount.Text = currentCampaign.Discount.ToString();
             TxtNotes.Text = currentCampaign.Note ?? string.Empty;
-
             CbSources.SelectedValue = currentCampaign.SourceId;
+
+            _customerCount = _getCampaignCustomers.Handle(_campaignId);
+
+
+            if (_customerCount > 0)
+            {
+                CbSources.IsEnabled = false;   
+                DpStartDate.IsEnabled = false;
+                DpEndDate.IsEnabled = true;   
+            }
+            else
+            {
+                CbSources.IsEnabled = true;   
+                DpStartDate.IsEnabled = true;
+                DpEndDate.IsEnabled = true;
+            }
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)

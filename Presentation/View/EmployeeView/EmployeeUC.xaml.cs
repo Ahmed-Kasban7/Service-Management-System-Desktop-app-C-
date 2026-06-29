@@ -8,6 +8,7 @@ using Application.Features.EmployeeManagement.Commands;
 using Application.Features.EmployeeManagement.Queries; // تأكد من وجود الـ Queries هنا
 using Application.Features.PhoneManagement.Commands;
 using Application.Features.PhoneManagement.Queries;
+using Presentation.View.CampaignView;
 using Presentation.View.CustomerView;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,6 @@ namespace Presentation.View.EmployeeView
     /// </summary>
     public partial class EmployeeUC : UserControl
     {
-        //  pagination & Search variables بنفس المسطرة
         private int CurrentPage = 1;
         private const int ROWPERPAGE = 8;
         private bool IsSearching = false;
@@ -43,6 +43,7 @@ namespace Presentation.View.EmployeeView
         private GetEmployeeAttachmentsHandler _getEmployeeAttachmentsHandler;
         private AddAttachmentHandler _addAttachmentHandler;
         private DeleteAttachmentHandler _deleteAttachmentHandler;
+        private UpdateEmployeeHandler _updateEmployeeHandler;
 
         public EmployeeUC()
         {
@@ -57,7 +58,8 @@ namespace Presentation.View.EmployeeView
             SearchEmployeeHandler searchEmployee , GetEmployeeProfileHandler getEmployeeProfile ,
             GetEmployeePhonesHandler getEmployeePhones , AddPhoneToEmployee addPhoneToEmployee ,
             UpdatePhoneHandler updatePhoneHandler , DeleteEmployeePhoneHandler deleteEmployeePhone , 
-            GetEmployeeAttachmentsHandler getEmployeeAttachments , AddAttachmentHandler addAttachmentHandler , DeleteAttachmentHandler deleteAttachment
+            GetEmployeeAttachmentsHandler getEmployeeAttachments , AddAttachmentHandler addAttachmentHandler ,
+            DeleteAttachmentHandler deleteAttachment , UpdateEmployeeHandler updateEmployee
            )        
         {
             _createEmployeeHandler = createEmployee;
@@ -73,6 +75,7 @@ namespace Presentation.View.EmployeeView
             _getEmployeeAttachmentsHandler = getEmployeeAttachments;
             _addAttachmentHandler = addAttachmentHandler;
             _deleteAttachmentHandler = deleteAttachment;
+            _updateEmployeeHandler = updateEmployee;
             _createEmployeeHandler.EmployeeCreated += LoadAndBindEmployees;
 
             LoadAndBindEmployees();
@@ -173,14 +176,17 @@ namespace Presentation.View.EmployeeView
                 var employeeProfileUC = new EmployeeProfileUC(
                     selectedEmployee.EmployeeId , _getEmployeeProfileHandler , 
                     _getEmployeePhonesHandler , _addPhoneToEmployee , _updatePhoneHandler ,
-                    _deleteEmployeePhoneHandler , _getEmployeeAttachmentsHandler , _addAttachmentHandler , _deleteAttachmentHandler
+                    _deleteEmployeePhoneHandler , _getEmployeeAttachmentsHandler , _addAttachmentHandler , _deleteAttachmentHandler ,
+                    _getDepartmentsHandler , _getRolesHandler , _updateEmployeeHandler
                 );
 
-                //employeeProfileUC.BackRequested += (s, args) =>
-                //{
-                //    MainContentGrid.Children.Clear();
-                //    MainContentGrid.Children.Add(this); 
-                //};
+                employeeProfileUC.BackRequested += (s, args) =>
+                {
+                    EmployeeProfileHolder.Visibility = Visibility.Collapsed;
+                    EmployeeProfileHolder.Content = null;
+                    EmployeesContainer.Visibility = Visibility.Visible;
+                    LoadAndBindEmployees();
+                };
 
 
                 EmployeeProfileHolder.Content = employeeProfileUC;

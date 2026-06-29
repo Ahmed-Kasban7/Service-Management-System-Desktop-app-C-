@@ -56,9 +56,11 @@ public class DeviceBrandRepository:IDeviceBrandRepository
         cmd.Parameters.AddWithValue("@BrandName", brandName);
 
         conn.Open();
-        var result = cmd.ExecuteScalar();
 
-        return result != null && Convert.ToInt32(result) == 1;
+        var result = cmd.ExecuteScalar();
+        int rowsAffected = result != null ? Convert.ToInt32(result) : 0;
+
+        return rowsAffected > 0;
 
     }
 
@@ -70,18 +72,12 @@ public class DeviceBrandRepository:IDeviceBrandRepository
 
         cmd.Parameters.Add(new SqlParameter("@brandId", SqlDbType.Int) { Value = id });
 
-        var returnParam = new SqlParameter
-        {
-            Direction = ParameterDirection.ReturnValue
-        };
-        cmd.Parameters.Add(returnParam);
-
         conn.Open();
-        cmd.ExecuteNonQuery();
 
-        int result = (int)returnParam.Value;
+        var result = cmd.ExecuteScalar();
+        int rowsAffected = result != null ? Convert.ToInt32(result) : 0;
 
-        return result == 1;
+        return rowsAffected > 0;
     }
     public bool UpdateBrand(int id, string brandName)
     {
@@ -92,23 +88,12 @@ public class DeviceBrandRepository:IDeviceBrandRepository
         cmd.Parameters.Add(new SqlParameter("@brandId", SqlDbType.Int) { Value = id });
         cmd.Parameters.Add(new SqlParameter("@brandName", SqlDbType.NVarChar, 200) { Value = brandName });
 
-        var returnParam = new SqlParameter
-        {
-            Direction = ParameterDirection.ReturnValue
-        };
-        cmd.Parameters.Add(returnParam);
-
         conn.Open();
-        cmd.ExecuteNonQuery();
 
-        int result = (int)returnParam.Value;
+        var result = cmd.ExecuteScalar();
+        int rowsAffected = result != null ? Convert.ToInt32(result) : 0;
 
-        if (result == -1)
-        {
-            throw new Exception("اسم الماركة هذا موجود بالفعل في النظام، لا يمكن التكرار.");
-        }
-
-        return result == 1;
+        return rowsAffected > 0;
     }
 
 }

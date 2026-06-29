@@ -42,8 +42,9 @@ public class DeviceTypeRepository:IDeviceTypeRepository
         conn.Open();
 
         var result = cmd.ExecuteScalar();
+        int rowsAffected = result != null ? Convert.ToInt32(result) : 0;
 
-        return result != null && Convert.ToInt32(result) == 1;
+        return rowsAffected > 0;
     }
     public bool DeleteType(int id)
     {
@@ -53,18 +54,12 @@ public class DeviceTypeRepository:IDeviceTypeRepository
 
         cmd.Parameters.Add(new SqlParameter("@typeId", SqlDbType.Int) { Value = id });
 
-        var returnParam = new SqlParameter
-        {
-            Direction = ParameterDirection.ReturnValue
-        };
-        cmd.Parameters.Add(returnParam);
 
         conn.Open();
-        cmd.ExecuteNonQuery();
+        var result = cmd.ExecuteScalar();
+        int rowsAffected = result != null ? Convert.ToInt32(result) : 0;
 
-        int result = (int)returnParam.Value;
-
-        return result == 1;
+        return rowsAffected > 0;
     }
 
     public bool UpdateType(int id, string typeName)
@@ -76,22 +71,12 @@ public class DeviceTypeRepository:IDeviceTypeRepository
         cmd.Parameters.Add(new SqlParameter("@typeId", SqlDbType.Int) { Value = id });
         cmd.Parameters.Add(new SqlParameter("@typeName", SqlDbType.NVarChar, 200) { Value = typeName });
 
-        var returnParam = new SqlParameter
-        {
-            Direction = ParameterDirection.ReturnValue
-        };
-        cmd.Parameters.Add(returnParam);
 
         conn.Open();
-        cmd.ExecuteNonQuery();
 
-        int result = (int)returnParam.Value;
+        var result = cmd.ExecuteScalar();
+        int rowsAffected = result != null ? Convert.ToInt32(result) : 0;
 
-        if (result == -1)
-        {
-            throw new Exception("اسم النوع هذا موجود بالفعل في النظام، لا يمكن التكرار.");
-        }
-
-        return result == 1;
+        return rowsAffected > 0;
     }
 }

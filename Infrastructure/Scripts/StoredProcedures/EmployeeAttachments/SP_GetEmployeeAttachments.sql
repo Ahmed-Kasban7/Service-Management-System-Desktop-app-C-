@@ -6,8 +6,7 @@ BEGIN
 
     SELECT 
         AttachmentID AS Id,
-        EmployeeID,
-        FilePath
+        AttachmentData
     FROM EmployeeAttachments
     WHERE EmployeeID = @employeeId
 

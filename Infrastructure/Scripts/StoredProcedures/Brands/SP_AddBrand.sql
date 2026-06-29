@@ -1,17 +1,16 @@
 ﻿CREATE OR ALTER PROCEDURE SP_AddBrand
-    @BrandName NVARCHAR(200)
+    @BrandName NVARCHAR(max)
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    IF EXISTS (SELECT 1 FROM Brands WHERE TRIM(BrandName) = TRIM(@BrandName))
+    IF NOT EXISTS (SELECT 1 FROM Brands WHERE BrandName = @BrandName)
     BEGIN
-        SELECT 0 AS Result;
-        RETURN;
+            INSERT INTO Brands (BrandName)
+            VALUES (@BrandName);
     END
 
-    INSERT INTO Brands (BrandName)
-    VALUES (TRIM(@BrandName));
+    SELECT @@ROWCOUNT; 
 
-    SELECT 1 AS Result;
+
 END

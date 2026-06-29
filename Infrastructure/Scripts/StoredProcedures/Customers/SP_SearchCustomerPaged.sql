@@ -21,10 +21,14 @@ BEGIN
         INNER JOIN Customers c ON p.PersonID = c.PersonID
 
         WHERE 
-            (@SearchWord IS NULL OR @SearchWord = '')
-            OR c.CustomerNumber = @SearchWord
-            OR p.Name LIKE N'%' + @SearchWord + N'%'
-            OR c.CustomerID = TRY_CAST(@SearchWord AS INT)
+             p.IsActive = 1
+
+           AND (
+                (@SearchWord IS NULL OR @SearchWord = '')
+                OR c.CustomerNumber = @SearchWord
+                OR p.Name LIKE N'%' + @SearchWord + N'%'
+                OR c.CustomerID = TRY_CAST(@SearchWord AS INT)
+            )
     )
 
     SELECT *

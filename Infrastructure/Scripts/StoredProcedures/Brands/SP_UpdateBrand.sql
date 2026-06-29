@@ -5,18 +5,14 @@ AS
 BEGIN 
     SET NOCOUNT ON;
 
-    IF EXISTS (SELECT 1 FROM Brands WHERE BrandName = @brandName AND BrandID <> @brandId)
+    IF NOT EXISTS (SELECT 1 FROM Brands WHERE BrandName = @brandName AND BrandID <> @brandId)
     BEGIN
-        RETURN -1; 
+        UPDATE Brands 
+        SET BrandName = @brandName
+        WHERE BrandID = @brandId;
     END
 
-    UPDATE Brands 
-    SET BrandName = @brandName
-    WHERE BrandID = @brandId;
     
-    IF @@ROWCOUNT > 0
-        RETURN 1; 
-    ELSE
-        RETURN 0;
+    SELECT @@ROWCOUNT; 
 
 END

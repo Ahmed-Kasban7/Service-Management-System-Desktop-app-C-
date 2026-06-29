@@ -18,13 +18,13 @@ BEGIN
 
         -- 0 مرتب ثابت 
         -- 1 نسبه 
-        -- 3 مرتب و نسبه 
-        -- بالمشوار 4 
+        -- 2 مرتب و نسبه 
+        -- بالمشوار3 
 
         BaseSalary        DECIMAL(10,2) NULL,       
-        CommissionPercent DECIMAL(5,2)  NULL,       
+        Commission DECIMAL(10,2)  NULL,   
+        CommissionType BIT NULL   , -- 0 = percent , 1 = fixed money  
 
-        IsActive          BIT NOT NULL DEFAULT 1,
 
         CONSTRAINT FK_Employee_Role
             FOREIGN KEY (RoleID) REFERENCES DepartmentRoles(RoleID),
@@ -33,10 +33,10 @@ BEGIN
             FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID),
 
         CONSTRAINT FK_Employees_Persons
-            FOREIGN KEY (PersonID) REFERENCES Persons(PersonID) ON DELETE CASCADE,
+            FOREIGN KEY (PersonID) REFERENCES Persons(PersonID) ON DELETE CASCADE , 
 
-            CONSTRAINT CHK_CommissionPercent
-    CHECK (CommissionPercent IS NULL OR (CommissionPercent >= 0 AND CommissionPercent <= 100))
+            CONSTRAINT CK_Employees_CompensationType
+CHECK (CompensationType BETWEEN 0 AND 3)
         
     )
 END

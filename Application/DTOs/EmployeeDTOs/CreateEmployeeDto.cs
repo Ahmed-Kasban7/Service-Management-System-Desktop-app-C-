@@ -18,8 +18,9 @@ public class CreateEmployeeDto
     public int DepartmentId { get; set; }
     public int CompensationType { get; set; }
 
+    public bool ?  CommissionType { get; set; }
     public decimal? BaseSalary { get; set; }
-    public decimal? CommissionPercent { get; set; }
+    public decimal? Commission { get; set; }
     public List<string> Phones { get; set; } = new();
-    public List<string> Attachments { get; set; } = new();
+    public List<byte[]> Attachments { get; set; } = new();
 }

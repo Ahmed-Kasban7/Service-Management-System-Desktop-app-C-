@@ -50,50 +50,17 @@
                             <Border.Effect>
                                 <DropShadowEffect BlurRadius="8" Color="#000" Opacity="0.06" ShadowDepth="1"/>
                             </Border.Effect>
-                            <Border CornerRadius="10" ClipToBounds="True">
+                            <Border CornerRadius="10" ClipToBounds="True" Height="42" VerticalAlignment="Bottom">
                                 <Image x:Name="CompanyLogo" Stretch="UniformToFill"
                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </Border>
-
-                        <Button x:Name="BtnChangeLogo"
-                Click="BtnChangeLogo_Click"
-                Width="18" Height="18"
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Right"
-                Margin="0,0,-3,-3"
-                Background="#3B82F6"
-                Foreground="White"
-                BorderThickness="1.5"
-                BorderBrush="White">
-                            <Button.Template>
-                                <ControlTemplate TargetType="{x:Type Button}">
-                                    <Grid>
-                                        <Ellipse Fill="{TemplateBinding Background}"
-                                 Stroke="{TemplateBinding BorderBrush}"
-                                 StrokeThickness="1.5"/>
-                                        <TextBlock Text="✎" FontSize="9" FontWeight="Bold"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
-                                    </Grid>
-                                </ControlTemplate>
-                            </Button.Template>
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsMouseOver, ElementName=LogoContainer}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
                     </Grid>
 
-                    <!-- الاسم -->
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="Pro Fix"
+                    <StackPanel x:Name="CompanyName" VerticalAlignment="Center">
+                        <!-- 🌟 ضفنا الـ x:Name هنا عشان الـ C# يقدر يحدث الاسم لايف من الداتابيز -->
+                        <TextBlock x:Name="TxtCompanyName" 
+                   Text="Pro Fix"
                    FontSize="15"
                    FontWeight="Bold"
                    Foreground="#0F172A"/>
@@ -115,27 +82,12 @@
 
                     <!-- تصدير -->
 
-                    <!-- إعدادات -->
-                    <Button Width="36" Height="36" Background="#F8FAFC" BorderBrush="#E2E8F0"
-                            BorderThickness="1" Cursor="Hand" Margin="0,0,10,0">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border Background="{TemplateBinding Background}"
-                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                        BorderThickness="{TemplateBinding BorderThickness}"
-                                        CornerRadius="8">
-                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Border>
-                            </ControlTemplate>
-                        </Button.Template>
-                        <TextBlock Text="⚙️" FontSize="15" Foreground="#64748B"/>
-                    </Button>
 
                     <!-- إنشاء طلب -->
                     <Button Content="➕ إنشاء طلب"
                             Padding="14,8" Background="{StaticResource PrimaryBlue}" Foreground="White"
                             FontSize="13" FontWeight="SemiBold" BorderThickness="0"
-                            Cursor="Hand" Click="BtnCreateOrder_Click" Width="120" Height="47">
+                            Cursor="Hand" Click="BtnCreateOrder_Click" Width="160" Height="47">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border Background="{TemplateBinding Background}" CornerRadius="9" Padding="{TemplateBinding Padding}">

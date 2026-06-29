@@ -1,4 +1,5 @@
-﻿create or alter procedure SP_GetCustomerByID @customerId int 
+﻿create or alter procedure SP_GetCustomerByID
+@customerId int 
 as 
 begin 
 select 
@@ -9,5 +10,5 @@ p.Age,
 c.Address,
 c.Discount
 from Persons p join Customers c on p.PersonID = c.PersonID 
-where c.CustomerID = @customerId
+where c.CustomerID = @customerId AND p.IsActive = 1
 end 

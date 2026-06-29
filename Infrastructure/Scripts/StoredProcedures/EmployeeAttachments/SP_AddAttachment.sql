@@ -1,11 +1,12 @@
 ﻿CREATE OR ALTER PROCEDURE SP_AddEmployeeAttachment
-    @employeeId INT,
-    @filePath NVARCHAR(max)
+    @EmployeeId INT,
+    @AttachmentData VARBINARY(MAX)
 AS
 BEGIN
-    SET NOCOUNT ON; 
-  
-    INSERT INTO EmployeeAttachments (EmployeeID, FilePath)
-    VALUES (@employeeId, @filePath);
+    SET NOCOUNT ON;
 
-END
+    INSERT INTO EmployeeAttachments (EmployeeId, AttachmentData)
+    VALUES (@EmployeeId, @AttachmentData);
+
+
+END;

@@ -2,6 +2,6 @@
         BEGIN
             CREATE TABLE Types(
                 TypeID INT IDENTITY(1,1) PRIMARY KEY,
-                TypeName VARCHAR(200) NOT NULL UNIQUE
+                TypeName VARCHAR(max) NOT NULL 
             )
         END

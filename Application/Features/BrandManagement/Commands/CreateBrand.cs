@@ -23,8 +23,7 @@ public class CreateBrandHandler
         if (string.IsNullOrWhiteSpace(brand))
             throw new ArgumentNullException("لا يمكن أن يكون الماركة فارغًا.");
 
-        if (brand.Length > 200)
-            throw new ArgumentException("لا يمكن أن يتجاوز طول النوع 200 حرف.");
+
 
         return _brandRepository.AddBrand(brand);
     }

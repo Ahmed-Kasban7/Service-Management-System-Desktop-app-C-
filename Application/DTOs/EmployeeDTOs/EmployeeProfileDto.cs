@@ -16,9 +16,12 @@ public class EmployeeProfileDto
     public byte Sex { get; set; }
     public DateTime HireDate { get; set; }
     public string DepartmentName { get; set; }
+    public int  DepartmentId { get; set; }
     public string RoleName { get; set; }
+    public int RoleId { get; set; }
     public byte CompensationType { get; set; }
+    public bool? CommissionType { get; set; }
     public string CompensationTypeText { get; set; }
-    public decimal BaseSalary { get; set; }
-    public int CommissionPercent { get; set; }
+    public decimal? BaseSalary { get; set; }
+    public decimal? Commission { get; set; }
 }
